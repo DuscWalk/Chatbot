@@ -68,7 +68,7 @@ AstrBot 服务文件由启动脚本生成在 `~/.config/systemd/user/qqbots2-ast
 
 ## 部署到 Ubuntu 服务器
 
-下面假定服务器普通用户为 `duscwalk`，按实际用户名替换。服务器尚未提供给本项目，因此这些步骤需要在目标服务器上执行。
+当前 `njuse` 的部署与访问方式见 [njuse 部署记录](docs/njuse.md)。以下步骤用于准备新服务器，示例普通用户为 `duscwalk`，按实际用户名替换。
 
 ### 1. 安装系统依赖
 
@@ -171,6 +171,8 @@ tar -czf "$HOME/qqbots2-backup-$(date +%Y%m%d-%H%M%S).tar.gz" data runtime .astr
 - 部署只有在检查通过后执行，发布的代码与测试使用同一个 commit。普通 PR 不会触发部署。
 - 默认只执行 CI。配置服务器后，在 Actions → **CI / CD** → **Run workflow** 选择 `main` 并勾选 `deploy` 即可部署。
 - 如果希望每次推送 `main` 自动部署，在仓库 **Settings → Secrets and variables → Actions → Variables** 添加 `AUTO_DEPLOY=true`。未配置服务器时不要开启。
+
+内网服务器（如 `njuse`）需要能访问该内网的自托管 runner。在仓库级 Variables 中设置 `DEPLOY_RUNNER_LABELS` 为 JSON 标签数组，例如 `["self-hosted", "linux", "x64", "njuse-network"]`，并为注册的 runner 添加匹配标签。未设置时使用 GitHub 托管的 `ubuntu-24.04`。
 
 在 **Settings → Environments** 中创建 `production`，添加以下变量和 Secrets：
 
