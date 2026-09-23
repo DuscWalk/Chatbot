@@ -1,0 +1,38 @@
+name: qqbots2
+services:
+  napcat:
+    image: mlikiowa/napcat-docker:v4.18.28
+    hostname: qqbots2-napcat
+    # Ubuntu/WSL2 Linux: NapCat connects to the host's loopback OneBot server.
+    # webui.json binds the NapCat dashboard to 127.0.0.1 too.
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      NAPCAT_UID: ${QQBOT_UID:?Use ./bot compose or ./bot up}
+      NAPCAT_GID: ${QQBOT_GID:?Use ./bot compose or ./bot up}
+    volumes:
+      - type: bind
+        source: ./runtime/napcat/config
+        target: /app/napcat/config
+      - type: bind
+        source: ./runtime/napcat/qq
+        target: /app/.config/QQ
+      - type: bind
+        source: ./runtime/napcat/plugins
+        target: /app/napcat/plugins
+      # Keep the same absolute media path in AstrBot and NapCat.
+      - type: bind
+        source: ./data
+        target: ${QQBOT_ROOT:?Use ./bot compose or ./bot up}/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://127.0.0.1:6099/webui/']
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s

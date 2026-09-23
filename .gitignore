@@ -1,0 +1,11 @@
+# Runtime data includes API keys, chat history and QQ login sessions.
+/data/
+/runtime/
+/logs/
+/.astrbot
+/astrbot.lock
+/.env
+*.log
+__pycache__/
+.pytest_cache/
+.ruff_cache/

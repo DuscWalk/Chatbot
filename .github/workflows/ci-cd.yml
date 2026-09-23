@@ -1,0 +1,85 @@
+name: CI / CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy to the Ubuntu production server after checks pass
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Validate and test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    concurrency:
+      group: verify-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - name: Lint scripts
+        run: |
+          ruff check scripts tests
+          ruff format --check scripts tests
+          for script in bot scripts/*.sh; do bash -n "$script"; done
+          shellcheck bot scripts/*.sh
+      - name: Test initialization, credentials and migration
+        run: python -m unittest discover -s tests -v
+      - name: Validate Docker Compose and runtime exclusions
+        run: |
+          export QQBOT_ROOT="$GITHUB_WORKSPACE"
+          QQBOT_UID="$(id -u)"
+          QQBOT_GID="$(id -g)"
+          export QQBOT_UID QQBOT_GID
+          docker compose config --quiet
+          if [ -n "$(git ls-files -- data runtime .env .astrbot)" ]; then
+            echo 'Runtime data or credentials must not be tracked by Git.' >&2
+            exit 1
+          fi
+
+  deploy:
+    name: Deploy to Ubuntu
+    needs: verify
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.event_name != 'pull_request' &&
+      (vars.AUTO_DEPLOY == 'true' ||
+       (github.event_name == 'workflow_dispatch' && inputs.deploy))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: production
+    concurrency:
+      group: chatbot-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Upload the tested revision and deploy
+        env:
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: bash scripts/deploy.sh

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+qqbot_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cd "$qqbot_root"
+if [[ "$(id -u)" == 0 ]]; then
+  echo '请使用普通开发用户运行，例如 runuser -u duscwalk -- ./bot setup' >&2
+  exit 1
+fi
+qqbot_prefix=""
+if [[ -n "${CONDA_PREFIX:-}" && "$(basename "$CONDA_PREFIX")" == astrbot-wsl ]]; then
+  qqbot_prefix="$CONDA_PREFIX"
+else
+  qqbot_conda="${CONDA_EXE:-}"
+  if [[ ! -x "$qqbot_conda" ]]; then
+    qqbot_conda="$(command -v conda || true)"
+  fi
+  if [[ ! -x "$qqbot_conda" ]]; then
+    for qqbot_candidate in "$HOME/miniconda3/bin/conda" "$HOME/anaconda3/bin/conda" "$HOME/miniforge3/bin/conda" /opt/conda/bin/conda; do
+      if [[ -x "$qqbot_candidate" ]]; then
+        qqbot_conda="$qqbot_candidate"
+        break
+      fi
+    done
+  fi
+  if [[ ! -x "$qqbot_conda" ]]; then
+    echo '未找到 Conda。请安装 Miniconda/Miniforge，或先 conda activate astrbot-wsl。' >&2
+    exit 1
+  fi
+  qqbot_prefix="$("$qqbot_conda" env list --json | python3 -c 'import json,sys; from pathlib import Path; print(next((p for p in json.load(sys.stdin)["envs"] if Path(p).name == "astrbot-wsl"), ""))')"
+  if [[ -z "$qqbot_prefix" ]]; then
+    if [[ "${1:-}" != setup ]]; then
+      echo 'astrbot-wsl 环境不存在，请先运行 ./bot setup。' >&2
+      exit 1
+    fi
+    "$qqbot_conda" env create -y -f environment.yml
+    qqbot_prefix="$("$qqbot_conda" env list --json | python3 -c 'import json,sys; from pathlib import Path; print(next(p for p in json.load(sys.stdin)["envs"] if Path(p).name == "astrbot-wsl"))')"
+  fi
+fi
+export PATH="$qqbot_prefix/bin:$PATH"
+qqbot_uid="$(id -u)"
+export XDG_RUNTIME_DIR="/run/user/$qqbot_uid"
+exec "$qqbot_prefix/bin/python" "$qqbot_root/scripts/manage.py" "$@"
