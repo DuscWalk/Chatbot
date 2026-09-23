@@ -39,4 +39,6 @@ fi
 export PATH="$qqbot_prefix/bin:$PATH"
 qqbot_uid="$(id -u)"
 export XDG_RUNTIME_DIR="/run/user/$qqbot_uid"
+# runuser can preserve a different user's D-Bus address.
+unset DBUS_SESSION_BUS_ADDRESS
 exec "$qqbot_prefix/bin/python" "$qqbot_root/scripts/manage.py" "$@"

@@ -76,7 +76,7 @@ AstrBot 服务文件由启动脚本生成在 `~/.config/systemd/user/qqbots2-ast
 
 ```bash
 sudo apt update
-sudo apt install -y docker.io docker-compose-v2 git curl ca-certificates rsync ffmpeg
+sudo apt install -y docker.io docker-compose-v2 dbus-user-session git curl ca-certificates rsync ffmpeg
 sudo systemctl enable --now docker
 sudo usermod -aG docker "$(id -un)"
 sudo loginctl enable-linger "$(id -un)"
