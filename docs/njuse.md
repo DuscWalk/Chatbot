@@ -49,15 +49,15 @@ ssh njuse 'cd /home/ubuntu/qqBots2.0 && ./bot restart'
 
 ## 更新与 CI/CD
 
-2026-09-24 已验证 njuse 能主动访问 GitHub API、代码归档、Actions broker 和结果服务；无需本机中转，也不开放新的入站端口。GitHub release 安装包下载曾超时，runner 安装包经本机下载、SHA-256 校验后通过 SSH 传入。首次注册成功后，runner 会主动连接 GitHub 领取任务。
+2026-09-24 已验证 njuse 能主动访问 GitHub API、代码归档、Actions broker 和结果服务；无需本机中转，也不开放新的入站端口。GitHub release 安装包下载曾超时，runner 安装包经本机下载、SHA-256 校验后通过 SSH 传入。runner 已注册并主动连接 GitHub 领取任务，2026-09-24 的[首次完整 CI/CD](https://github.com/DuscWalk/Chatbot/actions/runs/36004240998)已成功部署 `99debe4`。部署不依赖本地电脑在线。
 
 - CI 运行在 GitHub 托管机器；检查成功后，main 分支推送由专用 `chatbot-njuse-deploy` runner 部署。
-- Runner 安装目录 `/home/ubuntu/actions-runner-chatbot`，用户服务 `qqbots2-actions-runner.service`。首次安装已完成；注册需要一次性令牌。
+- Runner 安装目录 `/home/ubuntu/actions-runner-chatbot`，用户服务 `qqbots2-actions-runner.service`。已注册，服务已启用并常驻运行；重启服务器后自动连接 GitHub。
 - Runner 不使用通用 self-hosted/linux 标签；服务器上的任务启动钩子检查仓库、main 分支、工作流路径和事件类型，拒绝 PR 任务。
 - 部署不需要 GitHub 中保存服务器 SSH 私钥。默认直接更新 `/home/ubuntu/qqBots2.0`，使用 `astrbot-wsl`。
 - 若以后切换本机 WSL runner，可使用同一专用标签，将 `DEPLOY_TRANSPORT` 设为 `ssh`、`DEPLOY_HOST` 设为 `njuse`，复用 `duscwalk` 的 SSH 配置。部署时本机及内网连接须在线。
 
-首次注册：在仓库 Settings → Actions → Runners → New self-hosted runner 选择 Linux x64，把页面配置命令里的短期 token 写入本地被忽略的 `.env`，变量名 `GITHUB_RUNNER_REGISTRATION_TOKEN`。令牌通过 SSH 标准输入交给 `scripts/manage_runner.py register`，不进入 Git、命令参数或聊天记录。GitHub 的 Git SSH 密钥不能替代此注册令牌。准备命令为：
+重建 runner 时首次注册：在仓库 Settings → Actions → Runners → New self-hosted runner 选择 Linux x64，把页面配置命令里的短期 token 写入本地被忽略的 `.env`，变量名 `GITHUB_RUNNER_REGISTRATION_TOKEN`。令牌通过 SSH 标准输入交给 `scripts/manage_runner.py register`，不进入 Git、命令参数或聊天记录。GitHub 的 Git SSH 密钥不能替代此注册令牌。准备命令为：
 
 ```bash
 python scripts/manage_runner.py prepare
@@ -69,4 +69,4 @@ systemctl --user status qqbots2-actions-runner.service
 
 部署先在独立目录构建和校验插件、准备需要变更的依赖，然后停止 **AstrBot**，备份代码、插件、配置、数据库和原依赖版本，安装并做隔离验证，再启动并检查 WebUI 和 OneBot。NapCat 始终运行。失败时自动恢复代码、数据和本次修改的依赖；日志仅保存在服务器 `runtime/deploy/latest.log`，备份位于 `runtime/backups/deploy-*`。备份含私密内容，不上传 Actions。
 
-运行版本记录在 `runtime/deployed-revision`；runner 注册完成后的端到端执行结果以 GitHub Actions 为准。API Key、QQ 登录态和聊天记录不进入 Git。
+运行版本记录在 `runtime/deployed-revision`；端到端执行结果可在 GitHub Actions 查看。首次部署已确认代码一致、四个托管插件加载、WebUI 与 OneBot 正常，NapCat 容器未重启。QQ 账号在线状态需在 NapCat 后台单独确认：登录失效时由账号持有人扫码，部署不会代替账号登录。API Key、QQ 登录态和聊天记录不进入 Git。

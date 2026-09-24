@@ -172,7 +172,7 @@ tar -czf "$HOME/qqbots2-backup-$(date +%Y%m%d-%H%M%S).tar.gz" data runtime .astr
 仓库：[DuscWalk/Chatbot](https://github.com/DuscWalk/Chatbot)。工作流位于 `.github/workflows/ci-cd.yml`，当前部署方式见 [njuse 说明](docs/njuse.md)。
 
 - 推送 main、向 main 提交 PR 或手动运行 Actions：在 GitHub 托管 runner 检查 Python、Shell、Compose、知识库和隔离插件测试。
-- main 推送通过 CI 后，专用 `chatbot-njuse-deploy` runner 部署同一个提交；PR 不部署。runner 需完成 GitHub 注册。
+- main 推送通过 CI 后，njuse 上已注册的专用 `chatbot-njuse-deploy` runner 部署同一个提交；PR 不部署。首次自动部署已通过。
 - `AUTO_DEPLOY=false` 仓库变量可暂停自动部署；手动运行工作流并勾选 deploy 可单次部署。
 - njuse runner 直接更新本机服务，不需要服务器 SSH Secrets。部署保留后台设置和 NapCat 登录，失败后恢复代码、数据和本次改变的依赖。
 

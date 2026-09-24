@@ -63,7 +63,7 @@ python -m unittest discover -s tests -v
 
 安装前自动备份配置、插件、插件数据和 AstrBot 数据库，位置记录在 `runtime/plugins/activation.json`；依赖升级前的列表保存在对应备份目录的 `pip-freeze.txt`。回退时停止 AstrBot，将备份中的文件恢复，移除备份中不存在的新插件目录，再启动 AstrBot；不要重启 NapCat。备份和运行目录含私密信息，不提交 Git。
 
-上游：[消息防抖](https://github.com/aliveriver/astrbot_plugin_continuous_message)、[LivingMemory](https://github.com/lxfight-s-Astrbot-Plugins/astrbot_plugin_livingmemory)。部署工作流使用 njuse 上的专用 runner；网络已验证，首次注册方式见 [njuse 说明](njuse.md)。
+上游：[消息防抖](https://github.com/aliveriver/astrbot_plugin_continuous_message)、[LivingMemory](https://github.com/lxfight-s-Astrbot-Plugins/astrbot_plugin_livingmemory)。部署工作流使用 njuse 上已注册的专用 runner，完整自动部署已验证；运行与重建方式见 [njuse 说明](njuse.md)。
 
 ## 可选语音、表情与群聊
 
