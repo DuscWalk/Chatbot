@@ -6,10 +6,10 @@
     "hint": "需同时选择对应人格，并把会话加入下面的列表。"
   },
   "allowed_sessions": {
-    "description": "允许的会话标识",
+    "description": "允许的会话（支持通配符）",
     "type": "list",
     "default": [],
-    "hint": "精确的统一消息来源 UMO；空列表表示不启用任何会话。可在会话管理中复制。"
+    "hint": "填写统一消息来源 UMO。napcat:FriendMessage:* 表示该 QQ 连接的全部私聊；空列表不启用任何会话。"
   },
   "persona_id": {
     "description": "人格名称",

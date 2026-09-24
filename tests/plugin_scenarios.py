@@ -21,6 +21,7 @@ from plugins.astrbot_plugin_lemuen.render import (
     SPEAKER_PREFIX,
     compile_style,
     retrieval_query,
+    session_allowed,
 )
 
 
@@ -63,6 +64,28 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
             conversation=SimpleNamespace(persona_id="蕾缪安"),
         )
 
+    async def test_all_private_pattern_includes_new_friends_but_not_groups(self):
+        self.config["allowed_sessions"] = ["napcat:FriendMessage:*"]
+        self.event.platform_meta.id = "napcat"
+        self.event.session.platform_name = "napcat"
+        self.event.session.platform_id = "napcat"
+        await self.plugin.on_request(self.event, self.req)
+        self.context.kb_manager.retrieve.assert_not_awaited()
+        self.event.message_obj.group_id = ""
+        self.event.message_obj.type = MessageType.FRIEND_MESSAGE
+        self.event.session.message_type = MessageType.FRIEND_MESSAGE
+        self.event.session.session_id = "new-friend"
+        await self.plugin.on_request(self.event, self.req)
+        self.context.kb_manager.retrieve.assert_awaited_once()
+        for umo in ["napcat:FriendMessage:new-friend", "napcat:FriendMessage:another:friend"]:
+            self.assertTrue(session_allowed(umo, self.config["allowed_sessions"]))
+        for umo in [
+            "napcat:GroupMessage:123",
+            "other:FriendMessage:123",
+            "webchat:FriendMessage:123",
+        ]:
+            self.assertFalse(session_allowed(umo, self.config["allowed_sessions"]))
+
     async def test_disabled_scope_and_other_persona_do_not_change_requests(self):
         for config in [{"enabled": False}, {"allowed_sessions": []}]:
             saved = self.config.copy()
@@ -79,6 +102,17 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
         self.context.kb_manager.retrieve.assert_not_awaited()
         self.assertEqual(self.req.system_prompt, "原生人格和其他系统设置")
         self.assertFalse(self.req.extra_user_content_parts)
+
+    async def test_tool_free_persona_also_disables_platform_added_tools(self):
+        self.context.persona_manager.resolve_selected_persona.return_value = (
+            "蕾缪安",
+            {"tools": []},
+            None,
+            False,
+        )
+        self.req.func_tool = SimpleNamespace(tools=["platform-send-tool"])
+        await self.plugin.on_request(self.event, self.req)
+        self.assertIsNone(self.req.func_tool)
 
     async def test_native_request_preserved_and_reference_conditional(self):
         await self.plugin.on_request(self.event, self.req)

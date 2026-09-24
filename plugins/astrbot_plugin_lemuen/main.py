@@ -19,6 +19,7 @@ from .render import (
     entry_ids,
     native_chunks,
     retrieval_query,
+    session_allowed,
 )
 
 
@@ -36,12 +37,12 @@ class LemuenPlugin(Star):
         """Apply only to explicitly allowed sessions using the selected persona."""
         if not self.config.get("enabled", False):
             return
-        if event.unified_msg_origin not in self.config.get("allowed_sessions", []):
+        if not session_allowed(event.unified_msg_origin, self.config.get("allowed_sessions", [])):
             return
         if CONTEXT_MARKER in (req.system_prompt or ""):
             return
         cfg = self.context.get_config(event.unified_msg_origin)
-        selected, _, _, _ = await self.context.persona_manager.resolve_selected_persona(
+        selected, persona, _, _ = await self.context.persona_manager.resolve_selected_persona(
             umo=event.unified_msg_origin,
             conversation_persona_id=getattr(req.conversation, "persona_id", None),
             platform_name=event.get_platform_name(),
@@ -49,6 +50,9 @@ class LemuenPlugin(Star):
         )
         if selected != self.config.get("persona_id", "蕾缪安"):
             return
+        if persona and persona.get("tools") == []:
+            # Honor an explicitly tool-free persona, including platform-added tools.
+            req.func_tool = None
         prompt = event.get_message_str() or req.prompt or ""
         query = retrieval_query(
             prompt, req.contexts, event.get_sender_id(), bool(event.get_group_id())
