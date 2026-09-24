@@ -49,7 +49,7 @@ python scripts/lemuen.py smoke --live --cases D07,G01
 
 ## njuse 当前配置
 
-部署后检查发现 NapCat 处于 `waiting_qrcode`，且快捷登录列表为空，需在 <http://127.0.0.1:16099/webui/> 用机器人账号重新扫码。人格、知识库和范围配置已保存，登录成功后生效。
+2026-09-24 已确认机器人 QQ 登录成功（`ready`），NapCat 与 AstrBot 的 OneBot WebSocket 连接已建立；AstrBot 服务运行、NapCat 容器健康。全部好友可直接私聊，未来新增好友也在范围内。本次没有代发真实 QQ 消息，实际回复可由用户在 QQ 中验证。
 
 - 原生配置：**蕾缪安 · QQ私聊**，匹配 `napcat:FriendMessage:*`，包含未来的新好友。
 - 私聊默认人格“蕾缪安”，聊天模型 `deepseek-v4-pro`，插件 0.1.1 已启用。
