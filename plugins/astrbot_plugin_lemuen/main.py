@@ -8,9 +8,10 @@ from pathlib import Path
 from astrbot.api import AstrBotConfig
 from astrbot.api.event import AstrMessageEvent, filter
 from astrbot.api.provider import ProviderRequest
-from astrbot.api.star import Context, Star
+from astrbot.api.star import Context, Star, StarTools
 from astrbot.core.agent.message import TextPart
 
+from .proactive import ProactiveChat
 from .render import (
     CONTEXT_MARKER,
     CONTEXT_RULE,
@@ -27,10 +28,34 @@ class LemuenPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
         self.config = config
+        self.proactive = None
         guide = Path(__file__).with_name("voice-guide.json")
         if not guide.exists():  # Source checkout; release ZIP includes this asset.
             guide = Path(__file__).resolve().parents[2] / "knowledge/lemuen/voice-guide.json"
         self.guide = json.loads(guide.read_text(encoding="utf-8"))
+
+    async def initialize(self):
+        try:
+            self.proactive = ProactiveChat(
+                self, StarTools.get_data_dir("astrbot_plugin_lemuen") / "proactive.json"
+            )
+            await self.proactive.start()
+        except Exception as error:
+            self.logger.warning("Proactive chat disabled (%s).", type(error).__name__)
+
+    async def terminate(self):
+        if self.proactive:
+            await self.proactive.close()
+
+    @filter.event_message_type(filter.EventMessageType.ALL, priority=100)
+    async def observe_activity(self, event: AstrMessageEvent):
+        if self.proactive:
+            self.proactive.activity(event.unified_msg_origin)
+
+    @filter.after_message_sent()
+    async def observe_reply(self, event: AstrMessageEvent):
+        if self.proactive:
+            self.proactive.activity(event.unified_msg_origin)
 
     @filter.on_llm_request()
     async def on_request(self, event: AstrMessageEvent, req: ProviderRequest):

@@ -1,7 +1,7 @@
 name: astrbot_plugin_lemuen
 display_name: 蕾缪安
 author: duscwalk
-version: 0.1.3
+version: 0.2.0
 desc: 在原生人格和知识库上添加情境表达参考与群聊说话者标记。
 repo: https://github.com/DuscWalk/Chatbot
 astrbot_version: ">=4.27.4,<4.28"

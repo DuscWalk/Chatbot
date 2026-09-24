@@ -32,5 +32,45 @@
     "type": "int",
     "default": 8,
     "hint": "超时后继续使用人格和常驻表达参考。范围 1–30。"
+  },
+  "proactive": {
+    "type": "object",
+    "description": "低频主动私聊",
+    "items": {
+      "enabled": {
+        "type": "bool",
+        "description": "启用主动聊天",
+        "default": false
+      },
+      "targets": {
+        "type": "list",
+        "description": "主动聊天收件会话（精确 UMO，不支持通配符）",
+        "default": []
+      },
+      "weekdays": {
+        "type": "list",
+        "description": "星期（1=周一，7=周日）",
+        "default": [
+          1,
+          3,
+          6
+        ]
+      },
+      "start_hour": {
+        "type": "int",
+        "description": "开始时间（北京时间，小时）",
+        "default": 19
+      },
+      "end_hour": {
+        "type": "int",
+        "description": "结束时间（北京时间，小时）",
+        "default": 21
+      },
+      "idle_minutes": {
+        "type": "int",
+        "description": "最近对话后至少等待多少分钟",
+        "default": 120
+      }
+    }
   }
 }

@@ -54,7 +54,14 @@ def build(cache=None):
     )
     (BUILD / "persona.md").write_text((ROOT / "persona.md").read_text(encoding="utf-8"))
     with zipfile.ZipFile(BUILD / "astrbot_plugin_lemuen.zip", "w", zipfile.ZIP_DEFLATED) as archive:
-        for name in ["main.py", "render.py", "metadata.yaml", "_conf_schema.json", "README.md"]:
+        for name in [
+            "main.py",
+            "render.py",
+            "proactive.py",
+            "metadata.yaml",
+            "_conf_schema.json",
+            "README.md",
+        ]:
             archive.write(PLUGIN / name, f"astrbot_plugin_lemuen/{name}")
         archive.write(ROOT / "voice-guide.json", "astrbot_plugin_lemuen/voice-guide.json")
     (BUILD / "private-chat-settings.json").write_text(
