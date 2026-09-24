@@ -51,11 +51,16 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
     pic = make_event("这是什么")
     await continuous._finalize_merged(pic, ["这是什么"], [image_url])
     assert "<image_caption>" not in pic.get_message_str(), "duplicate caption call"
-    req = ProviderRequest(prompt=pic.get_message_str(), image_urls=[image_url])
+    persona = "你有自己的朋友和生活；没有亲历过的事不说成自己的经历。"
+    req = ProviderRequest(
+        prompt=pic.get_message_str(), image_urls=[image_url], system_prompt=persona
+    )
     await plugin.enrich(pic, req)
     descriptions = [p.text for p in req.extra_user_content_parts if p.text.startswith("[本轮图片")]
     assert not req.image_urls and descriptions, "image bridge not active"
     assert "红" in descriptions[0] and "蓝" in descriptions[0], "visual observations missing"
+    assert req.system_prompt.startswith(persona), "image handling replaced the persona"
+    assert "视觉证据处理" in req.system_prompt, "visual evidence rule missing"
     if not live:
         assert vision.text_chat.await_count == 1
     # A failed evidence model must leave images available to AstrBot's fallback.
@@ -76,6 +81,7 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
     with patch.object(plugin.vision.pipeline, "describe", AsyncMock(return_value=unavailable)):
         await plugin.enrich(failed, failed_req)
     assert failed_req.image_urls == [image_url]
+    assert not failed_req.system_prompt, "failed analysis claimed visual context"
     cached = make_event("这是什么", mid="2")
     cached_req = ProviderRequest(prompt="这是什么", image_urls=[image_url])
     await plugin.enrich(cached, cached_req)
@@ -90,6 +96,20 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
     unrelated = ProviderRequest(prompt="晚上好")
     await plugin.enrich(make_event("晚上好", who="other-friend", mid="4"), unrelated)
     assert not any(p.text.startswith("[本轮图片") for p in unrelated.extra_user_content_parts)
+    assert not unrelated.system_prompt, "visual guidance leaked into unrelated chat"
+    followup_req = ProviderRequest(
+        prompt="右边那个是什么颜色？",
+        system_prompt=persona,
+        contexts=[{"role": "user", "content": [{"type": "text", "text": descriptions[0]}]}],
+    )
+    await plugin.enrich(make_event(followup_req.prompt, mid="40"), followup_req)
+    assert "视觉证据处理" in followup_req.system_prompt
+    assert followup_req.system_prompt.startswith(persona)
+    assert not any(p.text.startswith("[本轮图片") for p in followup_req.extra_user_content_parts), (
+        "follow-up invented a fresh image observation"
+    )
+    if not live:
+        assert vision.text_chat.await_count == 1, "follow-up reanalyzed an absent image"
 
     if not live:
         mock_search = AsyncMock(
