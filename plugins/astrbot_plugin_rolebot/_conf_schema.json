@@ -1,0 +1,199 @@
+{
+  "enabled": {
+    "description": "启用 Rolebot 功能",
+    "type": "bool",
+    "default": true
+  },
+  "platform_ids": {
+    "description": "QQ 连接 ID",
+    "type": "list",
+    "default": [
+      "napcat"
+    ],
+    "hint": "对应 AstrBot 平台配置的 ID。"
+  },
+  "time_enabled": {
+    "description": "提供当前北京时间",
+    "type": "bool",
+    "default": true
+  },
+  "search": {
+    "description": "按需联网",
+    "type": "object",
+    "items": {
+      "enabled": {
+        "description": "启用",
+        "type": "bool",
+        "default": true
+      },
+      "backend": {
+        "description": "搜索来源",
+        "type": "string",
+        "default": "auto",
+        "hint": "auto 优先使用 AstrBot 已配置的 Tavily，否则复用百炼密钥；也可填 tavily 或 dashscope。"
+      },
+      "provider_id": {
+        "description": "百炼提供商 ID",
+        "type": "string",
+        "default": "lemuen-vision",
+        "hint": "复用该提供商的 API 地址和密钥，不改变聊天模型。"
+      },
+      "model": {
+        "description": "百炼文字搜索模型",
+        "type": "string",
+        "default": "qwen-plus",
+        "hint": "使用 text-generation 接口；需要支持返回 search_info 来源的纯文本模型。"
+      }
+    }
+  },
+  "vision": {
+    "description": "图片与视频理解",
+    "type": "object",
+    "items": {
+      "enabled": {
+        "description": "启用证据识图",
+        "type": "bool",
+        "default": true
+      },
+      "provider_id": {
+        "description": "视觉模型提供商 ID",
+        "type": "string",
+        "default": "lemuen-vision"
+      },
+      "serpapi_key": {
+        "description": "SerpApi Key（可选）",
+        "type": "string",
+        "default": "",
+        "hint": "配置后启用 Google Lens 以图搜图；未配置时用视觉模型和按需文字搜索。QQ 原始图片 URL 会交给 SerpApi。"
+      },
+      "web_verification": {
+        "description": "按需检索身份或出处",
+        "type": "bool",
+        "default": true,
+        "hint": "仅当视觉模型需要更多证据时检索，最多两次。"
+      }
+    }
+  },
+  "groups": {
+    "description": "群聊（默认关闭）",
+    "type": "object",
+    "items": {
+      "whitelist": {
+        "description": "允许启用的群号",
+        "type": "list",
+        "default": [],
+        "hint": "仅添加白名单不会开启；管理员还需在群中执行 /bot on。群聊需选择对应人格和配置。"
+      },
+      "probability": {
+        "description": "默认随机回复概率（百分比）",
+        "type": "int",
+        "default": 0
+      },
+      "keywords": {
+        "description": "唤醒关键词",
+        "type": "list",
+        "default": [
+          "蕾缪安"
+        ]
+      },
+      "followup_keywords": {
+        "description": "追问称呼",
+        "type": "list",
+        "default": [
+          "你",
+          "蕾缪安"
+        ]
+      },
+      "followup_seconds": {
+        "description": "同一人的追问窗口（秒）",
+        "type": "int",
+        "default": 90
+      },
+      "repeat_enabled": {
+        "description": "跟随连续复读",
+        "type": "bool",
+        "default": true
+      },
+      "repeat_threshold": {
+        "description": "连续复读条数（至少两位不同用户）",
+        "type": "int",
+        "default": 2
+      },
+      "repeat_window_seconds": {
+        "description": "复读间隔上限（秒）",
+        "type": "int",
+        "default": 600
+      },
+      "repeat_cooldown_seconds": {
+        "description": "同群同内容复读冷却（秒）",
+        "type": "int",
+        "default": 600
+      },
+      "quote_enabled": {
+        "description": "引用回复（每人至少间隔 60 秒）",
+        "type": "bool",
+        "default": true
+      }
+    }
+  },
+  "voice": {
+    "description": "按需语音（需配置 AstrBot TTS 提供商）",
+    "type": "object",
+    "items": {
+      "enabled": {
+        "description": "启用",
+        "type": "bool",
+        "default": false
+      },
+      "provider_id": {
+        "description": "TTS 提供商 ID",
+        "type": "string",
+        "default": ""
+      },
+      "max_chars": {
+        "description": "最长语音文本（字）",
+        "type": "int",
+        "default": 500
+      },
+      "keep_text": {
+        "description": "同时发送文字",
+        "type": "bool",
+        "default": false
+      }
+    }
+  },
+  "stickers": {
+    "description": "表情库",
+    "type": "object",
+    "items": {
+      "enabled": {
+        "description": "启用",
+        "type": "bool",
+        "default": false,
+        "hint": "素材及 manifest.yaml 放在 data/plugin_data/astrbot_plugin_rolebot/stickers/；当前没有旧素材。"
+      },
+      "private_probability": {
+        "description": "私聊附加概率（百分比）",
+        "type": "int",
+        "default": 10
+      },
+      "group_probability": {
+        "description": "群聊附加概率（百分比）",
+        "type": "int",
+        "default": 5
+      }
+    }
+  },
+  "diagnostics": {
+    "description": "排错",
+    "type": "object",
+    "items": {
+      "include_content": {
+        "description": "记录详细证据内容",
+        "type": "bool",
+        "default": false,
+        "hint": "默认只记耗时、成功/失败等元数据，日志保留 24 小时。可能含私密内容，不建议日常开启。"
+      }
+    }
+  }
+}

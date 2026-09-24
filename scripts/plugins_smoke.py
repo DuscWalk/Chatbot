@@ -68,7 +68,9 @@ async def verify(root, live=False):
         {"default_provider_id": "deepseek/deepseek-v4-pro", "default_personality": "蕾缪安"}
     )
     if live:
-        production = read(ROOT / "data/cmd_config.json")
+        production = read(
+            Path(os.environ.get("ASTRBOT_SMOKE_CONFIG", str(ROOT / "data/cmd_config.json")))
+        )
         chat_config = next(
             p for p in production["provider"] if p["id"] == "deepseek/deepseek-v4-pro"
         )
@@ -91,7 +93,7 @@ async def verify(root, live=False):
             "provider_source_id": "synthetic-vision",
             "enable": True,
             "model": "qwen3-vl-plus",
-            "custom_extra_body": {"enable_thinking": False, "max_tokens": 1024},
+            "custom_extra_body": {"enable_thinking": False, "max_tokens": 2048},
         }
         astrbot_config.update(
             {
@@ -112,6 +114,11 @@ async def verify(root, live=False):
         root / "data/plugins",
         strip_root=False,
     )
+    extract(
+        (BUILD / "astrbot_plugin_rolebot.zip").read_bytes(), root / "data/plugins", strip_root=False
+    )
+    rolebot_config = defaults(read(root / "data/plugins/astrbot_plugin_rolebot/_conf_schema.json"))
+    write(root / "data/config/astrbot_plugin_rolebot_config.json", rolebot_config)
     for name, content in lock["memory_prompts"].items():
         dest = root / "data/plugin_data/astrbot_plugin_livingmemory/prompts" / (name + ".txt")
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -122,9 +129,11 @@ async def verify(root, live=False):
         ctx = lifecycle.star_context
         assert not lifecycle.plugin_manager.failed_plugin_dict, "plugin failed to load"
         loaded = {m.name: m for m in ctx.get_all_stars() if not m.reserved}
-        assert set(loaded) == {"astrbot_plugin_lemuen", *(p["id"] for p in lock["upstream"])}, list(
-            loaded
-        )
+        assert set(loaded) == {
+            "astrbot_plugin_lemuen",
+            "astrbot_plugin_rolebot",
+            *(p["id"] for p in lock["upstream"]),
+        }, list(loaded)
         assert all(p.meta().name == "webchat" for p in lifecycle.platform_manager.get_insts())
         await lifecycle.persona_mgr.create_persona(
             "蕾缪安", (ROOT / "knowledge/lemuen/persona.md").read_text(), tools=[], skills=[]
@@ -192,27 +201,12 @@ async def verify(root, live=False):
         assert a.get_message_str() == "第一句\n第二句", a.get_message_str()
         assert b.is_stopped() and not a.is_stopped()
         assert other.get_message_str() == "另一位的消息"
-        pic = event("这是什么")
-        if live:
-            import base64
+        sys.path.insert(0, str(ROOT / "tests"))
+        from rolebot_scenarios import verify_rolebot
 
-            from PIL import Image, ImageDraw
-
-            im = Image.new("RGB", (240, 160), "white")
-            draw = ImageDraw.Draw(im)
-            draw.rectangle((20, 40, 90, 110), fill="red")
-            draw.ellipse((140, 40, 210, 110), fill="blue")
-            buffer = io.BytesIO()
-            im.save(buffer, format="PNG")
-            image_url = "base64://" + base64.b64encode(buffer.getvalue()).decode()
-        else:
-            image_url = "base64://synthetic"
-        await continuous._finalize_merged(pic, ["这是什么"], [image_url])
-        assert "<image_caption>" in pic.get_message_str()
-        if live:
-            assert "红" in pic.get_message_str() and "蓝" in pic.get_message_str()
-        else:
-            vision.text_chat.assert_awaited_once()
+        rolebot_results = await verify_rolebot(
+            loaded["astrbot_plugin_rolebot"].star_cls, continuous, vision, event, live
+        )
         for i, text in enumerate(["我喜欢桂花茶。", "记住我的这个喜好。"], 11):
             ev = event(text, mid=str(i))
             req = ProviderRequest(prompt=text)
@@ -296,7 +290,7 @@ async def verify(root, live=False):
             "proactive_generation": True,
             "loaded": list(loaded),
             "debounce": True,
-            "image_caption": True,
+            "rolebot": rolebot_results,
             "memory_write_recall": True,
             "friend_isolation": True,
             "group_exclusion": True,

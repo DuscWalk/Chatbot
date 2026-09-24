@@ -1,0 +1,20 @@
+{
+  "repository": "qqBots",
+  "source_commit": "7493b9c342cf09ca97543c49531d1675b8f2a63c",
+  "ported_modules": {
+    "vision/image_preprocessor.py": "qq_rolebot/image_preprocessor.py",
+    "vision/vision_client.py": "qq_rolebot/vision_client.py",
+    "vision/vision_pipeline.py": "qq_rolebot/vision_pipeline.py",
+    "vision/vision_cache.py": "qq_rolebot/vision_cache.py",
+    "vision/vision_types.py": "qq_rolebot/vision_types.py",
+    "vision/serpapi_client.py": "qq_rolebot/serpapi_client.py",
+    "stickers.py": "qq_rolebot/stickers.py",
+    "custom_faces.py": "qq_rolebot/custom_faces.py"
+  },
+  "additional_references": [
+    "astrbot_plugins/qq_rolebot_policy/main.py",
+    "astrbot_plugins/qq_rolebot_media/main.py",
+    "qq_rolebot/tool_router.py",
+    "qq_rolebot/voice_policy.py"
+  ]
+}

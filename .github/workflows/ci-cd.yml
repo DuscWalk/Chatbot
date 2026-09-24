@@ -46,6 +46,12 @@ jobs:
         run: python scripts/lemuen.py check
       - name: Build Lemuen import and plugin artifacts
         run: python scripts/lemuen.py build
+      - name: Build and verify pinned feature plugins without QQ
+        run: |
+          python scripts/manage_plugins.py build
+          python scripts/manage_plugins.py stage
+          python -m pip install -r runtime/plugins/build/requirements.txt
+          python scripts/plugins_smoke.py
       - name: Test setup, migration and Lemuen plugin
         run: python -m unittest discover -s tests -v
       - name: Validate Docker Compose and runtime exclusions

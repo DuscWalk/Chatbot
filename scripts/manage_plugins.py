@@ -45,6 +45,18 @@ def merge(base, patch):
     return base
 
 
+def build():
+    BUILD.mkdir(parents=True, exist_ok=True)
+    source = ROOT / "plugins/astrbot_plugin_rolebot"
+    with zipfile.ZipFile(
+        BUILD / "astrbot_plugin_rolebot.zip", "w", zipfile.ZIP_DEFLATED
+    ) as archive:
+        for path in sorted(source.rglob("*")):
+            if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
+                archive.write(path, path.relative_to(source.parent))
+    print("Rolebot plugin archive ready.")
+
+
 def stage():
     BUILD.mkdir(parents=True, exist_ok=True)
     for item in read(LOCK)["upstream"]:
@@ -55,7 +67,14 @@ def stage():
                 path.write_bytes(response.read())
         if hashlib.sha256(path.read_bytes()).hexdigest() != item["sha256"]:
             raise ValueError("archive checksum mismatch: " + item["id"])
-    print("Pinned plugin archives ready.")
+    requirements = []
+    for item in read(LOCK)["upstream"]:
+        with zipfile.ZipFile(BUILD / (item["id"] + ".zip")) as archive:
+            path = next(n for n in archive.namelist() if n.endswith("/requirements.txt"))
+            requirements.append(archive.read(path).decode())
+    requirements.append((ROOT / "plugins/astrbot_plugin_rolebot/requirements.txt").read_text())
+    (BUILD / "requirements.txt").write_text("\n".join(requirements) + "\n")
+    print("Pinned plugin archives and dependency manifest ready.")
 
 
 def extract(raw, target, strip_root=True):
@@ -93,6 +112,11 @@ def install():
     own_archive = ROOT / "runtime/lemuen/build/astrbot_plugin_lemuen.zip"
     if not own_archive.exists():
         raise ValueError("Run scripts/lemuen.py build first.")
+    rolebot_archive = BUILD / "astrbot_plugin_rolebot.zip"
+    if not rolebot_archive.exists():
+        raise ValueError("Run scripts/manage_plugins.py build first.")
+    activation = ROOT / "runtime/plugins/activation.json"
+    previous_revision = read(activation).get("profile_revision", 0) if activation.exists() else 0
     main = read(ROOT / "data/cmd_config.json")
     profiles = [
         p
@@ -133,7 +157,7 @@ def install():
         "enable": True,
         "model": "qwen3-vl-plus",
         "modalities": ["text", "image"],
-        "custom_extra_body": {"max_tokens": 1024, "enable_thinking": False},
+        "custom_extra_body": {"max_tokens": 2048, "enable_thinking": False},
     }
     backup = ROOT / "runtime/backups" / ("plugins-" + datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ"))
     backup.mkdir(parents=True, mode=0o700)
@@ -171,33 +195,61 @@ def install():
             check=True,
         )
         cfg_path = ROOT / "data/config" / (item["id"] + "_config.json")
-        config = defaults(read(target / "_conf_schema.json"))
+        config = merge(defaults(read(target / "_conf_schema.json")), item["config"])
         if cfg_path.exists():
             merge(config, read(cfg_path))
-        merge(config, item["config"])
+        if previous_revision < 2 and item["id"] == "astrbot_plugin_continuous_message":
+            # One-time handover from caption-only to the new evidence pipeline.
+            config["image_vision"]["private_image_caption_provider_id"] = ""
+            config["image_handling"]["enable_image_localization"] = False
         write(cfg_path, config)
     extract(own_archive.read_bytes(), ROOT / "data/plugins", strip_root=False)
+    rolebot_target = ROOT / "data/plugins/astrbot_plugin_rolebot"
+    if rolebot_target.exists():
+        shutil.rmtree(rolebot_target)
+    extract(rolebot_archive.read_bytes(), ROOT / "data/plugins", strip_root=False)
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "-r",
+            str(rolebot_target / "requirements.txt"),
+        ],
+        check=True,
+    )
+    rolebot_path = ROOT / "data/config/astrbot_plugin_rolebot_config.json"
+    rolebot_config = defaults(read(rolebot_target / "_conf_schema.json"))
+    if rolebot_path.exists():
+        merge(rolebot_config, read(rolebot_path))
+    write(rolebot_path, rolebot_config)
     for cfg in [main, profile]:
-        cfg["provider_sources"] = [
-            p for p in cfg["provider_sources"] if p["id"] != source["id"]
-        ] + [source]
-        cfg["provider"] = [p for p in cfg["provider"] if p["id"] != vision["id"]] + [vision]
-    # Built-in plugins are always available. Added hooks only run in this private profile.
-    main["plugin_set"] = ["astrbot_plugin_lemuen"]
-    profile["plugin_set"] = ["astrbot_plugin_lemuen"] + [
-        p["runtime_name"] for p in lock["upstream"]
-    ]
-    own["proactive"] = merge(
-        own.get("proactive", {}),
-        {
+        if not any(p["id"] == source["id"] for p in cfg["provider_sources"]):
+            cfg["provider_sources"].append(source)
+        if not any(p["id"] == vision["id"] for p in cfg["provider"]):
+            cfg["provider"].append(vision)
+        if previous_revision < 2:
+            for provider in cfg["provider"]:
+                if provider["id"] == vision["id"]:
+                    extra = provider.setdefault("custom_extra_body", {})
+                    extra["max_tokens"] = max(2048, int(extra.get("max_tokens", 1024)))
+        enabled = cfg.get("plugin_set", [])
+        additions = ["astrbot_plugin_lemuen", "astrbot_plugin_rolebot"]
+        if cfg is profile:
+            additions += [p["runtime_name"] for p in lock["upstream"]]
+        if enabled != ["*"]:
+            cfg["plugin_set"] = list(dict.fromkeys(enabled + additions))
+    if "proactive" not in own:
+        own["proactive"] = {
             "enabled": True,
             "targets": targets,
             "weekdays": [1, 3, 6],
             "start_hour": 19,
             "end_hour": 21,
             "idle_minutes": 120,
-        },
-    )
+        }
     write(ROOT / "data/cmd_config.json", main)
     write(profile_path, profile)
     write(old_config, own)
@@ -211,6 +263,8 @@ def install():
             "backup": str(backup),
             "versions": {p["id"]: p["version"] for p in lock["upstream"]},
             "lemuen": "0.2.0",
+            "rolebot": "0.1.0",
+            "profile_revision": 2,
             "scope": "private",
             "proactive_recipients": len(targets),
         },
@@ -220,6 +274,6 @@ def install():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["stage", "install"])
+    parser.add_argument("command", choices=["build", "stage", "install"])
     args = parser.parse_args()
-    stage() if args.command == "stage" else install()
+    {"build": build, "stage": stage, "install": install}[args.command]()
