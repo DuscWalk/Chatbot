@@ -1,13 +1,13 @@
 # 蕾缪安资料
 
-知识版本 0.3.0、人格 0.3.1、表达参考 0.3.4。本次按私聊反馈补充日常兴趣与见闻话题；接入步骤和现状见 [使用说明](../../docs/lemuen.md)。
+知识版本 0.3.1、人格 0.3.1、表达参考 0.3.5。最新补入仙人掌挞的负面观感；接入步骤和现状见 [使用说明](../../docs/lemuen.md)。
 
 本目录只维护资料源：
 
 | 文件 | 用途 |
 | --- | --- |
 | [persona.md](persona.md) | AstrBot 原生人格，默认博士身份，可自然理解现实身份 |
-| [entries.json](entries.json) | 78 个条目：54 条事实、13 条人物自述、1 条展示、8 条演绎分析、2 条项目约定 |
+| [entries.json](entries.json) | 79 个条目：54 条事实、14 条人物自述、1 条展示、8 条演绎分析、2 条项目约定 |
 | [sources.json](sources.json) | 65 个来源记录及具体定位、版本与核读状态 |
 | [aliases.json](aliases.json) | 人物别名与条目关联 |
 | [voice-guide.json](voice-guide.json) | 有出处的表达参考；手写样例明确标注，不当作官方经历 |
@@ -24,6 +24,6 @@ python scripts/lemuen.py build
 python scripts/lemuen.py check --cache-dir runtime/research/lemuen
 ```
 
-生成的原生知识库导入文件、人格副本、插件 ZIP 和私聊分段设置 均放在 `runtime/lemuen/build/`，不进入 Git。只导入 68 个原作资料块；演绎分析与项目约定不混入事实库。每块保留时期、现实层、知情范围和出处。
+生成的原生知识库导入文件、人格副本、插件 ZIP 和私聊分段设置 均放在 `runtime/lemuen/build/`，不进入 Git。只导入 69 个原作资料块；演绎分析与项目约定不混入事实库。每块保留时期、现实层、知情范围和出处。
 
 修改资料时直接改本目录的源文件，再检查、打包；不用同步多套 Markdown 或评测报告。旧评测过程已清理，只保留 `tests/fixtures/lemuen.json` 的少量回归用例和运行目录里最近一次联调结果。
