@@ -7,6 +7,7 @@ import json
 import os
 import sys
 import tempfile
+import traceback
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
@@ -317,6 +318,12 @@ def main():
             # Synthetic inputs and dummy credentials only; useful failure diagnostics.
             if "--live" not in sys.argv:
                 sys.stderr.write(output.getvalue()[-12000:])
+                if os.environ.get("GITHUB_ACTIONS") == "true":
+                    diagnostic = output.getvalue()[-6000:] + traceback.format_exc()
+                    escaped = (
+                        diagnostic.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                    )
+                    print("::error title=Plugin integration::" + escaped, file=sys.stderr)
             raise
     write(ROOT / "runtime/plugins/latest-check.json", result)
     print(json.dumps(result, ensure_ascii=False))
