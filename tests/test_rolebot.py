@@ -54,6 +54,41 @@ class RolebotPolicyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             duration("99999999h")
 
+    def test_reply_limits_and_random_cooldown_are_per_group(self):
+        p = GroupPolicy()
+        self.assertTrue(p.can_reply("g", 100))
+        self.assertTrue(p.can_random_reply("g", 100))
+        for stamp in range(100, 116, 3):
+            self.assertTrue(p.can_reply("g", stamp))
+            p.record_reply("g", stamp)
+            self.assertFalse(p.can_reply("g", stamp + 1))
+        self.assertFalse(p.can_reply("g", 130))
+        self.assertTrue(p.can_reply("other", 130))
+        self.assertTrue(p.can_reply("g", 160))
+        self.assertFalse(p.can_random_reply("g", 234))
+        self.assertTrue(p.can_random_reply("g", 235))
+        self.assertTrue(p.can_random_reply("other", 130))
+        p.prune(4000)
+        self.assertFalse(p.activity or p.replies)
+
+    def test_repeat_window_and_cross_content_cooldown(self):
+        p = GroupPolicy()
+
+        def repeat(text, user, stamp):
+            return p.repeat("g", user, text, stamp, window=45, group_cooldown=60)
+
+        self.assertFalse(repeat("x", "a", 100))
+        self.assertFalse(repeat("x", "b", 146))
+        self.assertTrue(repeat("x", "a", 147))
+        self.assertFalse(repeat("y", "a", 150))
+        self.assertFalse(repeat("y", "b", 151))
+        self.assertFalse(repeat("y", "a", 207))
+        self.assertTrue(repeat("y", "b", 208))
+        self.assertFalse(repeat("x", "a", 300))
+        self.assertFalse(repeat("x", "b", 301))
+        self.assertFalse(repeat("x", "a", 747))
+        self.assertTrue(repeat("x", "b", 748))
+
     def test_missing_sources_never_masquerade_as_verified_search(self):
         evidence = SearchEvidence(summary="unverified model output")
         self.assertNotIn("unverified model output", evidence.context())

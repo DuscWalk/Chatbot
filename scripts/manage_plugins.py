@@ -299,9 +299,11 @@ def install(*, backup_dir=None, skip_dependencies=False):
             "backup": str(backup),
             "versions": {p["id"]: p["version"] for p in lock["upstream"]},
             "lemuen": "0.2.0",
-            "rolebot": "0.1.2",
+            "rolebot": "0.2.0",
             "profile_revision": 3,
-            "scope": "private",
+            "scope": "private_and_groups"
+            if rolebot_config.get("groups", {}).get("all_groups")
+            else "private",
             "proactive_recipients": (
                 len(targets)
                 if previous_revision < 2
@@ -309,7 +311,7 @@ def install(*, backup_dir=None, skip_dependencies=False):
             ),
         },
     )
-    print("Installed private plugins; backup:", backup)
+    print("Installed managed plugins; backup:", backup)
 
 
 if __name__ == "__main__":

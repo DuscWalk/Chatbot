@@ -153,6 +153,9 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
     command.role = "admin"
     answers = [r async for r in plugin.control_group(command, "on")]
     assert answers and (await plugin.group_state(command))["enabled"]
+    # These legacy scenarios exercise opt-in state at one timestamp.
+    # Production throttles are covered separately below with a controlled clock.
+    plugin.config["groups"].update(reply_cooldown_seconds=0, max_replies_per_minute=0)
     first = group("回声", "a")
     first_send = first.send
     await plugin.route(first)
@@ -249,7 +252,12 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
         "message": [{"type": "image", "data": {"url": "https://example.com/a.png"}}]
     }
     assert repeat_payload(unsafe) == ("", None)
+    from group_scenarios import verify_open_groups
+
+    await verify_open_groups(plugin, group)
     return {
+        "all_group_routing": True,
+        "group_throttle_and_controls": True,
         "vision": True,
         "quoted_image": True,
         "vision_cache": True,

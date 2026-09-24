@@ -6,7 +6,7 @@ import time
 
 from astrbot.api import AstrBotConfig
 from astrbot.api.event import AstrMessageEvent, MessageChain, filter
-from astrbot.api.message_components import Plain, Record, Reply
+from astrbot.api.message_components import At, AtAll, Plain, Record, Reply
 from astrbot.api.star import Context, Star, StarTools
 from astrbot.core.agent.message import TextPart
 from astrbot.core.star.filter.command import GreedyStr
@@ -60,16 +60,18 @@ class RolebotPlugin(Star):
         )
 
     def group_allowed(self, event):
-        return str(event.get_group_id()) in {
-            str(x) for x in self.config.get("groups", {}).get("whitelist", [])
-        }
+        cfg = self.config.get("groups", {})
+        group = str(event.get_group_id())
+        return group not in {str(x) for x in cfg.get("blacklist", [])} and (
+            cfg.get("all_groups", False) or group in {str(x) for x in cfg.get("whitelist", [])}
+        )
 
     def group_scope(self, event):
         return event.get_platform_id() + ":" + str(event.get_group_id())
 
     async def group_state(self, event):
         defaults = {
-            "enabled": False,
+            "enabled": self.config.get("groups", {}).get("default_enabled", False),
             "muted_until": 0,
             "probability": bounded(self.config.get("groups", {}).get("probability", 0), 0, 0, 100),
         }
@@ -137,49 +139,72 @@ class RolebotPlugin(Star):
             control = event.get_message_str().strip().lstrip("/").split(maxsplit=1)[0:1]
             if control in (["bot"], ["rolebot"]) and event.is_at_or_wake_command:
                 return
-            if not await self.active(event):
+            state = await self.group_state(event)
+            if not state["enabled"] or state["muted_until"] > now:
                 event.stop_event()
                 return
             cfg = self.config.get("groups", {})
             scope, user = self.group_scope(event), str(event.get_sender_id())
-            if event.get_extra("rolebot.addressed"):
-                self.policy.followups[(scope, user)] = now + bounded(
-                    cfg.get("followup_seconds"), 90, 0, 600
-                )
-                self.policy.chains.pop(scope, None)
-            else:
-                signature, component = repeat_payload(event)
-                if cfg.get("repeat_enabled", True) and self.policy.repeat(
-                    scope,
-                    user,
-                    signature,
-                    now,
-                    bounded(cfg.get("repeat_threshold"), 2, 2, 8),
-                    bounded(cfg.get("repeat_window_seconds"), 600, 1, 3600),
-                    bounded(cfg.get("repeat_cooldown_seconds"), 600, 1, 3600),
-                ):
-                    await event.send(MessageChain([component]))
+            if not self.policy.can_reply(
+                scope,
+                now,
+                bounded(cfg.get("reply_cooldown_seconds"), 3, 0, 60),
+                bounded(cfg.get("max_replies_per_minute"), 6, 0, 60),
+            ):
+                event.stop_event()
+                return
+            reason = "addressed"
+            if not event.get_extra("rolebot.addressed"):
+                # A reply/@ to somebody else is not directed at this bot.
+                if any(isinstance(c, (At, AtAll, Reply)) for c in event.get_messages()):
+                    self.policy.chains.pop(scope, None)
                     event.stop_event()
                     return
-                text = event.get_message_str()
+                text = event.get_message_str().strip()
                 followup = self.policy.followup(
                     scope, user, text, now, cfg.get("followup_keywords", ["你", "蕾缪安"])
                 )
                 keyword = any(k and str(k) in text for k in cfg.get("keywords", ["蕾缪安"]))
-                state = await self.group_state(event)
-                if not (
-                    followup
-                    or keyword
-                    or random.randrange(100) < bounded(state["probability"], 0, 0, 100)
-                ):
-                    event.stop_event()
-                    return
+                if followup or keyword:
+                    reason = "followup" if followup else "keyword"
+                    event.set_extra("rolebot.addressed", True)
+                else:
+                    signature, component = repeat_payload(event)
+                    if cfg.get("repeat_enabled", True) and self.policy.repeat(
+                        scope,
+                        user,
+                        signature,
+                        now,
+                        bounded(cfg.get("repeat_threshold"), 2, 2, 8),
+                        bounded(cfg.get("repeat_window_seconds"), 600, 1, 3600),
+                        bounded(cfg.get("repeat_cooldown_seconds"), 600, 1, 3600),
+                        bounded(cfg.get("repeat_group_cooldown_seconds"), 60, 0, 3600),
+                    ):
+                        self.policy.record_reply(scope, now)
+                        await event.send(MessageChain([component]))
+                        event.stop_event()
+                        return
+                    plain = all(isinstance(c, Plain) for c in event.get_messages())
+                    if not (
+                        plain
+                        and 3 <= len(text) <= 300
+                        and not text.startswith("/")
+                        and self.policy.can_random_reply(
+                            scope, now, bounded(cfg.get("random_cooldown_seconds"), 120, 0, 3600)
+                        )
+                        and random.randrange(100) < bounded(state["probability"], 0, 0, 100)
+                    ):
+                        event.stop_event()
+                        return
+                    reason = "random"
                 event.is_wake = True
                 event.is_at_or_wake_command = True
-                if followup:
-                    self.policy.followups[(scope, user)] = now + bounded(
-                        cfg.get("followup_seconds"), 90, 0, 600
-                    )
+            self.policy.record_reply(scope, now)
+            self.policy.chains.pop(scope, None)
+            self.policy.followups[(scope, user)] = now + bounded(
+                cfg.get("followup_seconds"), 90, 0, 600
+            )
+            event.set_extra("rolebot.group_reply", reason)
         # Continuous_message only reconstructs text/images. Preserve video references
         # across the same private debounce burst without making a global last-media slot.
         self.pending_videos = {k: v for k, v in self.pending_videos.items() if v[0] > now}
@@ -208,6 +233,11 @@ class RolebotPlugin(Star):
             {"scene": "private" if event.is_private_chat() else "group"}
         )
         event.set_extra("rolebot.trace", trace)
+        if not event.is_private_chat():
+            req.system_prompt = (req.system_prompt or "") + (
+                "\n这是群聊。按当前发言者区分身份和经历；先回应其消息。"
+                "普通闲聊用一到两个简短段落，步骤、代码等按问题需要完整表达。"
+            )
         if self.config.get("time_enabled", True):
             req.extra_user_content_parts.append(TextPart(text=clock_context()).mark_as_temp())
         pending = self.pending_videos.pop(event.unified_msg_origin, (0, []))
@@ -256,6 +286,21 @@ class RolebotPlugin(Star):
                         text="本轮语音不可用，用文字自然回应；不要声称已经发送语音。"
                     ).mark_as_temp()
                 )
+
+    @filter.after_message_sent()
+    async def observe_group_reply(self, event: AstrMessageEvent):
+        if (
+            self.applies(event)
+            and not event.is_private_chat()
+            and event.get_extra("rolebot.group_reply")
+            and not event.get_extra("rolebot.send_failed")
+        ):
+            now = time.time()
+            scope, user = self.group_scope(event), str(event.get_sender_id())
+            self.policy.activity[scope] = now
+            self.policy.followups[(scope, user)] = now + bounded(
+                self.config.get("groups", {}).get("followup_seconds"), 90, 0, 600
+            )
 
     @filter.on_decorating_result(priority=-50)
     async def decorate(self, event: AstrMessageEvent):
@@ -312,7 +357,9 @@ class RolebotPlugin(Star):
             return
         event.should_call_llm(False)
         if event.is_private_chat() or not self.group_allowed(event):
-            yield event.plain_result("请先在 Rolebot 插件配置里添加群白名单，再在该群使用此指令。")
+            yield event.plain_result(
+                "请在已获准的群聊中使用此指令；可在 Rolebot 配置中开放全部群或指定白名单。"
+            )
             return
         if event.role != "admin":
             yield event.plain_result("只有 AstrBot 管理员可以修改本群设置。")
@@ -352,7 +399,8 @@ class RolebotPlugin(Star):
         elif command == "status":
             remaining = max(0, int(state["muted_until"] - time.time()))
             message = f"群聊：{'开启' if state['enabled'] else '关闭'}；随机回复 {state['probability']}%；静默剩余 {remaining} 秒。"
-        await self.save_state(event, state)
+        if command in {"on", "off", "mute", "prob"}:
+            await self.save_state(event, state)
         yield event.plain_result(message)
 
     @filter.command("rolebot")

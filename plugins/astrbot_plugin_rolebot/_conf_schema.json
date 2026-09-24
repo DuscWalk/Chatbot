@@ -75,14 +75,50 @@
     }
   },
   "groups": {
-    "description": "群聊（默认关闭）",
+    "description": "群聊准入与回复策略",
     "type": "object",
     "items": {
+      "all_groups": {
+        "description": "允许所有群（包括以后加入的群）",
+        "type": "bool",
+        "default": false
+      },
+      "default_enabled": {
+        "description": "获准群默认开启回复",
+        "type": "bool",
+        "default": false,
+        "hint": "/bot off 和静默仍对单个群有效。"
+      },
+      "blacklist": {
+        "description": "停用的群号（优先于全部群和白名单）",
+        "type": "list",
+        "default": []
+      },
+      "random_cooldown_seconds": {
+        "description": "随机参与前距本群上次回复的间隔（秒）",
+        "type": "int",
+        "default": 120
+      },
+      "reply_cooldown_seconds": {
+        "description": "同群两次回复触发的最短间隔（秒）",
+        "type": "int",
+        "default": 3
+      },
+      "max_replies_per_minute": {
+        "description": "每群每分钟最多回复轮数（0 不限）",
+        "type": "int",
+        "default": 6
+      },
+      "repeat_group_cooldown_seconds": {
+        "description": "同群不同内容复读的最短间隔（秒）",
+        "type": "int",
+        "default": 60
+      },
       "whitelist": {
         "description": "允许启用的群号",
         "type": "list",
         "default": [],
-        "hint": "仅添加白名单不会开启；管理员还需在群中执行 /bot on。群聊需选择对应人格和配置。"
+        "hint": "未开启全部群时，仅允许这些群。默认开启或 /bot on 决定是否回复；黑名单优先。"
       },
       "probability": {
         "description": "默认随机回复概率（百分比）",
@@ -93,7 +129,10 @@
         "description": "唤醒关键词",
         "type": "list",
         "default": [
-          "蕾缪安"
+          "蕾缪安",
+          "安姐",
+          "枢机",
+          "拉特兰粉发"
         ]
       },
       "followup_keywords": {

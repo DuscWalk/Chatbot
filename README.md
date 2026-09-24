@@ -50,7 +50,7 @@ conda activate astrbot-wsl
 
 ## 蕾缪安人格与知识库
 
-原作资料与人格核心见 [知识库目录](knowledge/lemuen/README.md)，接入与维护见 [蕾缪安说明](docs/lemuen.md)。当前已在 njuse 启用全部 QQ 私聊，群聊沿用原配置。普通 CI 执行离线校验、测试和打包，不调用收费 API。私聊的消息合并、图片理解、长期记忆与低频主动聊天见 [插件配置](docs/plugins.md)。
+原作资料与人格核心见 [知识库目录](knowledge/lemuen/README.md)，接入与维护见 [蕾缪安说明](docs/lemuen.md)。当前已在 njuse 启用全部 QQ 私聊和群聊；群聊支持 @、称呼唤醒、低概率参与和连续复读，各群独立控制。普通 CI 执行离线校验、测试和打包，不调用收费 API。私聊的消息合并、图片理解、长期记忆与低频主动聊天见 [插件配置](docs/plugins.md)。
 
 ## 日常管理
 

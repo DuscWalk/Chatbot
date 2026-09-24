@@ -66,12 +66,23 @@ class GroupPolicy:
         self.chains = {}
         self.cooldowns = {}
         self.quotes = {}
+        self.replies = {}
+        self.activity = {}
+        self.repeat_groups = {}
 
     def prune(self, now):
-        for table in (self.followups, self.cooldowns, self.quotes):
+        for table in (self.followups, self.cooldowns, self.quotes, self.repeat_groups):
             for key, until in list(table.items()):
                 if until <= now:
                     table.pop(key, None)
+        self.replies = {
+            scope: recent
+            for scope, stamps in self.replies.items()
+            if (recent := [stamp for stamp in stamps if stamp > now - 60])
+        }
+        self.activity = {
+            scope: stamp for scope, stamp in self.activity.items() if stamp > now - 3600
+        }
         for key, value in list(self.chains.items()):
             if now - value[2] > 600:
                 self.chains.pop(key, None)
@@ -81,7 +92,22 @@ class GroupPolicy:
             "?" in text or "？" in text or any(k and k in text for k in keywords)
         )
 
-    def repeat(self, scope, user, signature, now, threshold=2, window=600, cooldown=600):
+    def can_reply(self, scope, now, interval=3, limit=6):
+        recent = [stamp for stamp in self.replies.get(scope, []) if stamp > now - 60]
+        return (not recent or now - recent[-1] >= interval) and (limit <= 0 or len(recent) < limit)
+
+    def record_reply(self, scope, now):
+        recent = [stamp for stamp in self.replies.get(scope, []) if stamp > now - 60]
+        self.replies[scope] = [*recent, now]
+        self.activity[scope] = now
+
+    def can_random_reply(self, scope, now, cooldown=120):
+        last = self.activity.get(scope)
+        return last is None or now - last >= cooldown
+
+    def repeat(
+        self, scope, user, signature, now, threshold=2, window=600, cooldown=600, group_cooldown=0
+    ):
         if not signature:
             self.chains.pop(scope, None)
             return False
@@ -98,9 +124,11 @@ class GroupPolicy:
             len(users) < threshold
             or len(set(users)) < 2
             or self.cooldowns.get((scope, digest), 0) > now
+            or self.repeat_groups.get(scope, 0) > now
         ):
             return False
         self.cooldowns[(scope, digest)] = now + cooldown
+        self.repeat_groups[scope] = now + group_cooldown
         return True
 
     def quote(self, scope, user, now, seconds=60):

@@ -10,7 +10,7 @@
 | NapCat | `qqbots2-napcat-1` Docker 容器，后台监听 `127.0.0.1:6099` |
 | OneBot | `ws://127.0.0.1:6199/ws`，仅服务器内部使用 |
 
-本地数据和 NapCat 配置已迁移到服务器；模型与 QQ 登录已由用户配置。本地机器人实例保持停止，防止同一账号同时登录两个实例。2026-09-24 已启用[蕾缪安人格与知识库](lemuen.md)，覆盖全部 QQ 私聊，群聊沿用原配置。用户重新扫码后，已确认 QQ 登录成功、NapCat 与 AstrBot 的 OneBot 连接建立，服务状态正常。
+本地数据和 NapCat 配置已迁移到服务器；模型与 QQ 登录已由用户配置。本地机器人实例保持停止，防止同一账号同时登录两个实例。2026-09-24 已启用[蕾缪安人格与知识库](lemuen.md)，现覆盖全部 QQ 私聊与群聊，采用独立配置和群聊回复规则。用户重新扫码后，已确认 QQ 登录成功、NapCat 与 AstrBot 的 OneBot 连接建立，服务状态正常。
 
 ## 本地浏览器
 
@@ -49,7 +49,7 @@ ssh njuse 'cd /home/ubuntu/qqBots2.0 && ./bot restart'
 
 ## 更新与 CI/CD
 
-2026-09-24 已验证 njuse 能主动访问 GitHub API、代码归档、Actions broker 和结果服务；无需本机中转，也不开放新的入站端口。GitHub release 安装包下载曾超时，runner 安装包经本机下载、SHA-256 校验后通过 SSH 传入。runner 已注册并主动连接 GitHub 领取任务，2026-09-24 的[首次完整 CI/CD](https://github.com/DuscWalk/Chatbot/actions/runs/36004240998)已成功部署 `99debe4`。部署不依赖本地电脑在线。
+2026-09-24 已验证 njuse 能主动访问 GitHub API、代码归档、Actions broker 和结果服务；无需本机中转，也不开放新的入站端口。GitHub release 安装包下载曾超时，runner 安装包经本机下载、SHA-256 校验后通过 SSH 传入。runner 已注册并主动连接 GitHub 领取任务，2026-09-24 的[首次完整 CI/CD](https://github.com/DuscWalk/Chatbot/actions/runs/36004240998)已成功部署 `99debe4`。当服务器直连正常时，部署不依赖本地电脑在线。后续发现 GitHub 代码拉取有间歇超时：此时通过本机 SSH 反向 SOCKS 临时转发 runner 的 checkout 请求；任务结束恢复 Git 代理并关闭转发。此降级方式要求部署期间本机在线，机器人日常聊天不依赖转发。
 
 - CI 运行在 GitHub 托管机器；检查成功后，main 分支推送由专用 `chatbot-njuse-deploy` runner 部署。
 - Runner 安装目录 `/home/ubuntu/actions-runner-chatbot`，用户服务 `qqbots2-actions-runner.service`。已注册，服务已启用并常驻运行；重启服务器后自动连接 GitHub。
