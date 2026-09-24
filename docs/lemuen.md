@@ -70,7 +70,7 @@ python scripts/lemuen.py smoke --live --cases D07,G01
 
 停用时先移除 `napcat:FriendMessage:*` 到“蕾缪安 · QQ私聊”的配置绑定，再关闭插件，并将已切换的私聊换回原会话或默认人格。单独关闭插件只停止检索与表达补充，不会撤销原生人格选择。
 
-本次部署备份位于服务器 `runtime/backups/lemuen-private-20260924T074535Z/`，包含原配置、数据库和被覆盖的代码，含私密配置，勿提交 Git。`runtime/lemuen/activation.json` 记录部署版本和启用范围。
+初次启用备份位于服务器 `runtime/backups/lemuen-private-20260924T074535Z/`；本次私聊更新备份为 `runtime/backups/lemuen-chat-20260924T081626Z/`。备份包含私密配置与数据库，勿提交 Git。`runtime/lemuen/activation.json` 记录当前版本、启用范围和最新备份。
 
 人物资料更新后重新检查、打包、更新对应知识库；修改表达参考需要更新插件 ZIP，修改人格需要更新原生人格。插件不在启动时自动覆盖后台内容。更换嵌入模型或维度需重建索引。
 
