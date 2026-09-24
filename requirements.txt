@@ -1,2 +1,5 @@
 # Reuse the AstrBot release already installed in astrbot-wsl.
 AstrBot==4.27.4
+
+# AstrBot 4.27.4 vector storage writes naive datetimes; keep the njuse-tested version.
+sqlmodel==0.0.42
