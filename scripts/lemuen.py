@@ -16,6 +16,23 @@ BUILD = PROJECT / "runtime/lemuen/build"
 PLUGIN = PROJECT / "plugins/astrbot_plugin_lemuen"
 FIXTURES = PROJECT / "tests/fixtures/lemuen.json"
 
+# Merge these keys into the private profile, preserving unrelated user settings.
+PRIVATE_CHAT_SETTINGS = {
+    "platform_settings": {
+        "segmented_reply": {
+            "enable": True,
+            "only_llm_result": True,
+            "interval_method": "random",
+            "interval": "0.8,1.8",
+            "words_count_threshold": 600,
+            "split_mode": "regex",
+            "regex": r"\A(?=.*(?:```|~~~)).+\Z|\S.*?(?=\n[ \t]*\n|\Z)",
+            "content_cleanup_rule": "",
+        }
+    },
+    "provider_settings": {"streaming_response": False},
+}
+
 
 def check(cache=None):
     bundle = read_bundle()
@@ -40,8 +57,13 @@ def build(cache=None):
         for name in ["main.py", "render.py", "metadata.yaml", "_conf_schema.json", "README.md"]:
             archive.write(PLUGIN / name, f"astrbot_plugin_lemuen/{name}")
         archive.write(ROOT / "voice-guide.json", "astrbot_plugin_lemuen/voice-guide.json")
+    (BUILD / "private-chat-settings.json").write_text(
+        json.dumps(PRIVATE_CHAT_SETTINGS, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     chunks = sum(len(d["chunks"]) for d in payload["documents"])
-    print(f"已生成：{BUILD.relative_to(PROJECT)}（人格、{chunks} 个原作块、插件 ZIP）。")
+    print(
+        f"已生成：{BUILD.relative_to(PROJECT)}（人格、{chunks} 个原作块、插件 ZIP、私聊分段设置）。"
+    )
     return payload
 
 
@@ -75,6 +97,7 @@ def smoke(args):
         "plugin_zip": base64.b64encode((BUILD / "astrbot_plugin_lemuen.zip").read_bytes()).decode(),
         "persona": (BUILD / "persona.md").read_text(encoding="utf-8"),
         "knowledge": payload,
+        "chat_settings": PRIVATE_CHAT_SETTINGS,
         "retrieval_cases": cases["retrieval"],
         "dialogue_cases": [c for c in cases["dialogue"] if c["id"] in selected],
     }
@@ -105,7 +128,7 @@ def smoke(args):
             "",
             reply["reply"],
             "",
-            f"检索：{', '.join(reply['entry_ids'])}",
+            f"检索：{', '.join(reply['entry_ids'])}；模拟发送：{len(reply['messages'])} 条。",
             "",
         ]
     target.with_suffix(".md").write_text("\n".join(lines), encoding="utf-8")

@@ -1,6 +1,7 @@
 """Meaningful hook tests with real AstrBot events and request objects."""
 
 import asyncio
+import copy
 import json
 import sys
 import unittest
@@ -9,11 +10,19 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+from astrbot.core.config.default import DEFAULT_CONFIG
+from astrbot.core.core_lifecycle import AstrBotCoreLifecycle  # noqa: F401
+from astrbot.core.message.message_event_result import ResultContentType
+from astrbot.core.pipeline.context import PipelineContext
+from astrbot.core.pipeline.respond.stage import RespondStage
+from astrbot.core.pipeline.result_decorate.stage import ResultDecorateStage
 from astrbot.core.platform.astr_message_event import AstrMessageEvent
 from astrbot.core.platform.astrbot_message import AstrBotMessage, MessageMember
 from astrbot.core.platform.message_type import MessageType
 from astrbot.core.platform.platform_metadata import PlatformMetadata
 from astrbot.core.provider.entities import ProviderRequest
+from lemuen import PRIVATE_CHAT_SETTINGS
 
 from plugins.astrbot_plugin_lemuen.main import LemuenPlugin
 from plugins.astrbot_plugin_lemuen.render import (
@@ -163,6 +172,46 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
         self.context.kb_manager.retrieve.assert_not_awaited()
         self.assertEqual(self.event.get_extra("lemuen")["entry_ids"], ["L061"])
         self.assertNotIn("旧友的分歧", self.req.system_prompt)
+
+    async def test_native_bubbles_preserve_text_code_long_answers_and_commands(self):
+        config = copy.deepcopy(DEFAULT_CONFIG)
+        config["platform_settings"]["segmented_reply"].update(
+            PRIVATE_CHAT_SETTINGS["platform_settings"]["segmented_reply"]
+        )
+        context = PipelineContext(
+            config,
+            SimpleNamespace(
+                context=SimpleNamespace(get_using_tts_provider_async=AsyncMock(return_value=None))
+            ),
+            "default",
+        )
+        decorate, respond = ResultDecorateStage(), RespondStage()
+        await decorate.initialize(context)
+        await respond.initialize(context)
+        respond.interval = [0, 0]
+        code = "说明。\n\n```python\nx = 1\n\nprint(x)\n```\n\n结束。"
+        long_text = "长内容。" * 160 + "\n\n结尾。"
+        cases = [
+            ("晚安，博士。", True, ["晚安，博士。"]),
+            ("回来了？\n\n去了哪里？树影好看吗？", True, ["回来了？", "去了哪里？树影好看吗？"]),
+            ("一。\n\n二。\n\n三。\n\n四。", True, ["一。", "二。", "三。", "四。"]),
+            (code, True, [code]),
+            (long_text, True, [long_text]),
+            ("指令说明\n\n第二段", False, ["指令说明\n\n第二段"]),
+        ]
+        for text, is_llm, expected in cases:
+            with self.subTest(text=text[:30]):
+                event = self.event
+                event.send = AsyncMock()
+                result = event.plain_result(text).use_t2i(False)
+                if is_llm:
+                    result.set_result_content_type(ResultContentType.LLM_RESULT)
+                event.set_result(result)
+                async for _ in decorate.process(event):
+                    pass
+                await respond.process(event)
+                actual = [call.args[0].get_plain_text() for call in event.send.await_args_list]
+                self.assertEqual(actual, expected)
 
     def test_previous_topic_belongs_to_current_group_speaker(self):
         def turn(who, text):

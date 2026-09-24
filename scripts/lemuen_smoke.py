@@ -27,10 +27,13 @@ async def run(request, root, production):
     from astrbot.core.astr_main_agent import MainAgentBuildConfig, build_main_agent
     from astrbot.core.core_lifecycle import AstrBotCoreLifecycle
     from astrbot.core.message.components import Plain
-    from astrbot.core.pipeline.context import call_event_hook
+    from astrbot.core.message.message_event_result import ResultContentType
+    from astrbot.core.pipeline.context import PipelineContext, call_event_hook
     from astrbot.core.pipeline.process_stage.method.agent_sub_stages.internal import (
         InternalAgentSubStage,
     )
+    from astrbot.core.pipeline.respond.stage import RespondStage
+    from astrbot.core.pipeline.result_decorate.stage import ResultDecorateStage
     from astrbot.core.platform.astr_message_event import AstrMessageEvent
     from astrbot.core.platform.astrbot_message import AstrBotMessage, MessageMember
     from astrbot.core.platform.message_type import MessageType
@@ -82,6 +85,12 @@ async def run(request, root, production):
         }
     )
     astrbot_config["provider_ltm_settings"]["group_message_history_enable"] = False
+    for section, settings in request["chat_settings"].items():
+        for key, value in settings.items():
+            if isinstance(value, dict):
+                astrbot_config[section][key].update(value)
+            else:
+                astrbot_config[section][key] = value
     plugin_path = root / "data/plugins"
     plugin_path.mkdir(parents=True, exist_ok=True)
     (root / "data/config").mkdir(parents=True, exist_ok=True)
@@ -153,9 +162,18 @@ async def run(request, root, production):
             )
 
         class NoSendEvent(AstrMessageEvent):
-            async def send(self, *args, **kwargs):
-                raise AssertionError("outbound_message_forbidden")
+            async def send(self, message, **kwargs):
+                # Capture native delivery only; no QQ adapter or actual send exists here.
+                if not self.get_extra("preview_delivery"):
+                    raise AssertionError("outbound_message_forbidden")
+                self.get_extra("preview_messages").append(message.get_plain_text())
 
+        pipeline = PipelineContext(astrbot_config, lifecycle.plugin_manager, "default")
+        decorate = ResultDecorateStage()
+        respond = RespondStage()
+        await decorate.initialize(pipeline)
+        await respond.initialize(pipeline)
+        respond.interval = [0, 0]  # Exercise delivery without waiting between mock sends.
         replies = []
         save_stage = InternalAgentSubStage()
         save_stage.conv_manager = lifecycle.conversation_manager
@@ -234,19 +252,35 @@ async def run(request, root, production):
                     raise AssertionError("retrieval_persisted_in_history")
                 if "[lemuen_speaker]" not in saved.history:
                     raise AssertionError("speaker_missing_from_history")
+                event.set_extra("preview_delivery", True)
+                event.set_extra("preview_messages", [])
+                result = event.plain_result(answer.completion_text).use_t2i(False)
+                result.set_result_content_type(ResultContentType.LLM_RESULT)
+                event.set_result(result)
+                async for _ in decorate.process(event):
+                    pass
+                await respond.process(event)
+                messages = event.get_extra("preview_messages")
+                if not messages:
+                    raise AssertionError("empty_delivery")
+                if re.sub(r"\s+", "", "".join(messages)) != re.sub(
+                    r"\s+", "", answer.completion_text
+                ):
+                    raise AssertionError("delivery_text_changed")
                 replies.append(
                     {
                         "case": case["id"],
                         "turn": turn,
                         "user": item["text"],
                         "reply": answer.completion_text,
+                        "messages": messages,
                         **event.get_extra("lemuen"),
                         "seconds": round(time.monotonic() - started, 2),
                         "tokens": answer.usage.total if answer.usage else None,
                     }
                 )
         return {
-            "scope": "临时 AstrBot 根目录：原生插件加载、知识入库与检索、人格解析、请求钩子、Agent 回复及历史保存；无 QQ 适配器。",
+            "scope": "临时 AstrBot 根目录：原生插件加载、知识入库与检索、人格解析、请求钩子、Agent 回复、历史保存与模拟分段发送；无 QQ 适配器。",
             "model": chat["model"],
             "documents": len(request["knowledge"]["documents"]),
             "chunks": expected_chunks,

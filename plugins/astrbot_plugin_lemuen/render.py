@@ -109,7 +109,7 @@ def compile_style(guide, entry_ids, query):
     parts = [guide["tone"]]
     parts += [
         f"{p['title']}：{p['when']}时，{p['direction']} {p['scope']}"
-        f"\n原作语气短句（仅供体会语气）：{p['tone_excerpt']['text']}"
+        f"\n原作短句（体会语气与关注点，按情境运用）：{p['tone_excerpt']['text']}"
         for p in patterns
     ]
     parts += guide["editorial_rules"] + [guide["editorial_examples_notice"]]

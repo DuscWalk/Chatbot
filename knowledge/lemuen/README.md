@@ -1,6 +1,6 @@
 # 蕾缪安资料
 
-知识与人格版本 0.3.0，表达参考 0.3.3。人格内容暂时固定；接入步骤和现状见 [使用说明](../../docs/lemuen.md)。
+知识版本 0.3.0、人格 0.3.1、表达参考 0.3.4。本次按私聊反馈补充日常兴趣与见闻话题；接入步骤和现状见 [使用说明](../../docs/lemuen.md)。
 
 本目录只维护资料源：
 
@@ -24,6 +24,6 @@ python scripts/lemuen.py build
 python scripts/lemuen.py check --cache-dir runtime/research/lemuen
 ```
 
-生成的原生知识库导入文件、人格副本和插件 ZIP 均放在 `runtime/lemuen/build/`，不进入 Git。只导入 68 个原作资料块；演绎分析与项目约定不混入事实库。每块保留时期、现实层、知情范围和出处。
+生成的原生知识库导入文件、人格副本、插件 ZIP 和私聊分段设置 均放在 `runtime/lemuen/build/`，不进入 Git。只导入 68 个原作资料块；演绎分析与项目约定不混入事实库。每块保留时期、现实层、知情范围和出处。
 
 修改资料时直接改本目录的源文件，再检查、打包；不用同步多套 Markdown 或评测报告。旧评测过程已清理，只保留 `tests/fixtures/lemuen.json` 的少量回归用例和运行目录里最近一次联调结果。
