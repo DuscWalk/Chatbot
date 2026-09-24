@@ -1,0 +1,672 @@
+{
+  "schema_version": 1,
+  "repository_commit": "bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0",
+  "sources": [
+    {
+      "id": "H",
+      "title": "干员档案资源",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/excel/handbook_info_table.json",
+      "resource_path": "zh_CN/gamedata/excel/handbook_info_table.json",
+      "sha256": "344118a7d6cf2caebb4bf24603b4426aafc29f8119d274b870fd9539ef657005",
+      "git_blob_sha": "12b700cefc6ff244e9badd1f17542703e118b047",
+      "kind": "community_extracted_game_text",
+      "review_status": "character_related_records_reviewed",
+      "review_scope": "蕾缪安9段档案；7段可直接对应的长正文与BWIKI规范化比对一致。另摘读菲亚梅塔、空构、新约能天使等相关档案。"
+    },
+    {
+      "id": "V",
+      "title": "干员台词资源",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/excel/charword_table.json",
+      "resource_path": "zh_CN/gamedata/excel/charword_table.json",
+      "sha256": "64ec42631aa518f13d9f3ceb98401ac0c3e4724fe0f063e99354c44c83c9acda",
+      "git_blob_sha": "9e39043995f0248c78d3c2bae013e4e5cfc7e8b5",
+      "kind": "community_extracted_game_text",
+      "review_status": "character_related_records_reviewed",
+      "review_scope": "蕾缪安38条台词已逐条与BWIKI核对；另查相关角色提及她的台词。没有试听音频。"
+    },
+    {
+      "id": "M",
+      "title": "模组资源",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/excel/uniequip_table.json",
+      "resource_path": "zh_CN/gamedata/excel/uniequip_table.json",
+      "sha256": "b508483cc87c03d8313f4dd8dfc1b9195bc50385a8dfec51d17e657cb26ffad9",
+      "git_blob_sha": "ccee0499e1e80287710720a1958d9c2b88ef6bd7",
+      "kind": "community_extracted_game_text",
+      "review_status": "character_related_records_reviewed",
+      "review_scope": "蕾缪安基础证章与“弹匣与花窗”；空构“无人机喷涂套装”、菲亚梅塔“漫长的旅途”相关故事。"
+    },
+    {
+      "id": "K",
+      "title": "服饰资源",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/excel/skin_table.json",
+      "resource_path": "zh_CN/gamedata/excel/skin_table.json",
+      "sha256": "83d8b6a3589bc11b8c87eda9cae23e9847a19bfc8b8b1b8248cc152e36a44689",
+      "git_blob_sha": "44d846fbe8e7ae90198d04290cd7e11bf7643e7b",
+      "kind": "community_extracted_game_text",
+      "review_status": "character_related_records_reviewed",
+      "review_scope": "蕾缪安默认、精二与“暮星安魂曲”服饰记录；只核对展示文本。"
+    },
+    {
+      "id": "GAST1",
+      "title": "吾导先路 GA-ST-1 风云际会 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_st01.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_st01.txt",
+      "sha256": "dde208ebca23a70c42dd8eb21fed7236c4957134e18a724fe3133091452aeff2",
+      "line_count": 847,
+      "kind": "community_extracted_game_text",
+      "review_status": "excerpt_reviewed",
+      "review_scope": "L211-L224：核对1099年3月15日的时间锚点。其余内容尚未审读。"
+    },
+    {
+      "id": "GA1B",
+      "title": "吾导先路 GA-1 灯下黑 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_01_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_01_beg.txt",
+      "sha256": "c4e5dc88a098b0a6bf331367a0442406bb4166a9b0a04338ba6df7627a075b02",
+      "line_count": 388,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "GA1E",
+      "title": "吾导先路 GA-1 灯下黑 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_01_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_01_end.txt",
+      "sha256": "25647fd7422f83762fbf0283d0d3b4ae108764a9dd430aac811984e6d48bc6fb",
+      "line_count": 516,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA2B",
+      "title": "吾导先路 GA-2 散步时光 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_02_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_02_beg.txt",
+      "sha256": "cc07ecf9a02cad504753ed7d6952d43fa8ed7084d89d5b5a871c75c987f3d173",
+      "line_count": 652,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA2E",
+      "title": "吾导先路 GA-2 散步时光 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_02_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_02_end.txt",
+      "sha256": "e2651af599176524b3c85e1cb0823bbbec8f5fa9f1c0975b2b683e272767c236",
+      "line_count": 417,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "GA3B",
+      "title": "吾导先路 GA-3 混血儿 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_03_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_03_beg.txt",
+      "sha256": "66a91689f7a76564fbe8c6efc7372b66e6f1417f46dc5445f968f79377ba053c",
+      "line_count": 509,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "GA3E",
+      "title": "吾导先路 GA-3 混血儿 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_03_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_03_end.txt",
+      "sha256": "8d226dffa9d904cc0f3bb8d50eb081c01471518d429dca4d01d2d1678e6b0494",
+      "line_count": 388,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA4B",
+      "title": "吾导先路 GA-4 安魂教堂 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_04_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_04_beg.txt",
+      "sha256": "328f1885bbd14b7428007a43f7474604402154c51918faf85313c89ee5f955c1",
+      "line_count": 327,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA4E",
+      "title": "吾导先路 GA-4 安魂教堂 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_04_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_04_end.txt",
+      "sha256": "34d26aa88de9f6559013ea5a1b15681bbffdfe3bbb51bb7304fec4d96de2ee4a",
+      "line_count": 329,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA5B",
+      "title": "吾导先路 GA-5 葬礼 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_05_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_05_beg.txt",
+      "sha256": "71097e8b0e9ae695e9a79048c729b8acf29cbb4ab463091d0863fb23a2b04a4c",
+      "line_count": 237,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "GA5E",
+      "title": "吾导先路 GA-5 葬礼 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_05_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_05_end.txt",
+      "sha256": "a50817391df5abc93058e95a58ab8f9c7346fe1b8c0646885e6aa7b993087346",
+      "line_count": 564,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA6B",
+      "title": "吾导先路 GA-6 安魂曲 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_06_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_06_beg.txt",
+      "sha256": "7c05c775787a4b3744a3ecb2783d8e9dba4482039271659cb0268f106710f91e",
+      "line_count": 409,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "GA6E",
+      "title": "吾导先路 GA-6 安魂曲 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_06_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_06_end.txt",
+      "sha256": "d06615ef79d77c6771da00121725536064a80a04dd01c67ad74eaa5923d393f0",
+      "line_count": 476,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA7B",
+      "title": "吾导先路 GA-7 光与影 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_07_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_07_beg.txt",
+      "sha256": "c1ed1ba0bd245a5fafd48397cb99166a06391ad08e839a8716c37b5a83415513",
+      "line_count": 314,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "GA7E",
+      "title": "吾导先路 GA-7 光与影 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_07_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_07_end.txt",
+      "sha256": "c0706a82756d20b9f5bdec3201214f156e55bfc5b56f089cb185836eb7b9e877",
+      "line_count": 451,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA8B",
+      "title": "吾导先路 GA-8 影与灰 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_08_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_08_beg.txt",
+      "sha256": "d592f887825c4b84cb275ec1633e6dfdffed6382adbf4af0746358fd5ec73395",
+      "line_count": 370,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GA8E",
+      "title": "吾导先路 GA-8 影与灰 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_08_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_08_end.txt",
+      "sha256": "1c8163a3ac95f1fe6ba3828e63446a54a84c4b6db3b35fe0ae85932f38231433",
+      "line_count": 312,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "GAST2",
+      "title": "吾导先路 GA-ST-2 鸢尾花 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act16side/level_act16side_st02.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act16side/level_act16side_st02.txt",
+      "sha256": "ce1013846118dbbd7eef4ad1b566857cd88175ebd78e96b72b6395b4aee8c003",
+      "line_count": 634,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HEST1",
+      "title": "空想花庭 HE-ST-1 奉上冠冕 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_st01.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_st01.txt",
+      "sha256": "4cfaca202f5287314931b2e182cae6e247f3882183ed3a7645a910f0ee666923",
+      "line_count": 818,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE1B",
+      "title": "空想花庭 HE-1 我有一个荣美家乡 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_01_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_01_beg.txt",
+      "sha256": "e3890647cfa2e7ebacbfe57ab39c875ebb05d84f1fdce60a8bdd4aabc44b2e8c",
+      "line_count": 436,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE1E",
+      "title": "空想花庭 HE-1 我有一个荣美家乡 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_01_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_01_end.txt",
+      "sha256": "2230511d91b1ee1ac77185683bcc6d3ded494687ee6f4becca3e5ba163b090ac",
+      "line_count": 431,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE2B",
+      "title": "空想花庭 HE-2 生命运河 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_02_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_02_beg.txt",
+      "sha256": "0d1ab46f007b55317ce84d3aae6015c01036222a0f2c3856f10b9daf39cf696d",
+      "line_count": 752,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE2E",
+      "title": "空想花庭 HE-2 生命运河 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_02_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_02_end.txt",
+      "sha256": "a5566dfd2713f7dcd66d107777cc3ec588988784d2e696df68fe21d3d6268713",
+      "line_count": 707,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE3B",
+      "title": "空想花庭 HE-3 岂可空手回天府？ 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_03_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_03_beg.txt",
+      "sha256": "1f367a4652432aa6c162a25b45eee4d4c59843ea0921bec47956bb06a44cdc32",
+      "line_count": 522,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE3E",
+      "title": "空想花庭 HE-3 岂可空手回天府？ 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_03_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_03_end.txt",
+      "sha256": "412e00415c42e516d89f38bb5d990a4a3632aa3d9b6f60857ed6f3027b0b12c1",
+      "line_count": 560,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE4B",
+      "title": "空想花庭 HE-4 我曾舍命为你 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_04_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_04_beg.txt",
+      "sha256": "80f83d367770f546e874469e2056c9815bc9ad39477c67136d88c33ac7a24da9",
+      "line_count": 436,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE4E",
+      "title": "空想花庭 HE-4 我曾舍命为你 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_04_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_04_end.txt",
+      "sha256": "a33e2def723a7bbdaee9326906bc62c8aabe07c5683bf84b7cb45a26fba22937",
+      "line_count": 548,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE5B",
+      "title": "空想花庭 HE-5 主在圣殿中 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_05_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_05_beg.txt",
+      "sha256": "73a334f5861e7d6ad0003cbacb1e45049c9c050ed163ac28fd4434397fbf9ae2",
+      "line_count": 845,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE5E",
+      "title": "空想花庭 HE-5 主在圣殿中 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_05_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_05_end.txt",
+      "sha256": "75e0a024b7051c0a48288f3e0cf07c3905df7706c8685c64f23a5060f8d4eb80",
+      "line_count": 485,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "HE6B",
+      "title": "空想花庭 HE-6 夜半歌声 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_06_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_06_beg.txt",
+      "sha256": "9d084e2a833a5518448f566cbc30cb6a38ba3a6c4d7684d90cdca210978353d9",
+      "line_count": 610,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE6E",
+      "title": "空想花庭 HE-6 夜半歌声 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_06_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_06_end.txt",
+      "sha256": "e0a3027d644d929d30f0de824e4a93d62b411457e440c9caa69af8ccd15875a5",
+      "line_count": 432,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HEST2",
+      "title": "空想花庭 HE-ST-2 在花园里 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_st02.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_st02.txt",
+      "sha256": "b72200e716357b1959b6cfc86ca0408f03acf50eb55a2aa60f22abc560297319",
+      "line_count": 304,
+      "kind": "community_extracted_game_text",
+      "review_status": "full_text_reviewed",
+      "review_scope": "已读全文叙述与台词，包括萨卡兹回忆、克莱芒与费德里科对话及孩子们的尾声；作为事件背景补审，不把他人私下对话或内心叙述移作蕾缪安亲历。未核对音频、CG或演出。"
+    },
+    {
+      "id": "HE7B",
+      "title": "空想花庭 HE-7 以爱相连 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_07_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_07_beg.txt",
+      "sha256": "248aa9a137bc3090ba042de3d4c81f327f225745ab000a86aa8fe197ba9a3270",
+      "line_count": 447,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE7E",
+      "title": "空想花庭 HE-7 以爱相连 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_07_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_07_end.txt",
+      "sha256": "e2b83bb3cddab8378f50afee46b740ae2b4ea90596761db95f35425b6837f240",
+      "line_count": 259,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE8B",
+      "title": "空想花庭 HE-8 愿跟随主 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_08_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_08_beg.txt",
+      "sha256": "b46933f6c951695e3dce4cc1976c8698dac086eb9e42d3c6d43dc69b9f6ac676",
+      "line_count": 395,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "HE8E",
+      "title": "空想花庭 HE-8 愿跟随主 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_08_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_08_end.txt",
+      "sha256": "31c5956571856e940dbb2c46b287c4d9772aa6bc2c23079c7ee03798a45e76ff",
+      "line_count": 435,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "HEST3",
+      "title": "空想花庭 HE-ST-3 慈光引导 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act26side/level_act26side_st03.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act26side/level_act26side_st03.txt",
+      "sha256": "76c4ef974cbf4620a4816b7abf1a2db8239c4ac1d741fcac30ab02d24956e184",
+      "line_count": 490,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MTST1",
+      "title": "众生行记 MT-ST-1 “堕天” 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_st01.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_st01.txt",
+      "sha256": "6c63fa68d5170909bb7096fee946bc2e89b81bc148a8c69ebb5f150da005b37d",
+      "line_count": 680,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT1B",
+      "title": "众生行记 MT-1 圣秩 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_01_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_01_beg.txt",
+      "sha256": "ea2117c74c78e8b518d2788902ea138dbb53734279ef4f29f0598db30e7a8c34",
+      "line_count": 395,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT1E",
+      "title": "众生行记 MT-1 圣秩 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_01_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_01_end.txt",
+      "sha256": "78d67a47575b0fe53849f9f7921771dd36c9d11eb544425ab9f09bcb9fe32808",
+      "line_count": 491,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT2B",
+      "title": "众生行记 MT-2 祈祷 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_02_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_02_beg.txt",
+      "sha256": "3e265049eeb74257fcfa77fb592fbfff56af1cb486b9cf82230b8ab42e3964c0",
+      "line_count": 483,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "MT2E",
+      "title": "众生行记 MT-2 祈祷 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_02_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_02_end.txt",
+      "sha256": "212b0b91c8eee507990181436ae1fe4c0bbb28956b9ee6202a14f06a30c53250",
+      "line_count": 676,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT3B",
+      "title": "众生行记 MT-3 礼拜 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_03_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_03_beg.txt",
+      "sha256": "5bede1c24ffa09de8e87be7133fb9a99624504dc02b055b70c44e771c8d8cbed",
+      "line_count": 622,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "MT3E",
+      "title": "众生行记 MT-3 礼拜 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_03_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_03_end.txt",
+      "sha256": "12336af35291e0d6b9830e3e8268b1023296819b841c0c1ca40c82ce96df6c06",
+      "line_count": 322,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT4B",
+      "title": "众生行记 MT-4 求道 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_04_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_04_beg.txt",
+      "sha256": "28428b71c412f9a01c2a91a9ee49f5e4b8c82c5ae6c18c47385d6a502b925599",
+      "line_count": 378,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT4E",
+      "title": "众生行记 MT-4 求道 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_04_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_04_end.txt",
+      "sha256": "ef64662d23a13acddc099b74e81056625d720e0d45c06216a46fcd5088693031",
+      "line_count": 627,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MTST2",
+      "title": "众生行记 MT-ST-2 启圣 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_st02.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_st02.txt",
+      "sha256": "93eb6271834cf2477649a60b72dd0beb3fa80c0babcbeefa29a815121899534b",
+      "line_count": 836,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT5B",
+      "title": "众生行记 MT-5 共融 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_05_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_05_beg.txt",
+      "sha256": "0b1f897cf984887cba6f7e5ab6e93fb2465f6a0cee25f014bb4fa8a90726f1d3",
+      "line_count": 457,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "MT5E",
+      "title": "众生行记 MT-5 共融 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_05_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_05_end.txt",
+      "sha256": "78ab555066a8752077490b7ddfad460e9e3762d531d7c4db68176baf9ffdd489",
+      "line_count": 416,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT6B",
+      "title": "众生行记 MT-6 告解 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_06_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_06_beg.txt",
+      "sha256": "67370b0474e191118334a3cc9d22551a672c53e498c7f5d0dafbbbf1b345b92d",
+      "line_count": 734,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT6E",
+      "title": "众生行记 MT-6 告解 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_06_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_06_end.txt",
+      "sha256": "7021506a3a7debeb33b415c51c59e71e198742d1b7efc1d7cb297fcbb78875aa",
+      "line_count": 553,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT7B",
+      "title": "众生行记 MT-7 丧礼 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_07_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_07_beg.txt",
+      "sha256": "d7ae5574745eda03f3d421e3b6d866c8cbebaf889e0e631291e66ff7813a7563",
+      "line_count": 336,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "MT7E",
+      "title": "众生行记 MT-7 丧礼 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_07_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_07_end.txt",
+      "sha256": "22f554737524e9f57f36af5d24c67217eb00eb6f7eb53b15f2b2ec8f38ed5ac2",
+      "line_count": 463,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT8B",
+      "title": "众生行记 MT-8 朝圣 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_08_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_08_beg.txt",
+      "sha256": "e4951ffd74d47ba936b8dbc9845844724595f8b0c78cec19c7a73f0f0e8bab0e",
+      "line_count": 1163,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT8E",
+      "title": "众生行记 MT-8 朝圣 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_08_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_08_end.txt",
+      "sha256": "82a7a46cf5d267cc3dee783a7abee9488693bb0d4d616682448f2dc2ee850b2e",
+      "line_count": 779,
+      "kind": "community_extracted_game_text",
+      "review_status": "fetched_not_reviewed"
+    },
+    {
+      "id": "MT9B",
+      "title": "众生行记 MT-9 解经 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_09_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_09_beg.txt",
+      "sha256": "e1f56aac5cece98cf45716cad1dd71aa2dd9e5f47cda85fd63faca230a113e9b",
+      "line_count": 993,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT9E",
+      "title": "众生行记 MT-9 解经 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_09_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_09_end.txt",
+      "sha256": "9615d4d54dd68977404f472bdd1f3b2a8fa79a7b24dc62e0aad6ca3011296a58",
+      "line_count": 592,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT10B",
+      "title": "众生行记 MT-10 降生 行动前",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_10_beg.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_10_beg.txt",
+      "sha256": "8d7f03c8f20bf53ca38aee81d2bd2c7db157f4d775b9138a4a47b1802f4b969e",
+      "line_count": 864,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MT10E",
+      "title": "众生行记 MT-10 降生 行动后",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_10_end.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_10_end.txt",
+      "sha256": "6324318af7bb04c690b2e2a5f75413b7ac54aa6e4e28312ab97d750b02e80f94",
+      "line_count": 1578,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MTST3",
+      "title": "众生行记 MT-ST-3 重逢 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_st03.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_st03.txt",
+      "sha256": "99ada534de1503c2931faf416e1ca69b54460cee21582d1935f289a095ce7a43",
+      "line_count": 619,
+      "kind": "community_extracted_game_text",
+      "review_status": "relevant_dialogue_reviewed"
+    },
+    {
+      "id": "MTST4",
+      "title": "众生行记 MT-ST-4 远行 幕间",
+      "url": "https://github.com/Kengxxiao/ArknightsGameData/blob/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/story/activities/act42side/level_act42side_st04.txt",
+      "resource_path": "zh_CN/gamedata/story/activities/act42side/level_act42side_st04.txt",
+      "sha256": "af7a71d75be48a321a63fd8fa3de07bc084b38219d857b798711b9208a38fe24",
+      "line_count": 758,
+      "kind": "community_extracted_game_text",
+      "review_status": "full_text_reviewed",
+      "review_scope": "已读全文叙述、台词与博士选项；区分博士／Mon3tr／普瑞赛斯场景及后续各地镜头。第560—562行发言者为“？？？”，不擅自确定其身份；第三方秘密不直接补为蕾缪安亲历知识。未核对音频、CG或演出。"
+    }
+  ],
+  "prepared_date": "2026-09-24",
+  "publisher_note": "社区提取的游戏资源，不是鹰角官方发布渠道；以原作正文为依据。",
+  "review_status_definitions": {
+    "character_related_records_reviewed": "已读该表中选定的角色相关记录；范围见review_scope。",
+    "relevant_dialogue_reviewed": "已摘读显式提及蕾缪安的相关对话及邻近上下文；不是整份文本精读。",
+    "excerpt_reviewed": "只核对了列明的定位片段。",
+    "fetched_not_reviewed": "已下载并保留哈希，尚未进行内容审读。",
+    "full_text_reviewed": "本文件的全文语义文本已读，包含叙述、台词与选项；不包含音频或演出。"
+  }
+}

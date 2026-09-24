@@ -48,6 +48,10 @@ conda activate astrbot-wsl
 
 图片等 AstrBot 生成的媒体目录 `data/` 在主机与容器内使用相同的绝对路径。NapCat 下发的 `/app/.config/QQ` 文件路径也预设了映射，指向本项目的 `runtime/napcat/qq`。迁移目录后重新运行 `setup` 会更新本项目生成的这条映射。
 
+## 蕾缪安人格与知识库
+
+原作资料与人格核心见 [知识库目录](knowledge/lemuen/README.md)，接入与维护见 [蕾缪安说明](docs/lemuen.md)。当前尚未接入线上人格或知识库。普通 CI 执行离线校验、测试和打包，不调用收费 API。
+
 ## 日常管理
 
 ```bash
@@ -196,9 +200,11 @@ CI/CD 用 `git archive` 上传版本化代码，不上传本地 API Key、QQ 登
 ```bash
 conda activate astrbot-wsl
 python -m pip install -r requirements-dev.txt
-ruff check scripts tests
-ruff format --check scripts tests
+ruff check scripts tests plugins
+ruff format --check scripts tests plugins
 shellcheck bot scripts/*.sh
+python scripts/lemuen.py check
+python scripts/lemuen.py build
 python -m unittest discover -s tests -v
 ./bot compose config --quiet
 ```

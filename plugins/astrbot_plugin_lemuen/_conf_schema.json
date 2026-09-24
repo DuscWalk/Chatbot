@@ -1,0 +1,36 @@
+{
+  "enabled": {
+    "description": "启用蕾缪安补充上下文",
+    "type": "bool",
+    "default": false,
+    "hint": "需同时选择对应人格，并把会话加入下面的列表。"
+  },
+  "allowed_sessions": {
+    "description": "允许的会话标识",
+    "type": "list",
+    "default": [],
+    "hint": "精确的统一消息来源 UMO；空列表表示不启用任何会话。可在会话管理中复制。"
+  },
+  "persona_id": {
+    "description": "人格名称",
+    "type": "string",
+    "default": "蕾缪安"
+  },
+  "knowledge_base": {
+    "description": "原作知识库名称",
+    "type": "string",
+    "default": "蕾缪安"
+  },
+  "top_k": {
+    "description": "每次检索条数",
+    "type": "int",
+    "default": 5,
+    "hint": "范围 1–10。"
+  },
+  "retrieval_timeout_seconds": {
+    "description": "检索等待上限（秒）",
+    "type": "int",
+    "default": 8,
+    "hint": "超时后继续使用人格和常驻表达参考。范围 1–30。"
+  }
+}
