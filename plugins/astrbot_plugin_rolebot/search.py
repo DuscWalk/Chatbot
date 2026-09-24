@@ -145,13 +145,23 @@ class VisionWebSearch:
     async def search(self, query, *, trace=None, timeout_seconds=None):
         async with asyncio.timeout(timeout_seconds or 20):
             result = await self.search_service._lookup(query[:250], {})
-        # Summaries are not page excerpts. Keep their provenance explicit.
-        return tuple(
-            SearchSource(
-                s.title,
-                s.url,
-                s.domain,
-                ("检索模型综合摘要（非网页原文）：" + result.summary)[:1800],
+        if trace:
+            trace.event("vision.web.result", {"ok": bool(result.sources), "status": result.status})
+        if not result.sources:
+            return ()
+        # Keep the complete synthesis separate from the actual search sources.
+        # Repeating its first 300 characters under every URL lost useful evidence.
+        summary = (
+            (
+                SearchSource(
+                    "检索模型综合摘要（非网页原文）",
+                    "",
+                    "",
+                    result.summary[:2200],
+                    "search_summary",
+                ),
             )
-            for s in result.sources[:5]
+            if result.summary
+            else ()
         )
+        return (*summary, *result.sources[:5])

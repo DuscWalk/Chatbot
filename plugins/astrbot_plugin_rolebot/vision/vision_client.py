@@ -102,17 +102,21 @@ class VisualAnalyzer:
         previous: VisionSynthesis,
         fallback_results: tuple[ImageFallbackEvidence, ...],
         *,
+        images: tuple[tuple[int, NormalizedImage], ...] = (),
         timeout_seconds: float,
         trace: DebugTrace | None = None,
     ) -> VisionSynthesis:
         image_numbers = tuple(item.image_number for item in previous.images)
+        content = [{"type": "text", "text": self._reevaluation_prompt(previous, fallback_results)}]
+        for number, image in images:
+            content.extend(
+                [
+                    {"type": "text", "text": f"待复核的用户原图{number}："},
+                    {"type": "image_url", "image_url": {"url": image.data_url()}},
+                ]
+            )
         payload = self._payload(
-            content=[
-                {
-                    "type": "text",
-                    "text": self._reevaluation_prompt(previous, fallback_results),
-                }
-            ],
+            content=content,
             schema=self._synthesis_schema(),
             enable_thinking=False,
         )
@@ -256,16 +260,19 @@ class VisualAnalyzer:
                 lines.append(self._source_line(source))
             evidence_blocks.append(self._bounded("\n".join(lines), 3500))
         return (
-            "你负责综合原图、Google Lens 结果和用户问题，只输出符合 JSON schema 的结果。"
-            "不要建立固定证据门槛，但要谨慎处理聚合标题、多角色列表、商品页和外观相似项。"
-            "原图与搜索结果冲突时返回 uncertain，或按图片编号请求 exact/Web 回退。"
-            "只有需要寻找相同图片或原始出处时设置 needs_exact=true；不要默认请求 exact。"
-            "需要网页背景时设置 needs_web=true，并给出简短 verification_query。"
-            "表情包可以识别系列、作者或来源，不要为它虚构角色名。"
-            "未知真人不识别具体身份，只描述外观、动作和场景。\n"
+            "观察用户图片并回答与图片有关的问题，输出指定 JSON。"
+            "question_answer 写本轮问题的视觉结论；识读文字/表格时保留关键数据、单位、代码换行，"
+            "计算时列出依据。不要把普通物品、截图和票据任务转成人物身份核查。"
+            "能辨认作品角色、物品或场景时给出具体名称及可见依据，不能确定就保留候选和疑点。"
+            "无身份识别需求时 confidence=no_identity，不影响正常描述和回答；未知真人只描述可见内容。"
+            "区分图片描绘的主体与水印发布者，不把发布者自动当作画师。"
+            "角色识别优先视觉特征和作品候选；没查到名字或出处不代表是原创角色。"
+            "需要核对外部事实时设置 needs_web 并给出主体相关的 verification_query；"
+            "只有用户要相同图片或原出处时请求 needs_exact。读字、计数和计算通常不用搜索。"
+            "图片明显矛盾不能随意解释成同人改绘。最近聊天仅解释本轮指代，不代替原图观察。\n"
             f"用户问题：{self._bounded(user_question, 500)}\n"
             f"最近聊天：{self._bounded(chat_context, 1500)}\n"
-            f"Lens 证据：\n{self._bounded(chr(10).join(evidence_blocks), 14000)}"
+            f"可用图像搜索证据：\n{self._bounded(chr(10).join(evidence_blocks), 14000)}"
         )
 
     def _reevaluation_prompt(
@@ -286,12 +293,29 @@ class VisualAnalyzer:
                 lines.append("回退没有返回可用结果。")
             fallback_blocks.append(self._bounded("\n".join(lines), 3500))
         return (
-            "根据第一次结构化判断和新增的 exact/Web 文本证据复判一次。"
-            "不得请求更多工具，不得假装重新查看原图。"
-            "冲突仍未解决时保持 uncertain。只输出符合 JSON schema 的结果。\n"
+            "结合用户原图、第一次判断和新增 exact/Web 证据复核一次。"
+            "保留与用户问题有关的观察、文字、数据和 question_answer，不能只输出身份。"
+            "不得请求更多工具。角色身份与画师/出处分别判断；查不到作者不能推翻角色的视觉匹配。"
+            "网页中没有提及不构成反证；有具体矛盾或图像模糊时保持 uncertain。"
+            "只输出用户图片的结果。只输出符合 JSON schema 的结果。\n"
             f"第一次判断：{json.dumps(previous_data, ensure_ascii=False)}\n"
             f"新增证据：\n{self._bounded(chr(10).join(fallback_blocks), 7000)}"
         )
+
+    @classmethod
+    def _schema_example(cls, schema):
+        """Show JSON-mode providers a value object, not a schema to echo."""
+        kind = schema.get("type")
+        if kind == "object":
+            return {key: cls._schema_example(value) for key, value in schema["properties"].items()}
+        if kind == "array":
+            item = schema["items"]
+            return [cls._schema_example(item)] if item.get("type") == "object" else []
+        if kind == "boolean":
+            return False
+        if kind == "integer":
+            return 1
+        return "uncertain" if "enum" in schema else ""
 
     @classmethod
     def _parse_synthesis(
@@ -300,6 +324,15 @@ class VisualAnalyzer:
         *,
         image_numbers: tuple[int, ...],
     ) -> VisionSynthesis:
+        # Some JSON-mode models put actual values under the schema's properties.
+        # Recover only a concrete result array, never a schema describing one.
+        wrapped = data.get("properties")
+        if (
+            "images" not in data
+            and isinstance(wrapped, dict)
+            and isinstance(wrapped.get("images"), list)
+        ):
+            data = wrapped
         raw_images = data.get("images")
         if not isinstance(raw_images, list):
             return cls._unavailable_synthesis(image_numbers)
@@ -315,12 +348,12 @@ class VisualAnalyzer:
                     image_number=image_number,
                     confidence=ConfidenceBand(cls._text(item.get("confidence"))),
                     scene_description=cls._safe_output(
-                        cls._text(item.get("scene_description")), 500
+                        cls._text(item.get("scene_description")), 1000
                     ),
                     visible_text=tuple(
                         text
-                        for raw_text in cls._strings(item.get("visible_text"))[:12]
-                        if (text := cls._safe_output(raw_text, 160))
+                        for raw_text in cls._strings(item.get("visible_text"))[:24]
+                        if (text := cls._safe_output(raw_text, 300))
                     ),
                     subject_identity=cls._safe_output(cls._text(item.get("subject_identity")), 160),
                     work_or_affiliation=cls._safe_output(
@@ -335,6 +368,7 @@ class VisualAnalyzer:
                     verification_query=cls._safe_output(
                         cls._text(item.get("verification_query")), 250
                     ),
+                    question_answer=_URL_RE.sub("", cls._text(item.get("question_answer")))[:2400],
                 )
             except (TypeError, ValueError):
                 continue
@@ -363,15 +397,17 @@ class VisualAnalyzer:
     def _source_line(cls, source: SearchSource) -> str:
         title = cls._bounded(source.title, 200)
         domain = cls._bounded(source.domain, 120)
-        snippet = cls._bounded(source.snippet, 300)
+        snippet = cls._bounded(
+            source.snippet, 2200 if source.result_kind == "search_summary" else 500
+        )
         return f"[{source.result_kind}] {title} | {domain} | {snippet}"
 
     @classmethod
     def _decision_data(cls, decision: ImageDecision) -> dict[str, object]:
         return {
             "image_number": decision.image_number,
-            "scene_description": cls._bounded(decision.scene_description, 500),
-            "visible_text": list(decision.visible_text[:12]),
+            "scene_description": cls._bounded(decision.scene_description, 1000),
+            "visible_text": list(decision.visible_text[:24]),
             "subject_identity": cls._bounded(decision.subject_identity, 160),
             "work_or_affiliation": cls._bounded(decision.work_or_affiliation, 200),
             "source_series_or_author": cls._bounded(decision.source_series_or_author, 200),
@@ -380,6 +416,7 @@ class VisualAnalyzer:
             "needs_exact": decision.needs_exact,
             "needs_web": decision.needs_web,
             "verification_query": cls._bounded(decision.verification_query, 250),
+            "question_answer": decision.question_answer[:2400],
         }
 
     @staticmethod
@@ -418,6 +455,7 @@ class VisualAnalyzer:
             "needs_exact": {"type": "boolean"},
             "needs_web": {"type": "boolean"},
             "verification_query": {"type": "string"},
+            "question_answer": {"type": "string"},
         }
         return {
             "type": "object",

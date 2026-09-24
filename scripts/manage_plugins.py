@@ -17,6 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "runtime/plugins/build"
 LOCK = ROOT / "plugins/lock.json"
+VISION_MODEL = "qwen3.8-max"
 
 
 def read(path):
@@ -95,6 +96,24 @@ def extract(raw, target, strip_root=True):
             dest.write_bytes(archive.read(member))
 
 
+def upgrade_managed_vision(root):
+    """One-time migration of the model initially provisioned by this project."""
+    paths = [root / "data/cmd_config.json", *sorted((root / "data/config").glob("abconf*.json"))]
+    for path in paths:
+        cfg = read(path)
+        changed = False
+        for provider in cfg.get("provider", []):
+            if (
+                provider.get("id") == "lemuen-vision"
+                and provider.get("provider_source_id") == "lemuen-dashscope"
+                and provider.get("model") == "qwen3-vl-plus"
+            ):
+                provider["model"] = VISION_MODEL
+                changed = True
+        if changed:
+            write(path, cfg)
+
+
 def install(*, backup_dir=None, skip_dependencies=False):
     if (
         subprocess.run(
@@ -157,7 +176,7 @@ def install(*, backup_dir=None, skip_dependencies=False):
             "id": "lemuen-vision",
             "provider_source_id": source["id"],
             "enable": True,
-            "model": "qwen3-vl-plus",
+            "model": VISION_MODEL,
             "modalities": ["text", "image"],
             "custom_extra_body": {"max_tokens": 2048, "enable_thinking": False},
         }
@@ -268,6 +287,8 @@ def install(*, backup_dir=None, skip_dependencies=False):
         if profile_path:
             write(profile_path, profile)
         write(old_config, own)
+    if previous_revision < 3:
+        upgrade_managed_vision(ROOT)
     prompts = ROOT / "data/plugin_data/astrbot_plugin_livingmemory/prompts"
     prompts.mkdir(parents=True, exist_ok=True)
     for name, content in lock["memory_prompts"].items():
@@ -278,8 +299,8 @@ def install(*, backup_dir=None, skip_dependencies=False):
             "backup": str(backup),
             "versions": {p["id"]: p["version"] for p in lock["upstream"]},
             "lemuen": "0.2.0",
-            "rolebot": "0.1.0",
-            "profile_revision": 2,
+            "rolebot": "0.1.1",
+            "profile_revision": 3,
             "scope": "private",
             "proactive_recipients": (
                 len(targets)

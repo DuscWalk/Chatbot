@@ -11,7 +11,7 @@ import traceback
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
-from manage_plugins import BUILD, ROOT, defaults, extract, merge, read, write
+from manage_plugins import BUILD, ROOT, VISION_MODEL, defaults, extract, merge, read, write
 
 
 async def verify(root, live=False):
@@ -93,7 +93,7 @@ async def verify(root, live=False):
             "id": "lemuen-vision",
             "provider_source_id": "synthetic-vision",
             "enable": True,
-            "model": "qwen3-vl-plus",
+            "model": VISION_MODEL,
             "custom_extra_body": {"enable_thinking": False, "max_tokens": 2048},
         }
         astrbot_config.update(

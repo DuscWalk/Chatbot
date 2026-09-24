@@ -1,7 +1,7 @@
 name: astrbot_plugin_rolebot
 display_name: Rolebot 功能迁移
 author: duscwalk
-version: 0.1.0
+version: 0.1.1
 desc: 群聊策略、按需搜索与语音、视觉证据、表情和诊断。
 repo: https://github.com/DuscWalk/Chatbot
 astrbot_version: ">=4.27.4,<4.28"

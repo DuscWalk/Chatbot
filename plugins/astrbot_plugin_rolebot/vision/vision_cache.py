@@ -273,6 +273,7 @@ class VisionCache:
                         needs_exact=bool(item.get("needs_exact", False)),
                         needs_web=bool(item.get("needs_web", False)),
                         verification_query=str(item.get("verification_query", "")),
+                        question_answer=str(item.get("question_answer", "")),
                     )
                 )
             return VisionSynthesis(
@@ -329,6 +330,7 @@ class VisionCache:
                     "needs_exact": item.needs_exact,
                     "needs_web": item.needs_web,
                     "verification_query": cls._safe_text(item.verification_query),
+                    "question_answer": _URL_RE.sub("", item.question_answer)[:2400],
                 }
                 for item in synthesis.images
             ],

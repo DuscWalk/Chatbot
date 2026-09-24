@@ -165,6 +165,9 @@ class VisionPipeline:
         if overflow_count:
             context_parts.append(f"另有 {overflow_count} 张图片未进入识图。")
         context_text = "\n\n".join(part for part in context_parts if part)
+        usable = bool(dynamic.scene_description) or any(
+            item.confidence is not ConfidenceBand.UNAVAILABLE for item in synthesis.images
+        )
         if trace is not None:
             confidence_counts = {
                 confidence.value: sum(item.confidence is confidence for item in synthesis.images)
@@ -173,7 +176,7 @@ class VisionPipeline:
             trace.event(
                 "vision.pipeline.result",
                 {
-                    "ok": bool(context_text),
+                    "ok": usable,
                     "timed_out": timed_out,
                     "image_count": len(selected_images),
                     "video_count": len(selected_videos),
@@ -182,7 +185,7 @@ class VisionPipeline:
                 },
             )
         return VisionPipelineResult(
-            ok=bool(context_text),
+            ok=usable,
             context_text=context_text,
             synthesis=synthesis,
             timed_out=timed_out,
@@ -485,11 +488,14 @@ class VisionPipeline:
                     exact_error=current.exact_error,
                     web_error=error,
                 )
+        if not any(item.exact_sources or item.web_sources for item in grouped.values()):
+            return synthesis
         try:
             return await asyncio.wait_for(
                 self.analyzer.reevaluate(
                     synthesis,
                     tuple(grouped.values()),
+                    images=tuple((item.image_number, item.image) for item in prepared),
                     timeout_seconds=min(self.model_timeout_seconds, self._remaining(deadline)),
                     trace=trace,
                 ),

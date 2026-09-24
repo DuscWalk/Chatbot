@@ -125,6 +125,33 @@ class DeploymentTests(unittest.TestCase):
 
 
 class PluginDeploymentConfigTests(unittest.TestCase):
+    def test_vision_migration_only_updates_the_managed_default_model(self):
+        from scripts.manage_plugins import VISION_MODEL, upgrade_managed_vision
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "data/config").mkdir(parents=True)
+            managed = {
+                "id": "lemuen-vision",
+                "provider_source_id": "lemuen-dashscope",
+                "model": "qwen3-vl-plus",
+                "enable": False,
+                "custom_extra_body": {"max_tokens": 3000},
+            }
+            custom = {**managed, "model": "custom-user-model"}
+            other = {**managed, "id": "another-vision"}
+            main = root / "data/cmd_config.json"
+            main.write_text(json.dumps({"provider": [managed, other], "plugin_set": []}))
+            profile = root / "data/config/abconf-private.json"
+            profile.write_text(json.dumps({"provider": [custom], "custom": True}))
+            before = profile.read_bytes()
+            upgrade_managed_vision(root)
+            updated = json.loads(main.read_text())
+            self.assertEqual(updated["provider"][0], {**managed, "model": VISION_MODEL})
+            self.assertEqual(updated["provider"][1], other)
+            self.assertEqual(updated["plugin_set"], [])
+            self.assertEqual(profile.read_bytes(), before)
+
     def test_reinstall_preserves_disabled_plugins_providers_and_preferences(self):
         import zipfile
         from unittest.mock import Mock

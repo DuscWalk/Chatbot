@@ -83,17 +83,21 @@ class ImageDecision:
     needs_exact: bool = False
     needs_web: bool = False
     verification_query: str = ""
+    question_answer: str = ""
 
     def to_context_text(self) -> str:
         lines = [f"图片{self.image_number}："]
-        scene = _context_text(self.scene_description, limit=500)
+        scene = _context_text(self.scene_description, limit=1000)
         visible_text = tuple(
-            text for item in self.visible_text if (text := _context_text(item, limit=160))
+            text for item in self.visible_text if (text := _context_text(item, limit=300))
         )
         if scene:
             lines.append(f"视觉观察：{scene}")
         if visible_text:
-            lines.append(f"可见文字：{'；'.join(visible_text[:12])}")
+            lines.append(f"可见文字：{'；'.join(visible_text[:24])}")
+        answer = _URL_RE.sub("", self.question_answer).strip()[:2400]
+        if answer:
+            lines.append("与本轮问题相关的视觉信息（含识读/推算）：\n" + answer)
         if self.confidence is ConfidenceBand.CONFIRMED:
             identity = _context_text(self.subject_identity, limit=160)
             if identity:
@@ -107,7 +111,11 @@ class ImageDecision:
             if source:
                 lines.append(f"来源系列或作者：{source}")
         elif self.confidence is ConfidenceBand.UNCERTAIN:
-            lines.append("身份判断：不确定，请勿当作已确认事实。")
+            lines.append("身份判断：不确定。")
+            if candidate := _context_text(self.subject_identity, limit=160):
+                lines.append("候选（未确认）：" + candidate)
+            if reason := _context_text(self.reason, limit=400):
+                lines.append("判断依据与疑点：" + reason)
         elif self.confidence is ConfidenceBand.NO_IDENTITY:
             lines.append("身份判断：图中没有需要确认的具体人物或角色。")
         else:

@@ -27,6 +27,7 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
     im.save(buffer, format="PNG")
     image_url = "base64://" + base64.b64encode(buffer.getvalue()).decode()
     if not live:
+        await verify_native_vision_options(image_url)
         vision.text_chat = AsyncMock(
             return_value=LLMResponse(
                 role="assistant",
@@ -242,3 +243,99 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
         "onebot_media_metadata": True,
         "qq_sends": 0,
     }
+
+
+async def verify_native_vision_options(image_url):
+    """Exercise the real AstrBot adapter: kwargs alone silently lost this format."""
+    import copy
+
+    import httpx
+    from astrbot.core.provider.sources.openai_source import ProviderOpenAIOfficial
+    from data.plugins.astrbot_plugin_rolebot.vision.bridge import NativeAnalyzer
+    from data.plugins.astrbot_plugin_rolebot.vision.image_preprocessor import ImagePreprocessor
+    from data.plugins.astrbot_plugin_rolebot.vision.vision_types import (
+        ImageLensResult,
+        LensSearchResult,
+    )
+    from openai import AsyncOpenAI
+
+    bodies = []
+
+    def respond(request):
+        bodies.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={
+                "id": "synthetic",
+                "object": "chat.completion",
+                "created": 1,
+                "model": "synthetic-vision",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": json.dumps(
+                                {
+                                    "images": [
+                                        {
+                                            "image_number": 1,
+                                            "confidence": "no_identity",
+                                            "question_answer": "两个色块。",
+                                        }
+                                    ],
+                                    "combined_answer": "",
+                                }
+                            ),
+                        },
+                    }
+                ],
+            },
+        )
+
+    provider = ProviderOpenAIOfficial(
+        {
+            "id": "isolated",
+            "type": "openai_chat_completion",
+            "model": "synthetic-vision",
+            "key": ["synthetic-key"],
+            "api_base": "https://example.com/v1",
+            "custom_extra_body": {"enable_thinking": False, "max_tokens": 128},
+        },
+        {},
+    )
+    await provider.client.close()
+    provider.client = AsyncOpenAI(
+        api_key="synthetic-key",
+        base_url="https://example.com/v1",
+        http_client=httpx.AsyncClient(transport=httpx.MockTransport(respond)),
+    )
+    before = copy.deepcopy(provider.provider_config)
+    pre = ImagePreprocessor(
+        timeout_seconds=1, max_download_bytes=100000, max_image_pixels=100000, allow_animation=True
+    )
+    image = await pre.fetch(image_url)
+    try:
+        result = await NativeAnalyzer(provider).synthesize(
+            (image,),
+            (ImageLensResult(1, LensSearchResult(ok=False)),),
+            user_question="有几个色块",
+            chat_context="",
+            timeout_seconds=2,
+        )
+        assert "两个色块" in result.to_context_text()
+        assert bodies[0]["response_format"]["type"] == "json_schema"
+        assert (
+            "question_answer"
+            in bodies[0]["response_format"]["json_schema"]["schema"]["properties"]["images"][
+                "items"
+            ]["properties"]
+        )
+        assert bodies[0]["temperature"] == 0
+        assert bodies[0]["max_tokens"] == 128 and bodies[0]["enable_thinking"] is False
+        assert provider.provider_config == before, (
+            "per-request format leaked into provider settings"
+        )
+    finally:
+        await provider.client.close()
