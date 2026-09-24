@@ -49,8 +49,24 @@ ssh njuse 'cd /home/ubuntu/qqBots2.0 && ./bot restart'
 
 ## 更新与 CI/CD
 
-CI 继续由 GitHub 托管 runner 执行。`njuse` 是内网服务器，GitHub 托管 runner 无法直接 SSH 到达，因此当前不启用自动 CD。
+2026-09-24 已验证 njuse 能主动访问 GitHub API、代码归档、Actions broker 和结果服务；无需本机中转，也不开放新的入站端口。GitHub release 安装包下载曾超时，runner 安装包经本机下载、SHA-256 校验后通过 SSH 传入。首次注册成功后，runner 会主动连接 GitHub 领取任务。
 
-要启用 GitHub 部署，需要注册能访问 `njuse` 的自托管 runner，在仓库级变量设置 `DEPLOY_RUNNER_LABELS`（例如 `["self-hosted", "linux", "x64", "njuse-network"]`），并按主 README 配置 `production` 变量与 Secrets。`DEPLOY_USER` 使用 `ubuntu`，`DEPLOY_PATH` 使用 `/home/ubuntu/qqBots2.0`；`DEPLOY_HOST` 填 runner 可访问的服务器地址，而不是仅本机 SSH 配置里的别名。
+- CI 运行在 GitHub 托管机器；检查成功后，main 分支推送由专用 `chatbot-njuse-deploy` runner 部署。
+- Runner 安装目录 `/home/ubuntu/actions-runner-chatbot`，用户服务 `qqbots2-actions-runner.service`。首次安装已完成；注册需要一次性令牌。
+- Runner 不使用通用 self-hosted/linux 标签；服务器上的任务启动钩子检查仓库、main 分支、工作流路径和事件类型，拒绝 PR 任务。
+- 部署不需要 GitHub 中保存服务器 SSH 私钥。默认直接更新 `/home/ubuntu/qqBots2.0`，使用 `astrbot-wsl`。
+- 若以后切换本机 WSL runner，可使用同一专用标签，将 `DEPLOY_TRANSPORT` 设为 `ssh`、`DEPLOY_HOST` 设为 `njuse`，复用 `duscwalk` 的 SSH 配置。部署时本机及内网连接须在线。
 
-服务版本记录在服务器 `runtime/deployed-revision`。运行数据、API Key、QQ 登录状态和后台凭据仅保存在服务器及本地迁移备份中，不进入 Git。
+首次注册：在仓库 Settings → Actions → Runners → New self-hosted runner 选择 Linux x64，把页面配置命令里的短期 token 写入本地被忽略的 `.env`，变量名 `GITHUB_RUNNER_REGISTRATION_TOKEN`。令牌通过 SSH 标准输入交给 `scripts/manage_runner.py register`，不进入 Git、命令参数或聊天记录。GitHub 的 Git SSH 密钥不能替代此注册令牌。准备命令为：
+
+```bash
+python scripts/manage_runner.py prepare
+# register 从标准输入读取一次性令牌，由维护工具传入
+systemctl --user status qqbots2-actions-runner.service
+```
+
+默认 main 推送通过 CI 后自动部署；仓库变量 `AUTO_DEPLOY=false` 可暂停自动部署。手动运行 Actions → CI / CD 并勾选 deploy 仍可部署。普通 PR 不进入部署阶段。
+
+部署先在独立目录构建和校验插件、准备需要变更的依赖，然后停止 **AstrBot**，备份代码、插件、配置、数据库和原依赖版本，安装并做隔离验证，再启动并检查 WebUI 和 OneBot。NapCat 始终运行。失败时自动恢复代码、数据和本次修改的依赖；日志仅保存在服务器 `runtime/deploy/latest.log`，备份位于 `runtime/backups/deploy-*`。备份含私密内容，不上传 Actions。
+
+运行版本记录在 `runtime/deployed-revision`；runner 注册完成后的端到端执行结果以 GitHub Actions 为准。API Key、QQ 登录态和聊天记录不进入 Git。

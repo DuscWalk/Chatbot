@@ -169,31 +169,16 @@ tar -czf "$HOME/qqbots2-backup-$(date +%Y%m%d-%H%M%S).tar.gz" data runtime .astr
 
 ## GitHub CI/CD
 
-仓库：[DuscWalk/Chatbot](https://github.com/DuscWalk/Chatbot)。工作流位于 `.github/workflows/ci-cd.yml`。
+仓库：[DuscWalk/Chatbot](https://github.com/DuscWalk/Chatbot)。工作流位于 `.github/workflows/ci-cd.yml`，当前部署方式见 [njuse 说明](docs/njuse.md)。
 
-- 推送 `main`、向 `main` 提交 PR，或手动运行 Actions：检查 Python、Shell、Compose 配置，运行隔离环境中的初始化/凭据/配置保留/迁移测试。
-- 部署只有在检查通过后执行，发布的代码与测试使用同一个 commit。普通 PR 不会触发部署。
-- 默认只执行 CI。配置服务器后，在 Actions → **CI / CD** → **Run workflow** 选择 `main` 并勾选 `deploy` 即可部署。
-- 如果希望每次推送 `main` 自动部署，在仓库 **Settings → Secrets and variables → Actions → Variables** 添加 `AUTO_DEPLOY=true`。未配置服务器时不要开启。
+- 推送 main、向 main 提交 PR 或手动运行 Actions：在 GitHub 托管 runner 检查 Python、Shell、Compose、知识库和隔离插件测试。
+- main 推送通过 CI 后，专用 `chatbot-njuse-deploy` runner 部署同一个提交；PR 不部署。runner 需完成 GitHub 注册。
+- `AUTO_DEPLOY=false` 仓库变量可暂停自动部署；手动运行工作流并勾选 deploy 可单次部署。
+- njuse runner 直接更新本机服务，不需要服务器 SSH Secrets。部署保留后台设置和 NapCat 登录，失败后恢复代码、数据和本次改变的依赖。
 
-内网服务器（如 `njuse`）需要能访问该内网的自托管 runner。在仓库级 Variables 中设置 `DEPLOY_RUNNER_LABELS` 为 JSON 标签数组，例如 `["self-hosted", "linux", "x64", "njuse-network"]`，并为注册的 runner 添加匹配标签。未设置时使用 GitHub 托管的 `ubuntu-24.04`。
+可选仓库变量：`DEPLOY_RUNNER_LABELS`（JSON 标签数组）、`DEPLOY_PATH`（默认 `/home/ubuntu/qqBots2.0`）、`DEPLOY_TRANSPORT`（local 或 ssh）。如果从本机 runner 中转，将 transport 设为 ssh、`DEPLOY_HOST` 设为 njuse；默认使用当前系统用户的 SSH 配置。仍支持显式的 `DEPLOY_USER`、`DEPLOY_PORT` 和部署专用 `DEPLOY_SSH_KEY`、`DEPLOY_KNOWN_HOSTS` Secrets。
 
-在 **Settings → Environments** 中创建 `production`，添加以下变量和 Secrets：
-
-| 类型 | 名称 | 值 |
-| --- | --- | --- |
-| Variable | `DEPLOY_HOST` | 服务器公网 IPv4 地址或主机名 |
-| Variable | `DEPLOY_USER` | 普通部署用户，例如 `duscwalk` |
-| Variable | `DEPLOY_PATH` | 专用项目目录的绝对路径，例如 `/home/duscwalk/qqBots2.0`，末尾不带 `/` |
-| Variable | `DEPLOY_PORT` | SSH 端口，默认 `22` |
-| Secret | `DEPLOY_SSH_KEY` | 专门用于部署的 SSH 私钥完整内容 |
-| Secret | `DEPLOY_KNOWN_HOSTS` | 服务器 SSH host key 的 known_hosts 条目 |
-
-服务器需先按前面的步骤安装 Docker、Conda、ffmpeg，让部署用户可以运行 Docker，并启用用户服务 linger。将部署密钥的公钥添加到该用户的 `~/.ssh/authorized_keys`；不需要把个人 GitHub 私钥复制到服务器。`DEPLOY_KNOWN_HOSTS` 可用 `ssh-keyscan -p 22 服务器地址` 获取，核对服务器指纹后保存到 GitHub Secret。密钥通过 GitHub 页面设置，不写进仓库或聊天记录。
-
-CI/CD 用 `git archive` 上传版本化代码，不上传本地 API Key、QQ 登录信息或聊天记录。首次全新部署会生成服务器自己的凭据；部署后通过 SSH 登录服务器运行 `./bot credentials` 查看，再经隧道扫码及配置模型。如果需要保留本地配置，先按“传输项目和配置”完成一次迁移，再启用 CI/CD。
-
-服务器部署过程会停止服务，在 `runtime/backups/` 保存已有代码与数据，更新代码，然后启动并检查两个后台及 OneBot 配置。同一时间只允许一个部署。检查失败会让 Actions 报错并保留备份；不会自动回滚 Conda 依赖。需要恢复时，在服务器停止服务、从选定备份恢复代码和数据，再运行 `./bot setup` 和 `./bot up`。备份可能较大，请定期自行归档。
+只部署 Git 跟踪的代码。目标需已经完成 `./bot setup`、模型配置与 QQ 登录；自动部署不承担首次开户和账号登录。新机器初始化沿用前面的部署步骤。
 
 本地执行 CI 的主要检查：
 

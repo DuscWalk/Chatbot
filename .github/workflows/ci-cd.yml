@@ -74,10 +74,10 @@ jobs:
     if: >-
       github.ref == 'refs/heads/main' &&
       github.event_name != 'pull_request' &&
-      (vars.AUTO_DEPLOY == 'true' ||
+      ((github.event_name == 'push' && vars.AUTO_DEPLOY != 'false') ||
        (github.event_name == 'workflow_dispatch' && inputs.deploy))
-    # A private server requires a runner that can reach its network.
-    runs-on: ${{ fromJSON(vars.DEPLOY_RUNNER_LABELS || '["ubuntu-24.04"]') }}
+    # This dedicated label is only registered on the selected deployment host.
+    runs-on: ${{ fromJSON(vars.DEPLOY_RUNNER_LABELS || '["chatbot-njuse-deploy"]') }}
     timeout-minutes: 30
     environment: production
     concurrency:
@@ -89,6 +89,7 @@ jobs:
           persist-credentials: false
       - name: Upload the tested revision and deploy
         env:
+          DEPLOY_TRANSPORT: ${{ vars.DEPLOY_TRANSPORT }}
           DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
           DEPLOY_USER: ${{ vars.DEPLOY_USER }}
           DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}

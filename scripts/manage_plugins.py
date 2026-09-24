@@ -95,7 +95,7 @@ def extract(raw, target, strip_root=True):
             dest.write_bytes(archive.read(member))
 
 
-def install():
+def install(*, backup_dir=None, skip_dependencies=False):
     if (
         subprocess.run(
             ["systemctl", "--user", "is-active", "--quiet", "qqbots2-astrbot.service"]
@@ -117,83 +117,96 @@ def install():
         raise ValueError("Run scripts/manage_plugins.py build first.")
     activation = ROOT / "runtime/plugins/activation.json"
     previous_revision = read(activation).get("profile_revision", 0) if activation.exists() else 0
-    main = read(ROOT / "data/cmd_config.json")
-    profiles = [
-        p
-        for p in (ROOT / "data/config").glob("abconf*.json")
-        if read(p).get("provider_settings", {}).get("default_personality") == "蕾缪安"
-    ]
-    if len(profiles) != 1:
-        raise ValueError("Expected exactly one Lemuen private profile.")
-    profile_path = profiles[0]
-    profile = read(profile_path)
-    # Read routing metadata only, not message content. Never print account IDs.
-    with sqlite3.connect(f"file:{ROOT / 'data/data_v4.db'}?mode=ro", uri=True) as db:
-        targets = [
-            r[0]
-            for r in db.execute(
-                "SELECT DISTINCT user_id FROM conversations WHERE user_id LIKE 'napcat:FriendMessage:%'"
-            )
+    targets = []
+    if previous_revision < 2:
+        main = read(ROOT / "data/cmd_config.json")
+        profiles = [
+            p
+            for p in (ROOT / "data/config").glob("abconf*.json")
+            if read(p).get("provider_settings", {}).get("default_personality") == "蕾缪安"
         ]
-    old_config = ROOT / "data/config/astrbot_plugin_lemuen_config.json"
-    own = read(old_config)
-    existing_targets = own.get("proactive", {}).get("targets", [])
-    targets = existing_targets or targets
-    if len(targets) != 1:
-        raise ValueError("Set an explicit proactive recipient in Lemuen plugin configuration.")
-    embedding = next(p for p in main["provider"] if p["id"] == "lemuen-embedding")
-    source = {
-        "id": "lemuen-dashscope",
-        "type": "openai_chat_completion",
-        "enable": True,
-        "api_base": embedding["embedding_api_base"],
-        "key": [embedding["embedding_api_key"]]
-        if isinstance(embedding["embedding_api_key"], str)
-        else embedding["embedding_api_key"],
-    }
-    vision = {
-        "id": "lemuen-vision",
-        "provider_source_id": source["id"],
-        "enable": True,
-        "model": "qwen3-vl-plus",
-        "modalities": ["text", "image"],
-        "custom_extra_body": {"max_tokens": 2048, "enable_thinking": False},
-    }
-    backup = ROOT / "runtime/backups" / ("plugins-" + datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ"))
-    backup.mkdir(parents=True, mode=0o700)
-    for relative in [
-        "data/config",
-        "data/plugins",
-        "data/plugin_data",
-        "data/cmd_config.json",
-        "data/data_v4.db",
-    ]:
-        src, dest = ROOT / relative, backup / relative
-        if src.exists():
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            if src.is_dir():
-                shutil.copytree(src, dest)
-            else:
-                shutil.copy2(src, dest)
-    freeze = subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True)
-    (backup / "pip-freeze.txt").write_text(freeze)
+        if len(profiles) != 1:
+            raise ValueError("Expected exactly one Lemuen private profile.")
+        profile_path = profiles[0] if profiles else None
+        profile = read(profile_path) if profile_path else {}
+        # Read routing metadata only, not message content. Never print account IDs.
+        with sqlite3.connect(f"file:{ROOT / 'data/data_v4.db'}?mode=ro", uri=True) as db:
+            targets = [
+                r[0]
+                for r in db.execute(
+                    "SELECT DISTINCT user_id FROM conversations WHERE user_id LIKE 'napcat:FriendMessage:%'"
+                )
+            ]
+        old_config = ROOT / "data/config/astrbot_plugin_lemuen_config.json"
+        own = read(old_config)
+        existing_targets = own.get("proactive", {}).get("targets", [])
+        targets = existing_targets or targets
+        if len(targets) != 1:
+            raise ValueError("Set an explicit proactive recipient in Lemuen plugin configuration.")
+        embedding = next(p for p in main["provider"] if p["id"] == "lemuen-embedding")
+        source = {
+            "id": "lemuen-dashscope",
+            "type": "openai_chat_completion",
+            "enable": True,
+            "api_base": embedding["embedding_api_base"],
+            "key": [embedding["embedding_api_key"]]
+            if isinstance(embedding["embedding_api_key"], str)
+            else embedding["embedding_api_key"],
+        }
+        vision = {
+            "id": "lemuen-vision",
+            "provider_source_id": source["id"],
+            "enable": True,
+            "model": "qwen3-vl-plus",
+            "modalities": ["text", "image"],
+            "custom_extra_body": {"max_tokens": 2048, "enable_thinking": False},
+        }
+    if backup_dir is not None:
+        backup = Path(backup_dir).resolve()
+        if (
+            not backup.is_relative_to((ROOT / "runtime/backups").resolve())
+            or not (backup / "data/cmd_config.json").is_file()
+        ):
+            raise ValueError("Deployment backup must already contain the stopped instance data.")
+    else:
+        backup = (
+            ROOT / "runtime/backups" / ("plugins-" + datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ"))
+        )
+        backup.mkdir(parents=True, mode=0o700)
+        for relative in [
+            "data/config",
+            "data/plugins",
+            "data/plugin_data",
+            "data/cmd_config.json",
+            "data/data_v4.db",
+        ]:
+            src, dest = ROOT / relative, backup / relative
+            if src.exists():
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                if src.is_dir():
+                    shutil.copytree(src, dest)
+                else:
+                    shutil.copy2(src, dest)
+        freeze = subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True)
+        (backup / "pip-freeze.txt").write_text(freeze)
     for item in lock["upstream"]:
         target = ROOT / "data/plugins" / item["id"]
         if target.exists():
             shutil.rmtree(target)  # Exact managed plugin only; data lives in plugin_data.
         extract((BUILD / (item["id"] + ".zip")).read_bytes(), target)
-        subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "install",
-                "--disable-pip-version-check",
-                "-r",
-                str(target / "requirements.txt"),
-            ],
-            check=True,
-        )
+        if not skip_dependencies:
+            subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--disable-pip-version-check",
+                    "-r",
+                    str(target / "requirements.txt"),
+                ],
+                check=True,
+            )
         cfg_path = ROOT / "data/config" / (item["id"] + "_config.json")
         config = merge(defaults(read(target / "_conf_schema.json")), item["config"])
         if cfg_path.exists():
@@ -208,51 +221,53 @@ def install():
     if rolebot_target.exists():
         shutil.rmtree(rolebot_target)
     extract(rolebot_archive.read_bytes(), ROOT / "data/plugins", strip_root=False)
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "--disable-pip-version-check",
-            "-r",
-            str(rolebot_target / "requirements.txt"),
-        ],
-        check=True,
-    )
+    if not skip_dependencies:
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "--disable-pip-version-check",
+                "-r",
+                str(rolebot_target / "requirements.txt"),
+            ],
+            check=True,
+        )
     rolebot_path = ROOT / "data/config/astrbot_plugin_rolebot_config.json"
     rolebot_config = defaults(read(rolebot_target / "_conf_schema.json"))
     if rolebot_path.exists():
         merge(rolebot_config, read(rolebot_path))
     write(rolebot_path, rolebot_config)
-    for cfg in [main, profile]:
-        if not any(p["id"] == source["id"] for p in cfg["provider_sources"]):
-            cfg["provider_sources"].append(source)
-        if not any(p["id"] == vision["id"] for p in cfg["provider"]):
-            cfg["provider"].append(vision)
-        if previous_revision < 2:
+    if previous_revision < 2:
+        for cfg in [main, profile]:
+            if not any(p["id"] == source["id"] for p in cfg["provider_sources"]):
+                cfg["provider_sources"].append(source)
+            if not any(p["id"] == vision["id"] for p in cfg["provider"]):
+                cfg["provider"].append(vision)
             for provider in cfg["provider"]:
                 if provider["id"] == vision["id"]:
                     extra = provider.setdefault("custom_extra_body", {})
                     extra["max_tokens"] = max(2048, int(extra.get("max_tokens", 1024)))
-        enabled = cfg.get("plugin_set", [])
-        additions = ["astrbot_plugin_lemuen", "astrbot_plugin_rolebot"]
-        if cfg is profile:
-            additions += [p["runtime_name"] for p in lock["upstream"]]
-        if enabled != ["*"]:
-            cfg["plugin_set"] = list(dict.fromkeys(enabled + additions))
-    if "proactive" not in own:
-        own["proactive"] = {
-            "enabled": True,
-            "targets": targets,
-            "weekdays": [1, 3, 6],
-            "start_hour": 19,
-            "end_hour": 21,
-            "idle_minutes": 120,
-        }
-    write(ROOT / "data/cmd_config.json", main)
-    write(profile_path, profile)
-    write(old_config, own)
+            enabled = cfg.get("plugin_set", [])
+            additions = ["astrbot_plugin_lemuen", "astrbot_plugin_rolebot"]
+            if cfg is profile:
+                additions += [p["runtime_name"] for p in lock["upstream"]]
+            if enabled != ["*"]:
+                cfg["plugin_set"] = list(dict.fromkeys(enabled + additions))
+        if "proactive" not in own:
+            own["proactive"] = {
+                "enabled": True,
+                "targets": targets,
+                "weekdays": [1, 3, 6],
+                "start_hour": 19,
+                "end_hour": 21,
+                "idle_minutes": 120,
+            }
+        write(ROOT / "data/cmd_config.json", main)
+        if profile_path:
+            write(profile_path, profile)
+        write(old_config, own)
     prompts = ROOT / "data/plugin_data/astrbot_plugin_livingmemory/prompts"
     prompts.mkdir(parents=True, exist_ok=True)
     for name, content in lock["memory_prompts"].items():
@@ -266,7 +281,11 @@ def install():
             "rolebot": "0.1.0",
             "profile_revision": 2,
             "scope": "private",
-            "proactive_recipients": len(targets),
+            "proactive_recipients": (
+                len(targets)
+                if previous_revision < 2
+                else read(activation).get("proactive_recipients", 0)
+            ),
         },
     )
     print("Installed private plugins; backup:", backup)
@@ -275,5 +294,16 @@ def install():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["build", "stage", "install"])
+    parser.add_argument(
+        "--backup-dir", type=Path, help="Reuse an existing complete deployment backup"
+    )
+    parser.add_argument(
+        "--skip-dependencies",
+        action="store_true",
+        help="Dependencies were installed by the deployment transaction",
+    )
     args = parser.parse_args()
-    {"build": build, "stage": stage, "install": install}[args.command]()
+    if args.command == "install":
+        install(backup_dir=args.backup_dir, skip_dependencies=args.skip_dependencies)
+    else:
+        {"build": build, "stage": stage}[args.command]()
