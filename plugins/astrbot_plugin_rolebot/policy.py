@@ -67,6 +67,7 @@ class GroupPolicy:
         self.cooldowns = {}
         self.quotes = {}
         self.replies = {}
+        self.deliveries = {}
         self.activity = {}
         self.repeat_groups = {}
 
@@ -79,6 +80,11 @@ class GroupPolicy:
             scope: recent
             for scope, stamps in self.replies.items()
             if (recent := [stamp for stamp in stamps if stamp > now - 60])
+        }
+        self.deliveries = {
+            scope: recent
+            for scope, stamps in self.deliveries.items()
+            if (recent := [stamp for stamp in stamps if stamp > now - 600])
         }
         self.activity = {
             scope: stamp for scope, stamp in self.activity.items() if stamp > now - 3600
@@ -100,6 +106,14 @@ class GroupPolicy:
         recent = [stamp for stamp in self.replies.get(scope, []) if stamp > now - 60]
         self.replies[scope] = [*recent, now]
         self.activity[scope] = now
+
+    def record_delivery(self, scope, now):
+        # Keep enough successes for all supported burst thresholds/windows.
+        recent = [stamp for stamp in self.deliveries.get(scope, []) if stamp > now - 600]
+        self.deliveries[scope] = [*recent, now][-100:]
+
+    def compact_reply(self, scope, now, seconds=60, threshold=6):
+        return sum(stamp > now - seconds for stamp in self.deliveries.get(scope, [])) >= threshold
 
     def can_random_reply(self, scope, now, cooldown=120):
         last = self.activity.get(scope)

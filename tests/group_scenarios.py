@@ -239,3 +239,127 @@ async def verify_group_context(plugin, group):
         disabled = await route("安姐", 1080)
         assert not disabled.get_extra("rolebot.group_context")
         assert plugin.group_scope(admin) not in plugin.group_context.groups
+
+
+async def verify_group_burst(plugin, group, make_private):
+    """Drive real AstrBot formatting/sending with fake events and mocked QQ sends."""
+    from unittest.mock import AsyncMock
+
+    from astrbot.api.event import MessageChain
+    from astrbot.api.message_components import Image, Plain, Reply
+    from astrbot.core.config.default import DEFAULT_CONFIG
+    from astrbot.core.message.message_event_result import ResultContentType
+    from astrbot.core.pipeline.context import PipelineContext
+    from astrbot.core.pipeline.respond.stage import RespondStage
+    from astrbot.core.pipeline.result_decorate.stage import ResultDecorateStage
+    from data.plugins.astrbot_plugin_rolebot.policy import GroupPolicy
+    from lemuen import PRIVATE_CHAT_SETTINGS
+
+    plugin.policy = GroupPolicy()
+    plugin.config["groups"].update(
+        all_groups=True,
+        default_enabled=True,
+        context_enabled=False,
+        compact_reply_enabled=True,
+        compact_reply_threshold=6,
+        compact_reply_window_seconds=60,
+        reply_cooldown_seconds=0,
+        max_replies_per_minute=0,
+        quote_enabled=True,
+    )
+    config = copy.deepcopy(DEFAULT_CONFIG)
+    config["platform_settings"]["segmented_reply"].update(
+        PRIVATE_CHAT_SETTINGS["platform_settings"]["segmented_reply"]
+    )
+    native_context = PipelineContext(
+        config,
+        SimpleNamespace(
+            context=SimpleNamespace(get_using_tts_provider_async=AsyncMock(return_value=None))
+        ),
+        "default",
+    )
+    decorate, respond = ResultDecorateStage(), RespondStage()
+    await decorate.initialize(native_context)
+    await respond.initialize(native_context)
+    respond.interval = [0, 0]
+    serial = 0
+    with patch("data.plugins.astrbot_plugin_rolebot.main.time") as clock:
+
+        async def deliver(
+            text, stamp, gid="burst-group", *, private=False, fail=False, llm=True, rich=False
+        ):
+            nonlocal serial
+            serial += 1
+            clock.time.return_value = stamp
+            ev = (
+                make_private("合成提问", who="burst-private")
+                if private
+                else group("安姐，合成提问", f"burst-user-{serial}", gid, addressed=True)
+            )
+            ev.plugins_name = ["astrbot_plugin_rolebot"]
+            sender = AsyncMock(side_effect=RuntimeError("synthetic failure") if fail else None)
+            ev.send = sender
+            await plugin.route(ev)
+            assert not ev.is_stopped()
+            result = ev.plain_result(text).use_t2i(False).use_markdown(True)
+            if rich:
+                result.chain.extend([Image(file="synthetic-image"), Plain(text="图片后的说明。")])
+            if llm:
+                result.set_result_content_type(ResultContentType.LLM_RESULT)
+            ev.set_result(result)
+            async for _ in decorate.process(ev):
+                pass
+            await respond.process(ev)
+            return ev, [call.args[0] for call in sender.await_args_list]
+
+        normal = "第一段。\n\n第二段。"
+        full = "一。\n\n二。\n\n三。\n\n四。"
+        for stamp in [1000, 1005, 1010]:
+            _, sent = await deliver(normal, stamp)
+            assert [chain.get_plain_text() for chain in sent] == ["第一段。", "第二段。"]
+        assert len(plugin.policy.deliveries["napcat:burst-group"]) == 6
+        _, sent = await deliver(full, 1015)
+        assert len(sent) == 1 and sent[0].get_plain_text() == full
+        assert sum(isinstance(c, Reply) for c in sent[0].chain) == 1
+        assert sent[0].use_markdown_ is True and sent[0].use_t2i_ is False
+        assert len(plugin.policy.deliveries["napcat:burst-group"]) == 7
+        code = "说明。\n\n```python\nx = 1\n\nprint(x)\n```\n\n结束。"
+        _, sent = await deliver(code, 1016)
+        assert len(sent) == 1 and sent[0].get_plain_text() == code
+        _, sent = await deliver(normal, 1017, rich=True)
+        assert len(sent) == 1 and any(isinstance(c, Image) for c in sent[0].chain)
+        assert "第一段。\n\n第二段。" in sent[0].get_plain_text()
+        assert "图片后的说明。" in sent[0].get_plain_text()
+        _, sent = await deliver(normal, 1018, gid="burst-other")
+        assert len(sent) == 2, "another group inherited busy mode"
+        _, sent = await deliver(normal, 1018, private=True)
+        assert len(sent) == 2, "private chat inherited busy mode"
+        plugin.config["groups"]["compact_reply_enabled"] = False
+        _, sent = await deliver(normal, 1019)
+        assert len(sent) == 2
+        plugin.config["groups"]["compact_reply_enabled"] = True
+        _, sent = await deliver(normal, 1020, llm=False)
+        assert len(sent) == 1 and sent[0].get_plain_text() == normal
+        _, sent = await deliver(normal, 1085)
+        assert len(sent) == 2, "segmentation did not recover when the window expired"
+
+        # A turn that reaches the threshold midway must not duplicate its first paragraphs.
+        for _ in range(5):
+            plugin.policy.record_delivery("napcat:burst-edge", 1200)
+        _, sent = await deliver(full, 1201, gid="burst-edge")
+        assert [chain.get_plain_text() for chain in sent] == ["一。", "二。", "三。", "四。"]
+        before = len(plugin.policy.deliveries["napcat:burst-edge"])
+        _, sent = await deliver(full, 1202, gid="burst-edge", fail=True)
+        assert len(sent) == 1 and sent[0].get_plain_text() == full
+        assert len(plugin.policy.deliveries["napcat:burst-edge"]) == before
+        _, sent = await deliver(full, 1203, gid="burst-edge")
+        assert len(sent) == 1 and sent[0].get_plain_text() == full
+
+        # Direct sends such as repeat replies count even with ambient capture disabled.
+        repeat = group("复读", "repeat-user", "burst-repeat")
+        plugin.guard_send(repeat)
+        clock.time.return_value = 1300
+        for _ in range(6):
+            await repeat.send(MessageChain([Plain(text="复读")]))
+        _, sent = await deliver(full, 1301, gid="burst-repeat")
+        assert len(sent) == 1 and sent[0].get_plain_text() == full

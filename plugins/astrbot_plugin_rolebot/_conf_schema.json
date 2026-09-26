@@ -202,6 +202,24 @@
         "type": "int",
         "default": 12000,
         "hint": "单条文本最长 1000 字符；图片、视频等仅保留占位符，不自动逐条识图。"
+      },
+      "compact_reply_enabled": {
+        "description": "群内回复密集时合并为一条",
+        "type": "bool",
+        "default": true,
+        "hint": "统计本群机器人成功发送的消息（包括分段和复读），达到阈值后将每轮普通回复完整合并为一条，窗口内数量下降后恢复。"
+      },
+      "compact_reply_window_seconds": {
+        "description": "密集回复统计窗口（秒）",
+        "type": "int",
+        "default": 60,
+        "hint": "只统计本群机器人实际成功发送的消息。"
+      },
+      "compact_reply_threshold": {
+        "description": "触发合并的已发送消息条数",
+        "type": "int",
+        "default": 6,
+        "hint": "默认最近 60 秒已发送至少 6 条时，下一轮回复合并为一条。各群独立；失败发送不计数。"
       }
     }
   },

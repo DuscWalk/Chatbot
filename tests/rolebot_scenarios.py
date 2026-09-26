@@ -252,11 +252,13 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
         "message": [{"type": "image", "data": {"url": "https://example.com/a.png"}}]
     }
     assert repeat_payload(unsafe) == ("", None)
-    from group_scenarios import verify_group_context, verify_open_groups
+    from group_scenarios import verify_group_burst, verify_group_context, verify_open_groups
 
     await verify_open_groups(plugin, group)
     await verify_group_context(plugin, group)
+    await verify_group_burst(plugin, group, make_event)
     return {
+        "group_burst_single_reply": True,
         "group_ambient_context": True,
         "all_group_routing": True,
         "group_throttle_and_controls": True,

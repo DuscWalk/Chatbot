@@ -71,6 +71,22 @@ class RolebotPolicyTests(unittest.TestCase):
         p.prune(4000)
         self.assertFalse(p.activity or p.replies)
 
+    def test_busy_group_uses_delivered_messages_and_expires_per_group(self):
+        policy = GroupPolicy()
+        for stamp in range(100, 106):
+            policy.record_reply("napcat:g", stamp)
+        self.assertFalse(policy.compact_reply("napcat:g", 106))
+        for stamp in range(100, 106):
+            policy.record_delivery("napcat:g", stamp)
+        self.assertTrue(policy.compact_reply("napcat:g", 106))
+        self.assertFalse(policy.compact_reply("napcat:other", 106))
+        self.assertFalse(policy.compact_reply("other:g", 106))
+        self.assertFalse(policy.compact_reply("napcat:g", 160))
+        self.assertTrue(policy.compact_reply("napcat:g", 160, seconds=120))
+        self.assertFalse(policy.compact_reply("napcat:g", 106, threshold=7))
+        policy.prune(1000)
+        self.assertFalse(policy.deliveries)
+
     def test_repeat_window_and_cross_content_cooldown(self):
         p = GroupPolicy()
 

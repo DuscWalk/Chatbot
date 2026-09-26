@@ -116,7 +116,10 @@ class RolebotPlugin(Star):
             "rolebot.group_context", self.group_context.render(scope, sequence, now, cfg)
         )
 
-    def capture_group_reply(self, event, chain):
+    def record_group_delivery(self, event, chain):
+        if event.is_private_chat() or not self.group_allowed(event):
+            return
+        self.policy.record_delivery(self.group_scope(event), time.time())
         if not event.get_extra("rolebot.capture_group"):
             return
         self.group_context.add(
@@ -129,6 +132,48 @@ class RolebotPlugin(Star):
             self.config.get("groups", {}),
         )
 
+    def group_delivery_chain(self, event, chain):
+        """Coalesce a busy group's model reply after native formatting/segmentation."""
+        if event.is_private_chat():
+            return chain
+        result = event.get_result()
+        if not result or not result.is_llm_result():
+            return chain
+        # Decide once, immediately before this result's first send. Reaching the
+        # threshold halfway through a reply affects the NEXT reply, not its tail.
+        if event.get_extra("rolebot.delivery_result") is result:
+            return None if event.get_extra("rolebot.coalesced_reply") else chain
+        event.set_extra("rolebot.delivery_result", result)
+        event.set_extra("rolebot.coalesced_reply", False)
+        cfg = self.config.get("groups", {})
+        if not cfg.get("compact_reply_enabled", True) or not self.policy.compact_reply(
+            self.group_scope(event),
+            time.time(),
+            bounded(cfg.get("compact_reply_window_seconds"), 60, 1, 600),
+            bounded(cfg.get("compact_reply_threshold"), 6, 1, 100),
+        ):
+            return chain
+        # QQ requires voice recordings to be sent separately. Preserve explicit
+        # voice requests; this policy controls ordinary segmented chat replies.
+        if any(isinstance(c, Record) for c in [*result.chain, *chain.chain]):
+            return chain
+        if not result.chain:
+            return chain
+        # RespondStage already removed quote/@ headers for segmented delivery.
+        headers = [
+            c
+            for c in chain.chain
+            if isinstance(c, (Reply, At)) and not any(c is item for item in result.chain)
+        ]
+        combined = []
+        for component in [*headers, *result.chain]:
+            if isinstance(component, Plain) and combined and isinstance(combined[-1], Plain):
+                combined[-1] = Plain(text=combined[-1].text + "\n\n" + component.text)
+            else:
+                combined.append(component)
+        event.set_extra("rolebot.coalesced_reply", True)
+        return chain.derive(combined)
+
     def guard_send(self, event):
         if event.get_extra("rolebot.send_guard"):
             return
@@ -137,6 +182,9 @@ class RolebotPlugin(Star):
 
         async def guarded(chain):
             if event.get_extra("rolebot.send_failed"):
+                return
+            chain = self.group_delivery_chain(event, chain)
+            if chain is None:
                 return
             try:
                 await original(chain)
@@ -148,14 +196,14 @@ class RolebotPlugin(Star):
                     try:
                         fallback_chain = event.plain_result(fallback)
                         await original(fallback_chain)
-                        self.capture_group_reply(event, fallback_chain)
+                        self.record_group_delivery(event, fallback_chain)
                     except Exception as fallback_error:
                         self.logger.warning(
                             "Rolebot voice text fallback failed (%s).",
                             type(fallback_error).__name__,
                         )
             else:
-                self.capture_group_reply(event, chain)
+                self.record_group_delivery(event, chain)
 
         event.send = guarded
 
