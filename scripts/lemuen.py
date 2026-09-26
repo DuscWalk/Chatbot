@@ -63,7 +63,8 @@ def build(cache=None):
             "README.md",
         ]:
             archive.write(PLUGIN / name, f"astrbot_plugin_lemuen/{name}")
-        archive.write(ROOT / "voice-guide.json", "astrbot_plugin_lemuen/voice-guide.json")
+        for name in ("voice-guide.json", "voice-lines.json"):
+            archive.write(ROOT / name, f"astrbot_plugin_lemuen/{name}")
     (BUILD / "private-chat-settings.json").write_text(
         json.dumps(PRIVATE_CHAT_SETTINGS, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )

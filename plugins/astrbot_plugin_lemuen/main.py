@@ -17,6 +17,7 @@ from .render import (
     CONTEXT_RULE,
     SPEAKER_PREFIX,
     compile_style,
+    compile_voices,
     entry_ids,
     native_chunks,
     retrieval_query,
@@ -29,10 +30,13 @@ class LemuenPlugin(Star):
         super().__init__(context)
         self.config = config
         self.proactive = None
-        guide = Path(__file__).with_name("voice-guide.json")
-        if not guide.exists():  # Source checkout; release ZIP includes this asset.
-            guide = Path(__file__).resolve().parents[2] / "knowledge/lemuen/voice-guide.json"
-        self.guide = json.loads(guide.read_text(encoding="utf-8"))
+        assets = Path(__file__).parent
+        if not (assets / "voice-guide.json").exists():  # Source checkout.
+            assets = Path(__file__).resolve().parents[2] / "knowledge/lemuen"
+        self.guide = json.loads((assets / "voice-guide.json").read_text(encoding="utf-8"))
+        self.voice_prompt = compile_voices(
+            json.loads((assets / "voice-lines.json").read_text(encoding="utf-8"))
+        )
 
     async def initialize(self):
         try:
@@ -113,7 +117,8 @@ class LemuenPlugin(Star):
         style, patterns, examples = compile_style(self.guide, ids, query)
         knowledge = "" if reused_native else "\n".join(bounded)
         req.system_prompt = (req.system_prompt or "") + (
-            f"\n{CONTEXT_MARKER}\n{CONTEXT_RULE}\n<参考资料>\n{knowledge}\n</参考资料>"
+            f"\n{CONTEXT_MARKER}\n{self.voice_prompt}\n{CONTEXT_RULE}"
+            f"\n<参考资料>\n{knowledge}\n</参考资料>"
             f"\n<谈话方式>\n{style}\n</谈话方式>\n</lemuen_context>"
         )
         # This small, data-only annotation survives history saving; retrieved facts do not.

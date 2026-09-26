@@ -28,6 +28,7 @@ from plugins.astrbot_plugin_lemuen.main import LemuenPlugin
 from plugins.astrbot_plugin_lemuen.render import (
     CONTEXT_MARKER,
     SPEAKER_PREFIX,
+    VOICE_MARKER,
     compile_style,
     retrieval_query,
     session_allowed,
@@ -67,6 +68,9 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
             ),
         )
         self.plugin = LemuenPlugin(self.context, self.config)
+        self.voices = json.loads(
+            (Path(__file__).resolve().parents[1] / "knowledge/lemuen/voice-lines.json").read_text()
+        )["lines"]
         self.req = ProviderRequest(
             prompt="test",
             system_prompt="原生人格和其他系统设置",
@@ -86,6 +90,7 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
         self.event.session.session_id = "new-friend"
         await self.plugin.on_request(self.event, self.req)
         self.context.kb_manager.retrieve.assert_awaited_once()
+        self.assert_complete_voices(self.req.system_prompt)
         for umo in ["napcat:FriendMessage:new-friend", "napcat:FriendMessage:another:friend"]:
             self.assertTrue(session_allowed(umo, self.config["allowed_sessions"]))
         for umo in [
@@ -123,6 +128,12 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
         await self.plugin.on_request(self.event, self.req)
         self.assertIsNone(self.req.func_tool)
 
+    def assert_complete_voices(self, prompt):
+        self.assertEqual(prompt.count(VOICE_MARKER), 1)
+        self.assertEqual(len(self.voices), 38)
+        for line in self.voices:
+            self.assertIn(f"【{line['title']}】\n{line['text']}", prompt)
+
     async def test_native_request_preserved_and_reference_conditional(self):
         await self.plugin.on_request(self.event, self.req)
         self.assertTrue(self.req.system_prompt.startswith("原生人格和其他系统设置"))
@@ -134,6 +145,7 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(json.loads(marker.removeprefix(SPEAKER_PREFIX))["id"], "alice")
         await self.plugin.on_request(self.event, self.req)
         self.assertEqual(self.req.system_prompt.count(CONTEXT_MARKER), 1)
+        self.assert_complete_voices(self.req.system_prompt)
         self.context.kb_manager.retrieve.assert_awaited_once()
 
     async def test_retrieval_failure_keeps_persona_without_friendship_examples(self):
@@ -145,6 +157,7 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(self.event.get_extra("lemuen")["retrieval"], status)
             self.assertNotIn("B05", self.event.get_extra("lemuen")["pattern_ids"])
             self.assertNotIn("private-data", req.system_prompt)
+            self.assert_complete_voices(req.system_prompt)
 
     async def test_timeout_is_enforced_and_empty_results_are_safe(self):
         async def stalled(**kwargs):
@@ -172,6 +185,7 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
         self.context.kb_manager.retrieve.assert_not_awaited()
         self.assertEqual(self.event.get_extra("lemuen")["entry_ids"], ["L061"])
         self.assertNotIn("旧友的分歧", self.req.system_prompt)
+        self.assert_complete_voices(self.req.system_prompt)
 
     async def test_native_bubbles_preserve_text_code_long_answers_and_commands(self):
         config = copy.deepcopy(DEFAULT_CONFIG)

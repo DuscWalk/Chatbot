@@ -286,9 +286,16 @@ async def verify(root, live=False):
         with patch.object(ctx, "get_platform_inst", return_value=fake_platform):
             generated = await scheduler.generate(a.unified_msg_origin)
         assert generated and generated["text"], "proactive generation failed"
+        if not live:
+            # This uses the packaged plugin and the actual proactive request builder.
+            system = chat.text_chat.await_args.kwargs["system_prompt"]
+            voices = read(ROOT / "knowledge/lemuen/voice-lines.json")["lines"]
+            assert system.count("<lemuen_voice_lines>") == 1
+            assert all(f"【{line['title']}】\n{line['text']}" in system for line in voices)
         return {
             "live_api": live,
             "proactive_generation": True,
+            "complete_voice_prompt": True,
             "loaded": list(loaded),
             "debounce": True,
             "rolebot": rolebot_results,

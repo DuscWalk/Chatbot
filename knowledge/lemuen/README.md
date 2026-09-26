@@ -10,6 +10,7 @@
 | [entries.json](entries.json) | 79 个条目：54 条事实、14 条人物自述、1 条展示、8 条演绎分析、2 条项目约定 |
 | [sources.json](sources.json) | 65 个来源记录及具体定位、版本与核读状态 |
 | [aliases.json](aliases.json) | 人物别名与条目关联 |
+| [voice-lines.json](voice-lines.json) | 38 条游戏语音原文及场景标题；每轮加入系统提示词，出处对应来源 V |
 | [voice-guide.json](voice-guide.json) | 有出处的表达参考；手写样例明确标注，不当作官方经历 |
 | [review-notes.md](review-notes.md) | 梦境、康复、人物关系等易错点 |
 

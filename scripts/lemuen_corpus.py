@@ -139,6 +139,30 @@ def validate(bundle, cache):
             record["entry_ids"] and set(record["entry_ids"]) <= entries.keys(),
             f"{name} 引用条目错误",
         )
+    voices = bundle["voice-lines"]
+    require(voices["source_id"] == "V", "角色语音必须引用台词资源 V")
+    require(voices["character_id"] == "char_4193_lemuen", "角色语音的干员不匹配")
+    lines = unique_index(voices["lines"], "角色语音")
+    require(lines, "角色语音为空")
+    for lid, line in lines.items():
+        require(re.fullmatch(r"char_4193_lemuen_CN_\d{3}", lid), f"语音 ID 错误：{lid}")
+        require(
+            all(isinstance(line[k], str) and line[k].strip() for k in ("title", "text")),
+            f"语音为空：{lid}",
+        )
+    if cache:
+        originals = {
+            key: row
+            for key, row in tables["V"]["charWords"].items()
+            if row["charId"] == voices["character_id"]
+        }
+        require(lines.keys() == originals.keys(), "角色语音未完整收录或混入额外条目")
+        for lid, line in lines.items():
+            original = originals[lid]
+            require(
+                line["title"] == original["voiceTitle"] and line["text"] == original["voiceText"],
+                f"角色语音与原文不符：{lid}",
+            )
     guide = bundle["voice-guide"]
     patterns = unique_index(guide["patterns"], "谈话方式")
     require(guide["editorial_rules"], "谈话方式缺少表达约定")
@@ -283,5 +307,5 @@ def import_payload(bundle, entries, sources):
 def read_bundle():
     return {
         name: load(ROOT / f"{name}.json")
-        for name in ("entries", "sources", "aliases", "voice-guide")
+        for name in ("entries", "sources", "aliases", "voice-guide", "voice-lines")
     }
