@@ -137,3 +137,105 @@ async def verify_open_groups(plugin, group):
             assert any(
                 h.handler_name == "control_group" for h in ev.get_extra("activated_handlers")
             )
+
+
+async def verify_group_context(plugin, group):
+    from astrbot.api.event import MessageChain
+    from astrbot.api.message_components import At, Image, Plain
+    from astrbot.api.provider import ProviderRequest
+    from astrbot.core.agent.message import Message, TextPart, dump_messages_with_checkpoints
+    from data.plugins.astrbot_plugin_rolebot.group_context import CONTEXT_PREFIX, GroupContextBuffer
+    from data.plugins.astrbot_plugin_rolebot.policy import GroupPolicy
+
+    plugin.group_context = GroupContextBuffer()
+    plugin.policy = GroupPolicy()
+    plugin.config["groups"].update(probability=0, repeat_enabled=False, context_enabled=True)
+    serial = 0
+    with patch("data.plugins.astrbot_plugin_rolebot.main.time") as clock:
+
+        async def route(text, stamp, gid="ambient-group", components=None, addressed=False):
+            nonlocal serial
+            serial += 1
+            clock.time.return_value = stamp
+            ev = group(text, f"ambient-user-{serial}", gid, addressed=addressed)
+            ev.message_obj.message_id = str(serial)
+            if components is not None:
+                ev.message_obj.message = components
+            await plugin.route(ev)
+            return ev
+
+        # Ambient traffic passes through capture even though routing stops the event.
+        for i in range(8):
+            ev = await route(f"晚饭话题{i}", 1000 + i)
+            assert ev.is_stopped()
+        mentioned = await route("我也去", 1009, components=[At(qq="someone"), Plain(text="我也去")])
+        assert mentioned.is_stopped()
+        media = await route(
+            "", 1010, components=[Image(file="private-path", url="https://example.com/secret")]
+        )
+        assert media.is_stopped()
+        await route("另一个群", 1011, gid="ambient-other")
+        current = await route("安姐，一起吗", 1012)
+        assert not current.is_stopped()
+        # New arrivals during generation cannot silently change this speaker's request.
+        limited = await route("稍后到的新消息", 1013, addressed=True)
+        assert limited.is_stopped(), "cooldown should still apply"
+        req = ProviderRequest(
+            prompt=current.message_str, contexts=[{"role": "assistant", "content": "历史回答"}]
+        )
+        await plugin.enrich(current, req)
+        parts = [p for p in req.extra_user_content_parts if p.text.startswith(CONTEXT_PREFIX)]
+        assert len(parts) == 1
+        text = parts[0].text
+        assert all(f"晚饭话题{i}" in text for i in range(8)), "time window was capped at six"
+        assert "我也去" in text and "[图片]" in text
+        assert not any(
+            s in text
+            for s in ["安姐，一起吗", "另一个群", "稍后到的新消息", "secret", "private-path"]
+        )
+        # AstrBot's real history serializer drops the ambient block.
+        saved = dump_messages_with_checkpoints(
+            [Message(role="user", content=[TextPart(text=req.prompt), *parts])]
+        )
+        assert saved[0]["content"] == [{"type": "text", "text": req.prompt}]
+        assert req.contexts == [{"role": "assistant", "content": "历史回答"}]
+        await plugin.enrich(current, req)
+        assert sum(p.text.startswith(CONTEXT_PREFIX) for p in req.extra_user_content_parts) == 1
+
+        clock.time.return_value = 1014
+        await current.send(MessageChain([Plain(text="成功送达的回答")]))
+        clock.time.return_value = 1015
+        # Only successful sends join the ambient window.
+        from unittest.mock import AsyncMock
+
+        failed = group("安姐", "failed-user", "ambient-group", addressed=True)
+        failed.message_obj.message_id = "failed-message"
+        failed.send = AsyncMock(side_effect=RuntimeError("synthetic failure"))
+        await plugin.route(failed)
+        await failed.send(MessageChain([Plain(text="没有送达的回答")]))
+        following = await route("安姐，还有呢", 1020)
+        follow_req = ProviderRequest(prompt=following.message_str)
+        await plugin.enrich(following, follow_req)
+        next_text = next(
+            p.text for p in follow_req.extra_user_content_parts if p.text.startswith(CONTEXT_PREFIX)
+        )
+        assert "稍后到的新消息" in next_text and "成功送达的回答" in next_text
+        assert "没有送达的回答" not in next_text
+        admin = group("bot clear", "admin", "ambient-group", addressed=True)
+        admin.role = "admin"
+        _ = [answer async for answer in plugin.control_group(admin, "clear")]
+        assert plugin.group_scope(admin) not in plugin.group_context.groups
+        _ = [answer async for answer in plugin.control_group(admin, "off")]
+        await route("关闭期间的话", 1050)
+        assert plugin.group_scope(admin) not in plugin.group_context.groups
+        _ = [answer async for answer in plugin.control_group(admin, "on")]
+        _ = [answer async for answer in plugin.control_group(admin, "mute 10m")]
+        muted = await route("静默期间的话", 1060)
+        assert muted.is_stopped() and plugin.group_scope(admin) in plugin.group_context.groups
+        _ = [answer async for answer in plugin.control_group(admin, "on")]
+        resumed = await route("安姐，回来了", 1070)
+        assert "静默期间的话" in resumed.get_extra("rolebot.group_context")
+        plugin.config["groups"]["context_enabled"] = False
+        disabled = await route("安姐", 1080)
+        assert not disabled.get_extra("rolebot.group_context")
+        assert plugin.group_scope(admin) not in plugin.group_context.groups

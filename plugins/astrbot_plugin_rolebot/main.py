@@ -13,6 +13,7 @@ from astrbot.core.star.filter.command import GreedyStr
 
 from .custom_faces import CustomFaceRegistrar
 from .diagnostics import DebugTraceLogger
+from .group_context import GroupContextBuffer, message_text
 from .media import NapCatFaces, repeat_payload, sticker_component, video_references
 from .policy import GroupPolicy, bounded, clock_context, duration, intent, voice_requested
 from .search import SearchService
@@ -33,6 +34,7 @@ class RolebotPlugin(Star):
         super().__init__(context)
         self.config = config
         self.policy = GroupPolicy()
+        self.group_context = GroupContextBuffer()
         self.pending_videos = {}
         self.data_dir = StarTools.get_data_dir("astrbot_plugin_rolebot")
         self.data_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -89,6 +91,44 @@ class RolebotPlugin(Star):
         state = await self.group_state(event)
         return state["enabled"] and state["muted_until"] <= time.time()
 
+    def capture_group(self, event, now):
+        cfg = self.config.get("groups", {})
+        if not cfg.get("context_enabled", True):
+            self.group_context.clear(self.group_scope(event))
+            return
+        if event.get_extra("rolebot.capture_group"):
+            return
+        if str(event.get_sender_id()) == str(event.get_self_id()):
+            return
+        scope = self.group_scope(event)
+        sequence = self.group_context.add(
+            scope,
+            str(event.message_obj.message_id or ""),
+            str(event.get_sender_id()),
+            event.get_sender_name(),
+            message_text(event.get_messages()),
+            now,
+            cfg,
+        )
+        # Freeze at arrival: another person's message during generation belongs to a later turn.
+        event.set_extra("rolebot.capture_group", True)
+        event.set_extra(
+            "rolebot.group_context", self.group_context.render(scope, sequence, now, cfg)
+        )
+
+    def capture_group_reply(self, event, chain):
+        if not event.get_extra("rolebot.capture_group"):
+            return
+        self.group_context.add(
+            self.group_scope(event),
+            "",
+            str(event.get_self_id()),
+            "机器人（你）",
+            message_text(chain.chain),
+            time.time(),
+            self.config.get("groups", {}),
+        )
+
     def guard_send(self, event):
         if event.get_extra("rolebot.send_guard"):
             return
@@ -106,12 +146,16 @@ class RolebotPlugin(Star):
                 fallback = event.get_extra("rolebot.voice_fallback")
                 if fallback and any(isinstance(c, Record) for c in chain.chain):
                     try:
-                        await original(event.plain_result(fallback))
+                        fallback_chain = event.plain_result(fallback)
+                        await original(fallback_chain)
+                        self.capture_group_reply(event, fallback_chain)
                     except Exception as fallback_error:
                         self.logger.warning(
                             "Rolebot voice text fallback failed (%s).",
                             type(fallback_error).__name__,
                         )
+            else:
+                self.capture_group_reply(event, chain)
 
         event.send = guarded
 
@@ -134,13 +178,19 @@ class RolebotPlugin(Star):
         )
         if not event.is_private_chat():
             if not self.group_allowed(event):
+                self.group_context.clear(self.group_scope(event))
                 event.stop_event()
                 return
             control = event.get_message_str().strip().lstrip("/").split(maxsplit=1)[0:1]
             if control in (["bot"], ["rolebot"]) and event.is_at_or_wake_command:
                 return
             state = await self.group_state(event)
-            if not state["enabled"] or state["muted_until"] > now:
+            if not state["enabled"]:
+                self.group_context.clear(self.group_scope(event))
+                event.stop_event()
+                return
+            self.capture_group(event, now)
+            if state["muted_until"] > now:
                 event.stop_event()
                 return
             cfg = self.config.get("groups", {})
@@ -238,6 +288,9 @@ class RolebotPlugin(Star):
                 "\n这是群聊。按当前发言者区分身份和经历；先回应其消息。"
                 "普通闲聊用一到两个简短段落，步骤、代码等按问题需要完整表达。"
             )
+            background = event.get_extra("rolebot.group_context")
+            if background and self.config.get("groups", {}).get("context_enabled", True):
+                req.extra_user_content_parts.append(TextPart(text=background).mark_as_temp())
         if self.config.get("time_enabled", True):
             req.extra_user_content_parts.append(TextPart(text=clock_context()).mark_as_temp())
         pending = self.pending_videos.pop(event.unified_msg_origin, (0, []))
@@ -373,6 +426,8 @@ class RolebotPlugin(Star):
             if command == "on":
                 state["muted_until"] = 0
             message = "已开启本群回复。" if state["enabled"] else "已关闭本群回复。"
+            if command == "off":
+                self.group_context.clear(self.group_scope(event))
         elif command == "mute" and len(parts) == 2:
             try:
                 state["muted_until"] = time.time() + duration(parts[1])
@@ -391,6 +446,7 @@ class RolebotPlugin(Star):
         elif command == "clear":
             await self.context.conversation_manager.new_conversation(event.unified_msg_origin)
             self.pending_videos.pop(event.unified_msg_origin, None)
+            self.group_context.clear(self.group_scope(event))
             self.policy.chains.pop(self.group_scope(event), None)
             self.policy.followups = {
                 k: v for k, v in self.policy.followups.items() if k[0] != self.group_scope(event)

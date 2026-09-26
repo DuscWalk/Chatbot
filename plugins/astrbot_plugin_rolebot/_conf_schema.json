@@ -172,6 +172,36 @@
         "description": "引用回复（每人至少间隔 60 秒）",
         "type": "bool",
         "default": true
+      },
+      "context_enabled": {
+        "description": "提供近期群消息背景",
+        "type": "bool",
+        "default": true,
+        "hint": "包含未触发回复的消息及机器人已成功发送的消息；与原生对话历史共同使用。缓存只在内存，重启后重新积累。"
+      },
+      "context_recent_count": {
+        "description": "至少参考最近多少条群消息",
+        "type": "int",
+        "default": 6,
+        "hint": "取当前消息之前的最近 N 条，与时间窗口取并集、去重；不是对话轮数。"
+      },
+      "context_recent_seconds": {
+        "description": "同时参考最近多少秒的群消息",
+        "type": "int",
+        "default": 180,
+        "hint": "默认 180 秒（3 分钟），与最近条数取并集。0 表示只按条数。"
+      },
+      "context_max_messages": {
+        "description": "近期群消息最多注入条数",
+        "type": "int",
+        "default": 100,
+        "hint": "消息密集时优先保留最新消息。"
+      },
+      "context_max_chars": {
+        "description": "近期群消息最多注入字符数",
+        "type": "int",
+        "default": 12000,
+        "hint": "单条文本最长 1000 字符；图片、视频等仅保留占位符，不自动逐条识图。"
       }
     }
   },
