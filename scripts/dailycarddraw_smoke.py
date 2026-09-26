@@ -1,5 +1,6 @@
 """Check the card backend with synthetic users; clean up every inserted test row."""
 
+import argparse
 import json
 import struct
 import subprocess
@@ -7,11 +8,18 @@ import uuid
 from urllib.error import HTTPError
 from urllib.request import ProxyHandler, Request, build_opener
 
-from manage_dailycarddraw import ROOT, compose
+from manage_dailycarddraw import ROOT, compose, import_catalog
 from manage_plugins import read, write
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--catalog",
+        action="store_true",
+        help="Import the full catalog (disposable CI database only)",
+    )
+    args = parser.parse_args()
     credentials = read(ROOT / "runtime/dailycarddraw/credentials.json")
     opener = build_opener(ProxyHandler({}))
     base = "http://127.0.0.1:3100"
@@ -59,6 +67,8 @@ def main():
         )
         assert status == 200 and result["data"]["created"] == 1
         checks["card_import"] = True
+        if args.catalog:
+            import_catalog()
         for mode, width in (("single", 320), ("ten", 3200)):
             payload = {
                 "qq_id": test_id,
@@ -78,6 +88,17 @@ def main():
             status, result = request("/api/daily-carddraw/draw", payload, credentials["api_token"])
             assert 400 <= status < 500 and not result["success"], "daily quota was not enforced"
         checks["single_ten_images_and_shared_daily_quota"] = True
+        if args.catalog:
+            import_catalog()
+            imported = read(ROOT / "runtime/dailycarddraw/latest-import.json")
+            assert imported["created"] == 0 and imported["enabled_cards"] == imported["cards"]
+            for mode in ("single", "ten"):
+                payload["draw_mode"] = mode
+                status, result = request(
+                    "/api/daily-carddraw/draw", payload, credentials["api_token"]
+                )
+                assert 400 <= status < 500 and not result["success"], "import reset used quota"
+            checks["full_catalog_reimport_preserves_ids_and_used_quotas"] = True
         status, result = request("/api/daily-carddraw/history?qq_id=" + test_id)
         assert status == 200 and result["success"] and result["data"]["total"] == 2
         status, result = request("/api/daily-carddraw/stats?qq_id=" + test_id)

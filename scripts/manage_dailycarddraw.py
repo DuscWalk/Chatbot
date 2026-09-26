@@ -3,11 +3,14 @@
 import argparse
 import hashlib
 import json
+import re
 import secrets
 import shutil
 import subprocess
 import tarfile
 import urllib.request
+from collections import Counter
+from datetime import UTC, datetime
 from pathlib import Path
 
 if __package__:
@@ -185,9 +188,193 @@ def health(root=ROOT):
     print("Daily-card backend and database ready.")
 
 
+def load_catalog(root=ROOT):
+    """Validate the tracked catalog and every referenced avatar/icon before importing."""
+    catalog = read(root / "deploy/dailycarddraw/catalog.json")
+    cards = catalog["cards"]
+    weights = catalog["rarity_weights"]
+    if catalog["schema_version"] != 1 or not cards:
+        raise ValueError("Unsupported or empty card catalog")
+    if set(weights) != {str(n) for n in range(1, 7)} or any(
+        type(value) is not int or value <= 0 for value in weights.values()
+    ):
+        raise ValueError("All six rarities need positive integer weights")
+    for field in ("card_key", "name", "game_char_id"):
+        values = [card[field] for card in cards]
+        if any(not value for value in values) or len(set(values)) != len(cards):
+            raise ValueError(f"Empty or duplicate catalog field: {field}")
+    professions = {"先锋", "狙击", "重装", "医疗", "辅助", "术师", "特种", "近卫"}
+    resources = set()
+    for card in cards:
+        if (
+            not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", card["card_key"])
+            or type(card["rarity"]) is not int
+            or str(card["rarity"]) not in weights
+            or card["profession"] not in professions
+            or not isinstance(card["obtain"], list)
+            or any(not isinstance(value, str) for value in card["obtain"])
+        ):
+            raise ValueError(f"Invalid card: {card['card_key']}")
+        resources.update(
+            {
+                f"resource/avatar/{card['card_key']}.png",
+                f"resource/profession/{card['profession']}.png",
+                f"resource/rarity/rarity{card['rarity']}.png",
+            }
+        )
+    pinned = next(p for p in read(root / "plugins/lock.json")["upstream"] if p["id"] == PLUGIN)
+    source = catalog["avatar_source"]
+    if source["commit"] != pinned["commit"] or source["archive_sha256"] != pinned["sha256"]:
+        raise ValueError("Catalog avatars do not match the pinned plugin")
+    with tarfile.open(root / "runtime/dailycarddraw/build/server/resource.tar.gz") as archive:
+        members = {str(Path(member.name)): member for member in archive.getmembers()}
+        for name in sorted(resources):
+            member = members.get(name)
+            if member is None or not member.isfile():
+                raise ValueError(f"Missing card image: {name}")
+            with archive.extractfile(member) as image:
+                header = image.read(24)
+            if (
+                len(header) != 24
+                or header[:8] != b"\x89PNG\r\n\x1a\n"
+                or header[12:16] != b"IHDR"
+                or not int.from_bytes(header[16:20], "big")
+                or not int.from_bytes(header[20:24], "big")
+            ):
+                raise ValueError(f"Invalid PNG: {name}")
+    return catalog
+
+
+def panel_client(root=ROOT):
+    credentials = read(root / "runtime/dailycarddraw/credentials.json")
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    token = ""
+
+    def request(path, body=None, method=None):
+        headers = {"Content-Type": "application/json"}
+        if token:
+            headers["Authorization"] = "Bearer " + token
+        req = urllib.request.Request(
+            "http://127.0.0.1:3100/manage/api" + path,
+            data=json.dumps(body).encode() if body is not None else None,
+            headers=headers,
+            method=method,
+        )
+        with opener.open(req, timeout=30) as response:
+            result = json.load(response)
+        if not result.get("success"):
+            raise RuntimeError(f"Card management API failed: {path}")
+        return result["data"]
+
+    token = request(
+        "/login",
+        {"username": credentials["panel_username"], "password": credentials["panel_password"]},
+    )["token"]
+    return request
+
+
+def import_catalog(root=ROOT):
+    """Explicit operator action only: replace pool contents, retaining IDs/history/quotas."""
+    stage(root)
+    catalog = load_catalog(root)
+    request = panel_client(root)
+    pool = next(
+        (p for p in request("/pools")["list"] if p["pool_key"] == catalog["pool"]["pool_key"]),
+        None,
+    )
+    if pool is None:
+        raise ValueError("Target pool must already exist")
+    path = f"/pools/{pool['id']}"
+    before = request(path + "/cards")
+    old_cards = request("/cards")["list"]
+    runtime = root / "runtime/dailycarddraw"
+    write(
+        runtime / "catalog-before-import.json",
+        {
+            "saved_at": datetime.now(UTC).isoformat(),
+            "cards": old_cards,
+            "pool": pool,
+            "items": [
+                {key: row[key] for key in ("card_id", "weight", "is_up")} for row in before["list"]
+            ],
+            "rarity_items": [
+                {key: row[key] for key in ("rarity", "weight")} for row in before["rarity_list"]
+            ],
+        },
+    )
+    imported = request("/cards/import", {"cards": catalog["cards"]})
+    if imported["skipped"] or imported["errors"] or imported["total"] != len(catalog["cards"]):
+        raise RuntimeError("Incomplete card import; pool membership has not been changed")
+    saved = {card["card_key"]: card for card in request("/cards")["list"]}
+    for old in old_cards:
+        current = saved[old["card_key"]]
+        if any(current[key] != old[key] for key in ("id", "description", "is_enabled")):
+            raise RuntimeError("Import changed an existing card ID or manual setting")
+    for card in catalog["cards"]:
+        current = saved[card["card_key"]]
+        if current["card_name"] != card["name"] or any(
+            current[key] != card[key] for key in ("rarity", "profession", "obtain")
+        ):
+            raise RuntimeError(f"Imported card differs from catalog: {card['card_key']}")
+    request(
+        path + "/cards",
+        {
+            "items": [
+                {"card_id": saved[card["card_key"]]["id"], "weight": 1, "is_up": False}
+                for card in catalog["cards"]
+            ],
+            "rarity_items": [
+                {"rarity": int(rarity), "weight": weight}
+                for rarity, weight in catalog["rarity_weights"].items()
+            ],
+        },
+        method="PUT",
+    )
+    metadata = {key: catalog["pool"][key] for key in ("pool_name", "description")}
+    request(path, metadata, method="PUT")
+    after = request(path + "/cards")
+    expected = {card["card_key"] for card in catalog["cards"]}
+    if (
+        len(after["list"]) != len(expected)
+        or {card["card_key"] for card in after["list"]} != expected
+        or any(card["weight"] != 1 or card["is_up"] for card in after["list"])
+        or {str(row["rarity"]): row["weight"] for row in after["rarity_list"]}
+        != catalog["rarity_weights"]
+        or after["pool"] != pool | metadata
+    ):
+        raise RuntimeError("Pool verification failed; inspect catalog-before-import.json")
+    summary = {
+        "imported_at": datetime.now(UTC).isoformat(),
+        "data_date": catalog["data_date"],
+        "pool_id": pool["id"],
+        "pool_name": metadata["pool_name"],
+        "cards": len(after["list"]),
+        "enabled_cards": sum(bool(card["is_enabled"]) for card in after["list"]),
+        "by_rarity": dict(sorted(Counter(card["rarity"] for card in after["list"]).items())),
+        "rarity_weights": catalog["rarity_weights"],
+        "created": imported["created"],
+        "updated": imported["updated"],
+        "existing_ids_and_quota_settings_preserved": True,
+    }
+    write(runtime / "latest-import.json", summary)
+    print(json.dumps(summary, ensure_ascii=False))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["stage", "prepare", "build", "up", "restart", "check"])
+    parser.add_argument(
+        "command",
+        choices=[
+            "stage",
+            "prepare",
+            "build",
+            "up",
+            "restart",
+            "check",
+            "check-catalog",
+            "import-catalog",
+        ],
+    )
     args = parser.parse_args()
     if args.command == "stage":
         print(stage())
@@ -201,6 +388,12 @@ def main():
             build_image()
         subprocess.run([*compose(), "up", "-d", "--wait", "--wait-timeout", "180"], check=True)
         health()
+    elif args.command == "check-catalog":
+        stage()
+        catalog = load_catalog()
+        print(f"Catalog valid: {len(catalog['cards'])} cards, all avatars and icons present.")
+    elif args.command == "import-catalog":
+        import_catalog()
     else:
         health()
 

@@ -1,0 +1,4349 @@
+{
+  "schema_version": 1,
+  "data_date": "2026-09-20",
+  "scope": "全部可获得干员，含限定、联动、赠送；阿米娅按三种职业分别成卡。排除敌人、召唤物和不可获得单位。",
+  "sources": [
+    {
+      "name": "character_table.json",
+      "url": "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/excel/character_table.json",
+      "commit": "bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0",
+      "sha256": "d0f71567472d75c61e8975a418235b8076864e59dad19978a2bcbdeab999048a"
+    },
+    {
+      "name": "char_patch_table.json",
+      "url": "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0/zh_CN/gamedata/excel/char_patch_table.json",
+      "commit": "bb8f9ac8db143a661577ed6ef5184d3c6e93d1d0",
+      "sha256": "d1850d5aeec1a9246a0531e88c167e66745644957662c8272fc764f54904c57e"
+    }
+  ],
+  "avatar_source": {
+    "repo": "i000stea/astrbot_plugin_dailycarddraw",
+    "commit": "aa28398277f2a9c6f002e2eebf0650bc06f28319",
+    "archive_sha256": "46e20b1ae8feb400a0307f4ad31524853bc1b77cdbb3882b79aeba575504a357"
+  },
+  "pool": {
+    "pool_key": "normal_pool",
+    "pool_name": "全干员娱乐池",
+    "description": "国服 2026-09-20 数据：429 名干员及阿米娅另外两种职业，共 431 张卡。含限定、联动、赠送。同星级等概率，无 UP；娱乐规则，不模拟官方保底。"
+  },
+  "rarity_weights": {
+    "1": 2,
+    "2": 8,
+    "3": 30,
+    "4": 50,
+    "5": 8,
+    "6": 2
+  },
+  "cards": [
+    {
+      "card_key": "AA00",
+      "name": "乌尔比安",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4145_ulpia"
+    },
+    {
+      "card_key": "AA01",
+      "name": "斯卡蒂",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_263_skadi"
+    },
+    {
+      "card_key": "AA05",
+      "name": "歌蕾蒂娅",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_474_glady"
+    },
+    {
+      "card_key": "AM01",
+      "name": "丰川祥子",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4182_oblvns"
+    },
+    {
+      "card_key": "AZ01",
+      "name": "赫拉格",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_188_helage"
+    },
+    {
+      "card_key": "B003",
+      "name": "凯尔希",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_003_kalts"
+    },
+    {
+      "card_key": "B00W",
+      "name": "维什戴尔",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1035_wisdel"
+    },
+    {
+      "card_key": "B214",
+      "name": "W",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_113_cqbw"
+    },
+    {
+      "card_key": "B215",
+      "name": "伊内丝",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4087_ines"
+    },
+    {
+      "card_key": "B216",
+      "name": "赫德雷",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4088_hodrer"
+    },
+    {
+      "card_key": "BS30",
+      "name": "涤火杰西卡",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1034_jesca2"
+    },
+    {
+      "card_key": "CB05",
+      "name": "山",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_264_f12yin"
+    },
+    {
+      "card_key": "CB35",
+      "name": "谬因",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4229_aphris"
+    },
+    {
+      "card_key": "CB88",
+      "name": "霍尔海雅",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4027_heyak"
+    },
+    {
+      "card_key": "CR01",
+      "name": "浊心斯卡蒂",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1012_skadi2"
+    },
+    {
+      "card_key": "CR02",
+      "name": "归溟幽灵鲨",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1023_ghost2"
+    },
+    {
+      "card_key": "CT01",
+      "name": "酒神",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1042_phatm2"
+    },
+    {
+      "card_key": "DB01",
+      "name": "死芒",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_450_necras"
+    },
+    {
+      "card_key": "DB02",
+      "name": "焰影苇草",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1020_reed2"
+    },
+    {
+      "card_key": "DD02",
+      "name": "玛露西尔",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4141_marcil"
+    },
+    {
+      "card_key": "DWDB",
+      "name": "魔王",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4134_cetsyr"
+    },
+    {
+      "card_key": "FO01",
+      "name": "闪灵",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_147_shining"
+    },
+    {
+      "card_key": "FO03",
+      "name": "夜莺",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_179_cgbird"
+    },
+    {
+      "card_key": "GG01",
+      "name": "推进之王",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_112_siege"
+    },
+    {
+      "card_key": "HK07",
+      "name": "水月",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_437_mizuki"
+    },
+    {
+      "card_key": "HK13",
+      "name": "嵯峨",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_362_saga"
+    },
+    {
+      "card_key": "HK15",
+      "name": "遥",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4202_haruka"
+    },
+    {
+      "card_key": "II01",
+      "name": "棘刺",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_293_thorns"
+    },
+    {
+      "card_key": "II02",
+      "name": "引星棘刺",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1039_thorn2"
+    },
+    {
+      "card_key": "II07",
+      "name": "艾丽妮",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4009_irene"
+    },
+    {
+      "card_key": "II09",
+      "name": "流明",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4042_lumen"
+    },
+    {
+      "card_key": "JC01",
+      "name": "银灰",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_172_svrash"
+    },
+    {
+      "card_key": "JC02",
+      "name": "灵知",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_206_gnosis"
+    },
+    {
+      "card_key": "JC07",
+      "name": "锏",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4116_blkkgt"
+    },
+    {
+      "card_key": "KJ01",
+      "name": "凛御银灰",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1045_svash2"
+    },
+    {
+      "card_key": "KJ02",
+      "name": "圣聆初雪",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1046_sbell2"
+    },
+    {
+      "card_key": "KZ01",
+      "name": "耀骑士临光",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1014_nearl2"
+    },
+    {
+      "card_key": "KZ08",
+      "name": "玛恩纳",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4064_mlynar"
+    },
+    {
+      "card_key": "KZ09",
+      "name": "瑕光",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_423_blemsh"
+    },
+    {
+      "card_key": "KZ11",
+      "name": "焰尾",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_420_flamtl"
+    },
+    {
+      "card_key": "KZ13",
+      "name": "远牙",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_430_fartth"
+    },
+    {
+      "card_key": "LM04",
+      "name": "陈",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_010_chen"
+    },
+    {
+      "card_key": "LM05",
+      "name": "星熊",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_136_hsguma"
+    },
+    {
+      "card_key": "LM18",
+      "name": "老鲤",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_322_lmlee"
+    },
+    {
+      "card_key": "LM20",
+      "name": "阿",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_225_haak"
+    },
+    {
+      "card_key": "LM21",
+      "name": "林",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4080_lin"
+    },
+    {
+      "card_key": "LM22",
+      "name": "琳琅诗怀雅",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1033_swire2"
+    },
+    {
+      "card_key": "LM23",
+      "name": "斩业星熊",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1044_hsgma2"
+    },
+    {
+      "card_key": "LN02",
+      "name": "艾雅法拉",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_180_amgoat"
+    },
+    {
+      "card_key": "LN04",
+      "name": "卡涅利安",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_426_billro"
+    },
+    {
+      "card_key": "LN05",
+      "name": "黑键",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4046_ebnhlz"
+    },
+    {
+      "card_key": "LN07",
+      "name": "止颂",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4011_lessng"
+    },
+    {
+      "card_key": "LN10",
+      "name": "纯烬艾雅法拉",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1016_agoat2"
+    },
+    {
+      "card_key": "LN11",
+      "name": "薇薇安娜",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4098_vvana"
+    },
+    {
+      "card_key": "LT08",
+      "name": "空弦",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_332_archet"
+    },
+    {
+      "card_key": "LT11",
+      "name": "菲亚梅塔",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_300_phenxi"
+    },
+    {
+      "card_key": "LT17",
+      "name": "蕾缪安",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4193_lemuen"
+    },
+    {
+      "card_key": "LT22",
+      "name": "塑心",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_245_cello"
+    },
+    {
+      "card_key": "LT32",
+      "name": "信仰搅拌机",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4194_rmixer"
+    },
+    {
+      "card_key": "LT40",
+      "name": "圣约送葬人",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1032_excu2"
+    },
+    {
+      "card_key": "LT77",
+      "name": "莫斯提马",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_213_mostma"
+    },
+    {
+      "card_key": "MH02",
+      "name": "麒麟R夜刀",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1029_yato2"
+    },
+    {
+      "card_key": "MH05",
+      "name": "焰狐龙梓兰",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1048_orchd2"
+    },
+    {
+      "card_key": "MN04",
+      "name": "帕拉斯",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_485_pallas"
+    },
+    {
+      "card_key": "NM01",
+      "name": "年",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2014_nian"
+    },
+    {
+      "card_key": "NM02",
+      "name": "夕",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2015_dusk"
+    },
+    {
+      "card_key": "NM03",
+      "name": "令",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2023_ling"
+    },
+    {
+      "card_key": "NM04",
+      "name": "重岳",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2024_chyue"
+    },
+    {
+      "card_key": "NM05",
+      "name": "黍",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2025_shu"
+    },
+    {
+      "card_key": "NM06",
+      "name": "余",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2026_yu"
+    },
+    {
+      "card_key": "NM07",
+      "name": "望",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2027_wang"
+    },
+    {
+      "card_key": "PL03",
+      "name": "能天使",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_103_angel"
+    },
+    {
+      "card_key": "PL07",
+      "name": "缄默德克萨斯",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1028_texas2"
+    },
+    {
+      "card_key": "PL08",
+      "name": "新约能天使",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1041_angel2"
+    },
+    {
+      "card_key": "PS33",
+      "name": "结城理",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4217_makoto"
+    },
+    {
+      "card_key": "R002",
+      "name": "凯尔希·思衡托",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1052_kalts2"
+    },
+    {
+      "card_key": "R003",
+      "name": "Mon3tr",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4179_monstr"
+    },
+    {
+      "card_key": "R00A",
+      "name": "可露希尔",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4228_closur"
+    },
+    {
+      "card_key": "R102",
+      "name": "予愿安洁莉娜",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1015_aglna2"
+    },
+    {
+      "card_key": "R109",
+      "name": "傀影",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_250_phatom"
+    },
+    {
+      "card_key": "R111",
+      "name": "史尔特尔",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_350_surtr"
+    },
+    {
+      "card_key": "R112",
+      "name": "假日威龙陈",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1013_chen2"
+    },
+    {
+      "card_key": "R117",
+      "name": "温蒂",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_400_weedy"
+    },
+    {
+      "card_key": "R145",
+      "name": "鸿雪",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4055_bgsnow"
+    },
+    {
+      "card_key": "R155",
+      "name": "刻俄柏",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2013_cerber"
+    },
+    {
+      "card_key": "R159",
+      "name": "泥岩",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_311_mudrok"
+    },
+    {
+      "card_key": "R169",
+      "name": "隐德来希",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4010_etlchi"
+    },
+    {
+      "card_key": "R172",
+      "name": "铃兰",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_358_lisa"
+    },
+    {
+      "card_key": "R182",
+      "name": "妮芙",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4146_nymph"
+    },
+    {
+      "card_key": "R315",
+      "name": "弑君者",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_1502_crosly"
+    },
+    {
+      "card_key": "RB15",
+      "name": "莱伊",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4117_ray"
+    },
+    {
+      "card_key": "RB19",
+      "name": "珊比",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4235_thumpy"
+    },
+    {
+      "card_key": "RE03",
+      "name": "逻各斯",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4133_logos"
+    },
+    {
+      "card_key": "RE06",
+      "name": "真言",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4204_mantra"
+    },
+    {
+      "card_key": "RE10",
+      "name": "电弧",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "集成战略获得"
+      ],
+      "game_char_id": "char_4195_radian"
+    },
+    {
+      "card_key": "RE21",
+      "name": "机械师",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "集成战略获得"
+      ],
+      "game_char_id": "char_4230_mcnist"
+    },
+    {
+      "card_key": "RE41",
+      "name": "煌",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_017_huang"
+    },
+    {
+      "card_key": "RE45",
+      "name": "迷迭香",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_391_rosmon"
+    },
+    {
+      "card_key": "REX1",
+      "name": "烛煌",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1040_blaze2"
+    },
+    {
+      "card_key": "RF22",
+      "name": "百炼嘉维尔",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1026_gvial2"
+    },
+    {
+      "card_key": "RL02",
+      "name": "塞雷娅",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_202_demkni"
+    },
+    {
+      "card_key": "RL03",
+      "name": "伊芙利特",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_134_ifrit"
+    },
+    {
+      "card_key": "RL06",
+      "name": "麦哲伦",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_248_mgllan"
+    },
+    {
+      "card_key": "RL07",
+      "name": "多萝西",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4048_doroth"
+    },
+    {
+      "card_key": "RL09",
+      "name": "缪尔赛思",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_249_mlyss"
+    },
+    {
+      "card_key": "RL10",
+      "name": "淬羽赫默",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_1031_slent2"
+    },
+    {
+      "card_key": "RL11",
+      "name": "娜斯提",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4212_nasti"
+    },
+    {
+      "card_key": "RL12",
+      "name": "溯光星源",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_1047_halo2"
+    },
+    {
+      "card_key": "RS01",
+      "name": "灰烬",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_456_ash"
+    },
+    {
+      "card_key": "RS05",
+      "name": "艾拉",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4123_ela"
+    },
+    {
+      "card_key": "RV02",
+      "name": "风笛",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_222_bpipe"
+    },
+    {
+      "card_key": "SG03",
+      "name": "森蚺",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_416_zumama"
+    },
+    {
+      "card_key": "SG07",
+      "name": "异客",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_472_pasngr"
+    },
+    {
+      "card_key": "SG14",
+      "name": "佩佩",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4058_pepe"
+    },
+    {
+      "card_key": "SG15",
+      "name": "缇缇",
+      "rarity": 6,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4056_titi"
+    },
+    {
+      "card_key": "SG17",
+      "name": "娜仁图亚",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4138_narant"
+    },
+    {
+      "card_key": "SI07",
+      "name": "提丰",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_2012_typhon"
+    },
+    {
+      "card_key": "SR02",
+      "name": "安洁莉娜",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_291_aglina"
+    },
+    {
+      "card_key": "SR04",
+      "name": "荒芜拉普兰德",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1038_whitw2"
+    },
+    {
+      "card_key": "SR35",
+      "name": "斥罪",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4065_judge"
+    },
+    {
+      "card_key": "SR36",
+      "name": "伺夜",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_427_vigil"
+    },
+    {
+      "card_key": "SR40",
+      "name": "忍冬",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4026_vulpis"
+    },
+    {
+      "card_key": "SR42",
+      "name": "贝洛内",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4037_demetr"
+    },
+    {
+      "card_key": "SS02",
+      "name": "黑",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_340_shwaz"
+    },
+    {
+      "card_key": "SW00",
+      "name": "阿斯卡纶",
+      "rarity": 6,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4132_ascln"
+    },
+    {
+      "card_key": "US53",
+      "name": "维伊",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4226_veen"
+    },
+    {
+      "card_key": "USS0",
+      "name": "怒潮凛冬",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1051_headb2"
+    },
+    {
+      "card_key": "USS4",
+      "name": "早露",
+      "rarity": 6,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_197_poca"
+    },
+    {
+      "card_key": "VC00",
+      "name": "维娜·维多利亚",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1019_siege2"
+    },
+    {
+      "card_key": "VC09",
+      "name": "澄闪",
+      "rarity": 6,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_377_gdglow"
+    },
+    {
+      "card_key": "VC10",
+      "name": "琴柳",
+      "rarity": 6,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_479_sleach"
+    },
+    {
+      "card_key": "VC16",
+      "name": "号角",
+      "rarity": 6,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4039_horn"
+    },
+    {
+      "card_key": "VC17",
+      "name": "白铁",
+      "rarity": 6,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4072_ironmn"
+    },
+    {
+      "card_key": "YD06",
+      "name": "左乐",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4121_zuole"
+    },
+    {
+      "card_key": "YD20",
+      "name": "仇白",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4082_qiubai"
+    },
+    {
+      "card_key": "YD25",
+      "name": "司霆惊蛰",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1043_leizi2"
+    },
+    {
+      "card_key": "YD30",
+      "name": "赤刃明霄陈",
+      "rarity": 6,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1050_chen3"
+    },
+    {
+      "card_key": "AA02",
+      "name": "幽灵鲨",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_143_ghost"
+    },
+    {
+      "card_key": "AA03",
+      "name": "蓝毒",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_129_bluep"
+    },
+    {
+      "card_key": "AE03",
+      "name": "深巡",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4137_udflow"
+    },
+    {
+      "card_key": "AE05",
+      "name": "海霓",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4079_haini"
+    },
+    {
+      "card_key": "AM02",
+      "name": "八幡海铃",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4186_tmoris"
+    },
+    {
+      "card_key": "AM03",
+      "name": "三角初华",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4184_dolris"
+    },
+    {
+      "card_key": "AM04",
+      "name": "祐天寺若麦",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4185_amoris"
+    },
+    {
+      "card_key": "AM05",
+      "name": "若叶睦",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4183_mortis"
+    },
+    {
+      "card_key": "BS01",
+      "name": "芙兰卡",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_106_franka"
+    },
+    {
+      "card_key": "BS02",
+      "name": "雷蛇",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_107_liskam"
+    },
+    {
+      "card_key": "BS05",
+      "name": "杏仁",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4105_almond"
+    },
+    {
+      "card_key": "BS07",
+      "name": "寻澜",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4052_surfer"
+    },
+    {
+      "card_key": "BV02",
+      "name": "佩德洛",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4234_pedro"
+    },
+    {
+      "card_key": "BV12",
+      "name": "龙舌兰",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_486_takila"
+    },
+    {
+      "card_key": "BV13",
+      "name": "羽毛笔",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_421_crow"
+    },
+    {
+      "card_key": "BV23",
+      "name": "特克诺",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4164_tecno"
+    },
+    {
+      "card_key": "BV27",
+      "name": "聆音",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4187_graceb"
+    },
+    {
+      "card_key": "CB06",
+      "name": "卡夫卡",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_214_kafka"
+    },
+    {
+      "card_key": "CB08",
+      "name": "罗宾",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_451_robin"
+    },
+    {
+      "card_key": "CB12",
+      "name": "蚀清",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_489_serum"
+    },
+    {
+      "card_key": "CB19",
+      "name": "掠风",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_433_windft"
+    },
+    {
+      "card_key": "CB22",
+      "name": "玫拉",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4006_melnte"
+    },
+    {
+      "card_key": "CB25",
+      "name": "蒂比",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4191_tippi"
+    },
+    {
+      "card_key": "CB28",
+      "name": "冰酿",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4104_coldst"
+    },
+    {
+      "card_key": "CB30",
+      "name": "锡人",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "集成战略获得"
+      ],
+      "game_char_id": "char_4151_tinman"
+    },
+    {
+      "card_key": "CB31",
+      "name": "响石",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4214_cairn"
+    },
+    {
+      "card_key": "CB32",
+      "name": "波卜",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_487_bobb"
+    },
+    {
+      "card_key": "CB54",
+      "name": "天空盒",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4213_skybx"
+    },
+    {
+      "card_key": "DB03",
+      "name": "和弦",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_297_hamoni"
+    },
+    {
+      "card_key": "DB04",
+      "name": "水灯心",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4177_brigid"
+    },
+    {
+      "card_key": "DD01",
+      "name": "莱欧斯",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4142_laios"
+    },
+    {
+      "card_key": "DD03",
+      "name": "齐尔查克",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4144_chilc"
+    },
+    {
+      "card_key": "DD04",
+      "name": "森西",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4143_sensi"
+    },
+    {
+      "card_key": "FO02",
+      "name": "临光",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_148_nearl"
+    },
+    {
+      "card_key": "GG02",
+      "name": "摩根",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_154_morgan"
+    },
+    {
+      "card_key": "GG03",
+      "name": "因陀罗",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_155_tiger"
+    },
+    {
+      "card_key": "GG04",
+      "name": "达格达",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_157_dagda"
+    },
+    {
+      "card_key": "HK04",
+      "name": "赤冬",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_475_akafyu"
+    },
+    {
+      "card_key": "HK05",
+      "name": "绮良",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_478_kirara"
+    },
+    {
+      "card_key": "HK09",
+      "name": "风丸",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4016_kazema"
+    },
+    {
+      "card_key": "HK16",
+      "name": "吉星",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4203_kichi"
+    },
+    {
+      "card_key": "HK17",
+      "name": "松桐",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4199_makiri"
+    },
+    {
+      "card_key": "HT03",
+      "name": "苇草",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_261_sddrag"
+    },
+    {
+      "card_key": "II04",
+      "name": "安哲拉",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_218_cuttle"
+    },
+    {
+      "card_key": "II10",
+      "name": "海沫",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "集成战略获得"
+      ],
+      "game_char_id": "char_4066_highmo"
+    },
+    {
+      "card_key": "II11",
+      "name": "瑰盐",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4163_rosesa"
+    },
+    {
+      "card_key": "JC00",
+      "name": "耶拉",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4013_kjera"
+    },
+    {
+      "card_key": "JC05",
+      "name": "初雪",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_174_slbell"
+    },
+    {
+      "card_key": "JC06",
+      "name": "崖心",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_173_slchan"
+    },
+    {
+      "card_key": "JC09",
+      "name": "极光",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_422_aurora"
+    },
+    {
+      "card_key": "KJ07",
+      "name": "雪猎",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4211_snhunt"
+    },
+    {
+      "card_key": "KZ03",
+      "name": "白金",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_204_platnm"
+    },
+    {
+      "card_key": "KZ07",
+      "name": "鞭刃",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_265_sophia"
+    },
+    {
+      "card_key": "KZ10",
+      "name": "但书",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4032_provs"
+    },
+    {
+      "card_key": "KZ12",
+      "name": "灰毫",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_431_ashlok"
+    },
+    {
+      "card_key": "KZ14",
+      "name": "野鬃",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_496_wildmn"
+    },
+    {
+      "card_key": "LM08",
+      "name": "诗怀雅",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_308_swire"
+    },
+    {
+      "card_key": "LM12",
+      "name": "槐琥",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_243_waaifu"
+    },
+    {
+      "card_key": "LM15",
+      "name": "拜松",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_325_bison"
+    },
+    {
+      "card_key": "LM16",
+      "name": "雪雉",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_383_snsant"
+    },
+    {
+      "card_key": "LM19",
+      "name": "吽",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_226_hmau"
+    },
+    {
+      "card_key": "LN06",
+      "name": "车尔尼",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4047_pianst"
+    },
+    {
+      "card_key": "LN13",
+      "name": "深律",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4109_baslin"
+    },
+    {
+      "card_key": "LN21",
+      "name": "折光",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_499_kaitou"
+    },
+    {
+      "card_key": "LT01",
+      "name": "送葬人",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_279_excu"
+    },
+    {
+      "card_key": "LT10",
+      "name": "见行者",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4036_forcer"
+    },
+    {
+      "card_key": "LT12",
+      "name": "空构",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4015_spuria"
+    },
+    {
+      "card_key": "LT13",
+      "name": "隐现",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_498_inside"
+    },
+    {
+      "card_key": "MEOW",
+      "name": "Miss.Christine",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4198_christ"
+    },
+    {
+      "card_key": "MH03",
+      "name": "火龙S黑角",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1030_noirc2"
+    },
+    {
+      "card_key": "MH06",
+      "name": "雷狼龙S空爆",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1049_catap2"
+    },
+    {
+      "card_key": "MN02",
+      "name": "火神",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_163_hpsts"
+    },
+    {
+      "card_key": "MN07",
+      "name": "埃拉托",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4043_erato"
+    },
+    {
+      "card_key": "MN08",
+      "name": "摆渡人",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4166_varkis"
+    },
+    {
+      "card_key": "PL02",
+      "name": "德克萨斯",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访、见习任务"
+      ],
+      "game_char_id": "char_102_texas"
+    },
+    {
+      "card_key": "PL04",
+      "name": "可颂",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_201_moeshd"
+    },
+    {
+      "card_key": "PL05",
+      "name": "空",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_101_sora"
+    },
+    {
+      "card_key": "PS34",
+      "name": "岳羽由加莉",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4219_yukari"
+    },
+    {
+      "card_key": "PS37",
+      "name": "埃癸斯",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4218_aigis"
+    },
+    {
+      "card_key": "R001",
+      "name": "阿米娅",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "主题曲剧情"
+      ],
+      "game_char_id": "char_002_amiya"
+    },
+    {
+      "card_key": "R001_2",
+      "name": "阿米娅（近卫）",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "职业升变"
+      ],
+      "game_char_id": "char_1001_amiya2"
+    },
+    {
+      "card_key": "R001_3",
+      "name": "阿米娅（医疗）",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "职业升变"
+      ],
+      "game_char_id": "char_1037_amiya3"
+    },
+    {
+      "card_key": "R106",
+      "name": "华法琳",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_171_bldsk"
+    },
+    {
+      "card_key": "R110",
+      "name": "灰喉",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_367_swllow"
+    },
+    {
+      "card_key": "R121",
+      "name": "夏栎",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_492_quercu"
+    },
+    {
+      "card_key": "R126",
+      "name": "铸铁",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_333_sidero"
+    },
+    {
+      "card_key": "R128",
+      "name": "格劳克斯",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_326_glacus"
+    },
+    {
+      "card_key": "R129",
+      "name": "月禾",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_343_tknogi"
+    },
+    {
+      "card_key": "R131",
+      "name": "极境",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_401_elysm"
+    },
+    {
+      "card_key": "R132",
+      "name": "微风",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_275_breeze"
+    },
+    {
+      "card_key": "R133",
+      "name": "亚叶",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_345_folnic"
+    },
+    {
+      "card_key": "R137",
+      "name": "炎客",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_131_flameb"
+    },
+    {
+      "card_key": "R138",
+      "name": "柏喙",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_252_bibeak"
+    },
+    {
+      "card_key": "R143",
+      "name": "晓歌",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_497_ctable"
+    },
+    {
+      "card_key": "R147",
+      "name": "蜜蜡",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_344_beewax"
+    },
+    {
+      "card_key": "R148",
+      "name": "巫恋",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_254_vodfox"
+    },
+    {
+      "card_key": "R158",
+      "name": "慑砂",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_379_sesa"
+    },
+    {
+      "card_key": "R162",
+      "name": "稀音",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_336_folivo"
+    },
+    {
+      "card_key": "R163",
+      "name": "絮雨",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_436_whispr"
+    },
+    {
+      "card_key": "R164",
+      "name": "暴雨",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_304_zebra"
+    },
+    {
+      "card_key": "R167",
+      "name": "奥达",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4131_odda"
+    },
+    {
+      "card_key": "R175",
+      "name": "明椒",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4071_peper"
+    },
+    {
+      "card_key": "R184",
+      "name": "渡桥",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4147_mitm"
+    },
+    {
+      "card_key": "RB01",
+      "name": "暴行",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "周年奖励"
+      ],
+      "game_char_id": "char_230_savage"
+    },
+    {
+      "card_key": "RB03",
+      "name": "莱恩哈特",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_373_lionhd"
+    },
+    {
+      "card_key": "RB04",
+      "name": "断崖",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_294_ayer"
+    },
+    {
+      "card_key": "RB05",
+      "name": "石棉",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_378_asbest"
+    },
+    {
+      "card_key": "RB06",
+      "name": "蜜莓",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_449_glider"
+    },
+    {
+      "card_key": "RB07",
+      "name": "四月",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_365_aprl"
+    },
+    {
+      "card_key": "RB09",
+      "name": "火哨",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_493_firwhl"
+    },
+    {
+      "card_key": "RB11",
+      "name": "洋灰",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_464_cement"
+    },
+    {
+      "card_key": "RB12",
+      "name": "夜半",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_476_blkngt"
+    },
+    {
+      "card_key": "RB14",
+      "name": "温米",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4081_warmy"
+    },
+    {
+      "card_key": "RB17",
+      "name": "阿兰娜",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4178_alanna"
+    },
+    {
+      "card_key": "RB20",
+      "name": "嘉辛塔",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4237_jcinta"
+    },
+    {
+      "card_key": "RB21",
+      "name": "时隙",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4236_tmslot"
+    },
+    {
+      "card_key": "RF01",
+      "name": "炎狱炎熔",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_1011_lava2"
+    },
+    {
+      "card_key": "RF02",
+      "name": "寒芒克洛丝",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_1021_kroos2"
+    },
+    {
+      "card_key": "RF03",
+      "name": "濯尘芙蓉",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1024_hbisc2"
+    },
+    {
+      "card_key": "RF04",
+      "name": "历阵锐枪芬",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1036_fang2"
+    },
+    {
+      "card_key": "RF23",
+      "name": "承曦格雷伊",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1027_greyy2"
+    },
+    {
+      "card_key": "RF31",
+      "name": "撷英调香师",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_1022_flwr2"
+    },
+    {
+      "card_key": "RL01",
+      "name": "赫默",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_108_silent"
+    },
+    {
+      "card_key": "RL04",
+      "name": "白面鸮",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_128_plosis"
+    },
+    {
+      "card_key": "RL05",
+      "name": "梅尔",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_242_otter"
+    },
+    {
+      "card_key": "RL08",
+      "name": "星源",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_135_halo"
+    },
+    {
+      "card_key": "RR01",
+      "name": "星极",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_274_astesi"
+    },
+    {
+      "card_key": "RS02",
+      "name": "闪击",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_457_blitz"
+    },
+    {
+      "card_key": "RS03",
+      "name": "霜华",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_458_rfrost"
+    },
+    {
+      "card_key": "RS04",
+      "name": "战车",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_459_tachak"
+    },
+    {
+      "card_key": "RS06",
+      "name": "医生",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4125_rdoc"
+    },
+    {
+      "card_key": "RS07",
+      "name": "双月",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4124_iana"
+    },
+    {
+      "card_key": "RS08",
+      "name": "导火索",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4126_fuze"
+    },
+    {
+      "card_key": "SG01",
+      "name": "狮蝎",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_215_mantic"
+    },
+    {
+      "card_key": "SG05",
+      "name": "特米米",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_411_tomimi"
+    },
+    {
+      "card_key": "SG06",
+      "name": "燧石",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_415_flint"
+    },
+    {
+      "card_key": "SG08",
+      "name": "图耶",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_402_tuye"
+    },
+    {
+      "card_key": "SG09",
+      "name": "至简",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4054_malist"
+    },
+    {
+      "card_key": "SG10",
+      "name": "菲莱",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_4148_philae"
+    },
+    {
+      "card_key": "SG12",
+      "name": "红隼",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4023_rfalcn"
+    },
+    {
+      "card_key": "SG19",
+      "name": "莎草",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4139_papyrs"
+    },
+    {
+      "card_key": "SG23",
+      "name": "衡沙",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4140_lasher"
+    },
+    {
+      "card_key": "SG27",
+      "name": "钼铅",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4171_wulfen"
+    },
+    {
+      "card_key": "SG28",
+      "name": "哈蒂娅",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_394_hadiya"
+    },
+    {
+      "card_key": "SI02",
+      "name": "寒檀",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_341_sntlla"
+    },
+    {
+      "card_key": "SI03",
+      "name": "雪绒",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_466_qanik"
+    },
+    {
+      "card_key": "SI06",
+      "name": "凛视",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "集成战略获得"
+      ],
+      "game_char_id": "char_4102_threye"
+    },
+    {
+      "card_key": "SK01",
+      "name": "天火",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_166_skfire"
+    },
+    {
+      "card_key": "SR01",
+      "name": "拉普兰德",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_140_whitew"
+    },
+    {
+      "card_key": "SR03",
+      "name": "普罗旺斯",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_145_prove"
+    },
+    {
+      "card_key": "SR26",
+      "name": "贾维",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_349_chiave"
+    },
+    {
+      "card_key": "SR27",
+      "name": "布洛卡",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_356_broca"
+    },
+    {
+      "card_key": "SR28",
+      "name": "奥斯塔",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_346_aosta"
+    },
+    {
+      "card_key": "SR37",
+      "name": "子月",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4014_lunacu"
+    },
+    {
+      "card_key": "SR39",
+      "name": "阿罗玛",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_446_aroma"
+    },
+    {
+      "card_key": "SR41",
+      "name": "裁度",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4155_talr"
+    },
+    {
+      "card_key": "SR43",
+      "name": "复奏",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4031_liesel"
+    },
+    {
+      "card_key": "SS01",
+      "name": "锡兰",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_348_ceylon"
+    },
+    {
+      "card_key": "SS03",
+      "name": "苍苔",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4106_bryota"
+    },
+    {
+      "card_key": "SS04",
+      "name": "青枳",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_488_buildr"
+    },
+    {
+      "card_key": "ST01",
+      "name": "守林人",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_158_milu"
+    },
+    {
+      "card_key": "ST03",
+      "name": "陨星",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_219_meteo"
+    },
+    {
+      "card_key": "SW01",
+      "name": "红",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_144_red"
+    },
+    {
+      "card_key": "US11",
+      "name": "苦艾",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_405_absin"
+    },
+    {
+      "card_key": "US35",
+      "name": "折桠",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4207_branch"
+    },
+    {
+      "card_key": "US39",
+      "name": "乌啾",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4224_turdus"
+    },
+    {
+      "card_key": "US40",
+      "name": "伯塔尼",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4223_botany"
+    },
+    {
+      "card_key": "US42",
+      "name": "裂响",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4225_tanya"
+    },
+    {
+      "card_key": "USS1",
+      "name": "凛冬",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_115_headbr"
+    },
+    {
+      "card_key": "USS2",
+      "name": "真理",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_195_glassb"
+    },
+    {
+      "card_key": "USS5",
+      "name": "烈夏",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_194_leto"
+    },
+    {
+      "card_key": "VC03",
+      "name": "夜魔",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_164_nightm"
+    },
+    {
+      "card_key": "VC05",
+      "name": "格拉尼",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_220_grani"
+    },
+    {
+      "card_key": "VC07",
+      "name": "暮落",
+      "rarity": 5,
+      "profession": "重装",
+      "obtain": [
+        "集成战略获得"
+      ],
+      "game_char_id": "char_4025_aprot2"
+    },
+    {
+      "card_key": "VC08",
+      "name": "薄绿",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_388_mint"
+    },
+    {
+      "card_key": "VC11",
+      "name": "熔泉",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_363_toddi"
+    },
+    {
+      "card_key": "VC12",
+      "name": "爱丽丝",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_338_iris"
+    },
+    {
+      "card_key": "VC14",
+      "name": "贝娜",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_369_bena"
+    },
+    {
+      "card_key": "VC18",
+      "name": "洛洛",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4040_rockr"
+    },
+    {
+      "card_key": "VC19",
+      "name": "海蒂",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4045_heidi"
+    },
+    {
+      "card_key": "VC20",
+      "name": "凯瑟琳",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4162_cathy"
+    },
+    {
+      "card_key": "VC21",
+      "name": "谜图",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4017_puzzle"
+    },
+    {
+      "card_key": "VC23",
+      "name": "戴菲恩",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4110_delphn"
+    },
+    {
+      "card_key": "VC24",
+      "name": "刺玫",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_494_vendla"
+    },
+    {
+      "card_key": "VC27",
+      "name": "哈洛德",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4114_harold"
+    },
+    {
+      "card_key": "VC29",
+      "name": "诺威尔",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4173_nowell"
+    },
+    {
+      "card_key": "YD01",
+      "name": "食铁兽",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_241_panda"
+    },
+    {
+      "card_key": "YD03",
+      "name": "桑葚",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_473_mberry"
+    },
+    {
+      "card_key": "YD05",
+      "name": "惊蛰",
+      "rarity": 5,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_306_leizi"
+    },
+    {
+      "card_key": "YD09",
+      "name": "九色鹿",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4019_ncdeer"
+    },
+    {
+      "card_key": "YD11",
+      "name": "乌有",
+      "rarity": 5,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_455_nothin"
+    },
+    {
+      "card_key": "YD13",
+      "name": "万顷",
+      "rarity": 5,
+      "profession": "先锋",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4119_wanqin"
+    },
+    {
+      "card_key": "YD14",
+      "name": "小满",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4122_grabds"
+    },
+    {
+      "card_key": "YD15",
+      "name": "截云",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4078_bdhkgt"
+    },
+    {
+      "card_key": "YD17",
+      "name": "铎铃",
+      "rarity": 5,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4083_chimes"
+    },
+    {
+      "card_key": "YD18",
+      "name": "行箸",
+      "rarity": 5,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4172_xingzh"
+    },
+    {
+      "card_key": "YD26",
+      "name": "录武官",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4196_reckpr"
+    },
+    {
+      "card_key": "YD28",
+      "name": "矩",
+      "rarity": 5,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4221_ju"
+    },
+    {
+      "card_key": "YD29",
+      "name": "风絮",
+      "rarity": 5,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4222_taraxa"
+    },
+    {
+      "card_key": "AA04",
+      "name": "深海色",
+      "rarity": 4,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_110_deepcl"
+    },
+    {
+      "card_key": "BS03",
+      "name": "杰西卡",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_235_jesica"
+    },
+    {
+      "card_key": "BV32",
+      "name": "跃跃",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_4100_caper"
+    },
+    {
+      "card_key": "BV33",
+      "name": "露托",
+      "rarity": 4,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4130_luton"
+    },
+    {
+      "card_key": "CB03",
+      "name": "布丁",
+      "rarity": 4,
+      "profession": "术师",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_4004_pudd"
+    },
+    {
+      "card_key": "CB09",
+      "name": "松果",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_440_pinecn"
+    },
+    {
+      "card_key": "CB11",
+      "name": "罗比菈塔",
+      "rarity": 4,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_484_robrta"
+    },
+    {
+      "card_key": "CB16",
+      "name": "豆苗",
+      "rarity": 4,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_452_bstalk"
+    },
+    {
+      "card_key": "CB18",
+      "name": "石英",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_4063_quartz"
+    },
+    {
+      "card_key": "CB33",
+      "name": "云迹",
+      "rarity": 4,
+      "profession": "特种",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_4165_ctrail"
+    },
+    {
+      "card_key": "HK01",
+      "name": "缠丸",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_289_gyuki"
+    },
+    {
+      "card_key": "HK03",
+      "name": "宴",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_337_utage"
+    },
+    {
+      "card_key": "II05",
+      "name": "深靛",
+      "rarity": 4,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_469_indigo"
+    },
+    {
+      "card_key": "IU04",
+      "name": "艾丝黛尔",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_127_estell"
+    },
+    {
+      "card_key": "IU05",
+      "name": "蛇屠箱",
+      "rarity": 4,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_150_snakek"
+    },
+    {
+      "card_key": "IU07",
+      "name": "嘉维尔",
+      "rarity": 4,
+      "profession": "医疗",
+      "obtain": [
+        "信用交易所"
+      ],
+      "game_char_id": "char_187_ccheal"
+    },
+    {
+      "card_key": "JC03",
+      "name": "角峰",
+      "rarity": 4,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_199_yak"
+    },
+    {
+      "card_key": "JC04",
+      "name": "讯使",
+      "rarity": 4,
+      "profession": "先锋",
+      "obtain": [
+        "信用交易所"
+      ],
+      "game_char_id": "char_198_blackd"
+    },
+    {
+      "card_key": "KZ04",
+      "name": "砾",
+      "rarity": 4,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_237_gravel"
+    },
+    {
+      "card_key": "LM10",
+      "name": "白雪",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_118_yuki"
+    },
+    {
+      "card_key": "LM11",
+      "name": "阿消",
+      "rarity": 4,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_277_sqrrel"
+    },
+    {
+      "card_key": "LM14",
+      "name": "孑",
+      "rarity": 4,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_272_strong"
+    },
+    {
+      "card_key": "LN01",
+      "name": "地灵",
+      "rarity": 4,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_183_skgoat"
+    },
+    {
+      "card_key": "LN22",
+      "name": "协律",
+      "rarity": 4,
+      "profession": "术师",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_4051_akkord"
+    },
+    {
+      "card_key": "LT02",
+      "name": "安比尔",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_302_glaze"
+    },
+    {
+      "card_key": "LT06",
+      "name": "芳汀",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_271_spikes"
+    },
+    {
+      "card_key": "MN01",
+      "name": "断罪者",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_159_peacok"
+    },
+    {
+      "card_key": "MN03",
+      "name": "调香师",
+      "rarity": 4,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_181_flower"
+    },
+    {
+      "card_key": "R100",
+      "name": "杜宾",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_130_doberm"
+    },
+    {
+      "card_key": "R104",
+      "name": "末药",
+      "rarity": 4,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_117_myrrh"
+    },
+    {
+      "card_key": "R105",
+      "name": "红豆",
+      "rarity": 4,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_290_vigna"
+    },
+    {
+      "card_key": "R107",
+      "name": "苏苏洛",
+      "rarity": 4,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_298_susuro"
+    },
+    {
+      "card_key": "R108",
+      "name": "桃金娘",
+      "rarity": 4,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_151_myrtle"
+    },
+    {
+      "card_key": "R119",
+      "name": "格雷伊",
+      "rarity": 4,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_253_greyy"
+    },
+    {
+      "card_key": "R122",
+      "name": "红云",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_190_clour"
+    },
+    {
+      "card_key": "R123",
+      "name": "霜叶",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_193_frostl"
+    },
+    {
+      "card_key": "R124",
+      "name": "坚雷",
+      "rarity": 4,
+      "profession": "重装",
+      "obtain": [
+        "信用交易所"
+      ],
+      "game_char_id": "char_260_durnar"
+    },
+    {
+      "card_key": "R130",
+      "name": "伊桑",
+      "rarity": 4,
+      "profession": "特种",
+      "obtain": [
+        "凭证交易所"
+      ],
+      "game_char_id": "char_355_ethan"
+    },
+    {
+      "card_key": "R134",
+      "name": "褐果",
+      "rarity": 4,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4041_chnut"
+    },
+    {
+      "card_key": "R139",
+      "name": "酸糖",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_366_acdrop"
+    },
+    {
+      "card_key": "R140",
+      "name": "卡达",
+      "rarity": 4,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_328_cammou"
+    },
+    {
+      "card_key": "R144",
+      "name": "刻刀",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_301_cutter"
+    },
+    {
+      "card_key": "R146",
+      "name": "泡泡",
+      "rarity": 4,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_381_bubble"
+    },
+    {
+      "card_key": "R157",
+      "name": "波登可",
+      "rarity": 4,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_258_podego"
+    },
+    {
+      "card_key": "R160",
+      "name": "清流",
+      "rarity": 4,
+      "profession": "医疗",
+      "obtain": [
+        "限时礼包"
+      ],
+      "game_char_id": "char_385_finlpp"
+    },
+    {
+      "card_key": "R161",
+      "name": "罗小黑",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4067_lolxh"
+    },
+    {
+      "card_key": "R166",
+      "name": "杰克",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_347_jaksel"
+    },
+    {
+      "card_key": "R171",
+      "name": "休谟斯",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_491_humus"
+    },
+    {
+      "card_key": "RB02",
+      "name": "暗索",
+      "rarity": 4,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_236_rope"
+    },
+    {
+      "card_key": "SG11",
+      "name": "铅踝",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4062_totter"
+    },
+    {
+      "card_key": "SI01",
+      "name": "远山",
+      "rarity": 4,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_109_fmout"
+    },
+    {
+      "card_key": "ST02",
+      "name": "流星",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_126_shotst"
+    },
+    {
+      "card_key": "SW02",
+      "name": "清道夫",
+      "rarity": 4,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_149_scave"
+    },
+    {
+      "card_key": "US10",
+      "name": "猎蜂",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_137_brownb"
+    },
+    {
+      "card_key": "US38",
+      "name": "冬时",
+      "rarity": 4,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4208_wintim"
+    },
+    {
+      "card_key": "USS3",
+      "name": "古米",
+      "rarity": 4,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_196_sunbr"
+    },
+    {
+      "card_key": "VC01",
+      "name": "梅",
+      "rarity": 4,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_133_mm"
+    },
+    {
+      "card_key": "VC02",
+      "name": "夜烟",
+      "rarity": 4,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_141_nights"
+    },
+    {
+      "card_key": "VC04",
+      "name": "慕斯",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_185_frncat"
+    },
+    {
+      "card_key": "VC25",
+      "name": "维荻",
+      "rarity": 4,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4107_vrdant"
+    },
+    {
+      "card_key": "YD22",
+      "name": "骋风",
+      "rarity": 4,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_445_wscoot"
+    },
+    {
+      "card_key": "BS04",
+      "name": "香草",
+      "rarity": 3,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_240_wyvern"
+    },
+    {
+      "card_key": "LT05",
+      "name": "翎羽",
+      "rarity": 3,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_192_falco"
+    },
+    {
+      "card_key": "PA11",
+      "name": "芬",
+      "rarity": 3,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_123_fang"
+    },
+    {
+      "card_key": "PA12",
+      "name": "克洛丝",
+      "rarity": 3,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_124_kroos"
+    },
+    {
+      "card_key": "PA13",
+      "name": "芙蓉",
+      "rarity": 3,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_120_hibisc"
+    },
+    {
+      "card_key": "PA14",
+      "name": "米格鲁",
+      "rarity": 3,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_122_beagle"
+    },
+    {
+      "card_key": "PA15",
+      "name": "炎熔",
+      "rarity": 3,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_121_lava"
+    },
+    {
+      "card_key": "PA41",
+      "name": "玫兰莎",
+      "rarity": 3,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_208_melan"
+    },
+    {
+      "card_key": "PA42",
+      "name": "史都华德",
+      "rarity": 3,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_210_stward"
+    },
+    {
+      "card_key": "PA43",
+      "name": "安赛尔",
+      "rarity": 3,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_212_ansel"
+    },
+    {
+      "card_key": "PA44",
+      "name": "安德切尔",
+      "rarity": 3,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_211_adnach"
+    },
+    {
+      "card_key": "PA45",
+      "name": "卡缇",
+      "rarity": 3,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_209_ardign"
+    },
+    {
+      "card_key": "PA61",
+      "name": "梓兰",
+      "rarity": 3,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_278_orchid"
+    },
+    {
+      "card_key": "PA62",
+      "name": "月见夜",
+      "rarity": 3,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_283_midn"
+    },
+    {
+      "card_key": "PA63",
+      "name": "空爆",
+      "rarity": 3,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_282_catap"
+    },
+    {
+      "card_key": "PA64",
+      "name": "斑点",
+      "rarity": 3,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_284_spot"
+    },
+    {
+      "card_key": "PA65",
+      "name": "泡普卡",
+      "rarity": 3,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_281_popka"
+    },
+    {
+      "card_key": "A41",
+      "name": "夜刀",
+      "rarity": 2,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_502_nblade"
+    },
+    {
+      "card_key": "A42",
+      "name": "巡林者",
+      "rarity": 2,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_503_rang"
+    },
+    {
+      "card_key": "A43",
+      "name": "黑角",
+      "rarity": 2,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_500_noirc"
+    },
+    {
+      "card_key": "A44",
+      "name": "杜林",
+      "rarity": 2,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_501_durin"
+    },
+    {
+      "card_key": "R303",
+      "name": "12F",
+      "rarity": 2,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_009_12fce"
+    },
+    {
+      "card_key": "KZ15",
+      "name": "正义骑士号",
+      "rarity": 1,
+      "profession": "狙击",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4000_jnight"
+    },
+    {
+      "card_key": "LT47",
+      "name": "CONFESS-47",
+      "rarity": 1,
+      "profession": "先锋",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4188_confes"
+    },
+    {
+      "card_key": "MH01",
+      "name": "泰拉大陆调查团",
+      "rarity": 1,
+      "profession": "狙击",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4077_palico"
+    },
+    {
+      "card_key": "MH04",
+      "name": "罗德岛隐秘队",
+      "rarity": 1,
+      "profession": "先锋",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4215_buddy"
+    },
+    {
+      "card_key": "PS38",
+      "name": "虎狼丸",
+      "rarity": 1,
+      "profession": "近卫",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4220_kormr"
+    },
+    {
+      "card_key": "RCX2",
+      "name": "Lancet-2",
+      "rarity": 1,
+      "profession": "医疗",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_285_medic2"
+    },
+    {
+      "card_key": "RCX3",
+      "name": "Castle-3",
+      "rarity": 1,
+      "profession": "近卫",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_286_cast3"
+    },
+    {
+      "card_key": "RCX4",
+      "name": "THRM-EX",
+      "rarity": 1,
+      "profession": "特种",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_376_therex"
+    },
+    {
+      "card_key": "RCX5",
+      "name": "Friston-3",
+      "rarity": 1,
+      "profession": "重装",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4093_frston"
+    },
+    {
+      "card_key": "RCX6",
+      "name": "PhonoR-0",
+      "rarity": 1,
+      "profession": "辅助",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4136_phonor"
+    },
+    {
+      "card_key": "RCX7",
+      "name": "GALLUS²",
+      "rarity": 1,
+      "profession": "术师",
+      "obtain": [
+        "招募寻访"
+      ],
+      "game_char_id": "char_4227_gallus"
+    },
+    {
+      "card_key": "U007",
+      "name": "U-Official",
+      "rarity": 1,
+      "profession": "辅助",
+      "obtain": [
+        "活动获得"
+      ],
+      "game_char_id": "char_4091_ulika"
+    }
+  ]
+}

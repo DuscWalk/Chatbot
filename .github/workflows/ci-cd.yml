@@ -56,7 +56,7 @@ jobs:
         run: |
           umask 077
           python scripts/manage_dailycarddraw.py up
-          python scripts/dailycarddraw_smoke.py
+          python scripts/dailycarddraw_smoke.py --catalog
       - name: Clean up test card backend
         if: always()
         run: |
