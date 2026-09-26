@@ -89,7 +89,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory={RUNNER}
-ExecStart={RUNNER}/runsvc.sh
+ExecStart=/usr/bin/sg docker -c "{RUNNER}/runsvc.sh"
 Restart=always
 RestartSec=10
 KillMode=process
