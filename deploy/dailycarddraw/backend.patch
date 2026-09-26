@@ -1,0 +1,27 @@
+--- a/src/routes/manageRoutes.js
++++ b/src/routes/manageRoutes.js
+@@ -125,16 +125,14 @@
+     }),
+   );
+ 
+-  router.get(
+-    /*
+-    router.post(
+-      '/cards/import',
+-      wrap(async (req, res) => {
+-        res.json(ok(await services.pool.importCards(req.body || {}), '卡牌数据已导入'));
+-      }),
+-    );
+-
+-*/
++  router.post(
++    '/cards/import',
++    wrap(async (req, res) => {
++      res.json(ok(await services.pool.importCards(req.body || {}), '卡牌数据已导入'));
++    }),
++  );
++
++  router.get(
+       '/users',
+     wrap(async (req, res) => {
+       const data = await services.admin.listProfiles({

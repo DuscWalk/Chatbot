@@ -79,6 +79,18 @@
           "enabled": false
         }
       }
+    },
+    {
+      "id": "astrbot_plugin_dailycarddraw",
+      "runtime_name": "astrbot_plugin_dailycarddraw",
+      "repo": "i000stea/astrbot_plugin_dailycarddraw",
+      "commit": "aa28398277f2a9c6f002e2eebf0650bc06f28319",
+      "sha256": "46e20b1ae8feb400a0307f4ad31524853bc1b77cdbb3882b79aeba575504a357",
+      "version": "0.2.1",
+      "config": {
+        "api_base_url": "http://127.0.0.1:3100",
+        "debug_log_enabled": false
+      }
     }
   ],
   "memory_prompts": {

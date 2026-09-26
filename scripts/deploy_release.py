@@ -29,6 +29,8 @@ DATA_PATHS = [
     "runtime/plugins/activation.json",
     "runtime/deployed-revision",
     "runtime/deployed-files.json",
+    "runtime/dailycarddraw/compose.env",
+    "runtime/dailycarddraw/configured.json",
 ]
 
 
@@ -132,6 +134,8 @@ class Deployment:
             ("scripts/manage_plugins.py", "stage"),
         ]:
             self.run([self.python, *args])
+        if (self.source / "scripts/manage_dailycarddraw.py").exists():
+            self.run([self.python, "scripts/manage_dailycarddraw.py", "build"])
         # Resolve only missing/changed packages; normal deployments download none.
         plan = self.source / "runtime/deploy/dependencies.json"
         plan.parent.mkdir(parents=True, exist_ok=True)
@@ -302,6 +306,8 @@ class Deployment:
                 dest = self.target / folder
                 remove_path(dest)
                 shutil.copytree(self.source / folder, dest)
+            if (self.target / "scripts/manage_dailycarddraw.py").exists():
+                self.run([self.python, "scripts/manage_dailycarddraw.py", "up"], cwd=self.target)
             self.run(
                 [
                     self.python,
@@ -327,6 +333,11 @@ class Deployment:
             try:
                 if snapshotted:
                     restore(self.target, self.backup)
+                    if (self.target / "runtime/dailycarddraw/compose.env").exists():
+                        self.run(
+                            [self.python, "scripts/manage_dailycarddraw.py", "restart"],
+                            cwd=self.target,
+                        )
                 self.restore_dependencies()
             finally:
                 self.service("start")

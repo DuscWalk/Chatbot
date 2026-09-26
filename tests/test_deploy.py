@@ -152,6 +152,42 @@ class PluginDeploymentConfigTests(unittest.TestCase):
             self.assertEqual(updated["plugin_set"], [])
             self.assertEqual(profile.read_bytes(), before)
 
+    def test_carddraw_configuration_is_scoped_and_preserves_later_webui_changes(self):
+        from scripts.manage_dailycarddraw import PLUGIN, configure_plugin
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cfg_dir = root / "data/config"
+            cfg_dir.mkdir(parents=True)
+            runtime = root / "runtime/dailycarddraw"
+            runtime.mkdir(parents=True)
+            (runtime / "credentials.json").write_text('{"api_token":"synthetic-token"}')
+            main = root / "data/cmd_config.json"
+            main.write_text('{"plugin_set":[],"admins_id":["synthetic-admin"]}')
+            private = cfg_dir / "abconf-private.json"
+            private.write_text(
+                json.dumps(
+                    {"plugin_set": [], "provider_settings": {"default_personality": "蕾缪安"}}
+                )
+            )
+            other = cfg_dir / "abconf-other.json"
+            other.write_text(
+                '{"plugin_set":[],"provider_settings":{"default_personality":"other"}}'
+            )
+            before = other.read_bytes()
+            configure_plugin(root, enable_profiles=True)
+            self.assertEqual(json.loads(private.read_text())["plugin_set"], [PLUGIN])
+            self.assertEqual(other.read_bytes(), before)
+            config = cfg_dir / (PLUGIN + "_config.json")
+            self.assertEqual(json.loads(config.read_text())["admin_qq_list"], ["synthetic-admin"])
+            config.write_text('{"api_base_url":"http://custom.invalid","debug_log_enabled":true}')
+            private.write_text('{"plugin_set":[]}')
+            configure_plugin(root, enable_profiles=False)
+            self.assertEqual(
+                json.loads(config.read_text())["api_base_url"], "http://custom.invalid"
+            )
+            self.assertEqual(json.loads(private.read_text())["plugin_set"], [])
+
     def test_reinstall_preserves_disabled_plugins_providers_and_preferences(self):
         import zipfile
         from unittest.mock import Mock

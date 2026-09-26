@@ -52,6 +52,16 @@ jobs:
           python scripts/manage_plugins.py stage
       - name: Install feature plugin dependencies
         run: python -m pip install -r runtime/plugins/build/requirements.txt
+      - name: Verify daily-card backend with disposable MySQL
+        run: |
+          python scripts/manage_dailycarddraw.py up
+          python scripts/dailycarddraw_smoke.py
+      - name: Clean up test card backend
+        if: always()
+        run: |
+          if [ -f runtime/dailycarddraw/compose.env ]; then
+            docker compose --env-file runtime/dailycarddraw/compose.env -f compose.dailycarddraw.yaml down --volumes
+          fi
       - name: Verify feature plugins without QQ
         run: python scripts/plugins_smoke.py
       - name: Test setup, migration and Lemuen plugin

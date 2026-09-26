@@ -208,6 +208,13 @@ async def verify(root, live=False):
         rolebot_results = await verify_rolebot(
             loaded["astrbot_plugin_rolebot"].star_cls, continuous, vision, event, live
         )
+        from dailycarddraw_scenarios import verify_dailycarddraw
+
+        dailycarddraw_results = await verify_dailycarddraw(
+            loaded["astrbot_plugin_dailycarddraw"].star_cls,
+            loaded["astrbot_plugin_rolebot"].star_cls,
+            event,
+        )
         for i, text in enumerate(["我喜欢桂花茶。", "记住我的这个喜好。"], 11):
             ev = event(text, mid=str(i))
             req = ProviderRequest(prompt=text)
@@ -299,6 +306,7 @@ async def verify(root, live=False):
             "loaded": list(loaded),
             "debounce": True,
             "rolebot": rolebot_results,
+            "dailycarddraw": dailycarddraw_results,
             "memory_write_recall": True,
             "friend_isolation": True,
             "group_exclusion": True,

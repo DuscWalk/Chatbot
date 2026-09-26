@@ -293,6 +293,12 @@ def install(*, backup_dir=None, skip_dependencies=False):
     prompts.mkdir(parents=True, exist_ok=True)
     for name, content in lock["memory_prompts"].items():
         (prompts / (name + ".txt")).write_text(content, encoding="utf-8")
+    if any(p["id"] == "astrbot_plugin_dailycarddraw" for p in lock["upstream"]):
+        if __package__:
+            from .manage_dailycarddraw import configure_plugin
+        else:
+            from manage_dailycarddraw import configure_plugin
+        configure_plugin(ROOT, enable_profiles=previous_revision < 4)
     write(
         ROOT / "runtime/plugins/activation.json",
         {
@@ -300,7 +306,7 @@ def install(*, backup_dir=None, skip_dependencies=False):
             "versions": {p["id"]: p["version"] for p in lock["upstream"]},
             "lemuen": "0.3.0",
             "rolebot": "0.3.1",
-            "profile_revision": 3,
+            "profile_revision": 4,
             "scope": "private_and_groups"
             if rolebot_config.get("groups", {}).get("all_groups")
             else "private",

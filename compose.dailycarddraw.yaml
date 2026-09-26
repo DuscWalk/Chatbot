@@ -1,0 +1,56 @@
+name: qqbots2-dailycarddraw
+services:
+  db:
+    image: mysql:8.4@sha256:0744ee5ef89ce6ccfa13de3e579fe6b9e27f93dd70da9c06d2c908b1b193fb8d
+    restart: unless-stopped
+    env_file: ./runtime/dailycarddraw/mysql.env
+    command:
+      - --innodb-buffer-pool-size=67108864
+      - --performance-schema=OFF
+      - --max-connections=30
+      - --temptable-max-ram=16777216
+    mem_limit: 512m
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./runtime/dailycarddraw/build/server/sql/001_init_daily_carddraw.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h, 127.0.0.1, --silent]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 30s
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+  backend:
+    image: ${DAILYCARDDRAW_IMAGE:?Run scripts/manage_dailycarddraw.py prepare}
+    restart: unless-stopped
+    init: true
+    env_file: ./runtime/dailycarddraw/backend.env
+    ports:
+      - 127.0.0.1:3100:3100
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 256m
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    volumes:
+      - images:/app/cache/draw-images
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3100/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+volumes:
+  mysql:
+  images:
