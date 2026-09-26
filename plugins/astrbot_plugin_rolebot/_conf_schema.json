@@ -12,6 +12,12 @@
     ],
     "hint": "对应 AstrBot 平台配置的 ID。"
   },
+  "reset_admin_ids": {
+    "description": "允许使用 /reset 的管理员 QQ 号",
+    "type": "list",
+    "default": [],
+    "hint": "仅这些账号可在群聊或私聊清空当前聊天上下文；空列表不允许任何账号。此设置不授予其他 AstrBot 管理权限。"
+  },
   "time_enabled": {
     "description": "提供当前北京时间",
     "type": "bool",

@@ -11,6 +11,7 @@ from astrbot.api.star import Context, Star, StarTools
 from astrbot.core.agent.message import TextPart
 from astrbot.core.star.filter.command import GreedyStr
 
+from .context_reset import reset_current_chat
 from .custom_faces import CustomFaceRegistrar
 from .diagnostics import DebugTraceLogger
 from .group_context import GroupContextBuffer, message_text
@@ -36,6 +37,7 @@ class RolebotPlugin(Star):
         self.policy = GroupPolicy()
         self.group_context = GroupContextBuffer()
         self.pending_videos = {}
+        self.context_generations = {}
         self.data_dir = StarTools.get_data_dir("astrbot_plugin_rolebot")
         self.data_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.data_dir.chmod(0o700)
@@ -120,7 +122,7 @@ class RolebotPlugin(Star):
         if event.is_private_chat() or not self.group_allowed(event):
             return
         self.policy.record_delivery(self.group_scope(event), time.time())
-        if not event.get_extra("rolebot.capture_group"):
+        if self.context_expired(event) or not event.get_extra("rolebot.capture_group"):
             return
         self.group_context.add(
             self.group_scope(event),
@@ -174,14 +176,21 @@ class RolebotPlugin(Star):
         event.set_extra("rolebot.coalesced_reply", True)
         return chain.derive(combined)
 
+    def context_expired(self, event):
+        generation = self.context_generations.get(event.unified_msg_origin, 0)
+        return event.get_extra("rolebot.context_generation", generation) != generation
+
     def guard_send(self, event):
         if event.get_extra("rolebot.send_guard"):
             return
         event.set_extra("rolebot.send_guard", True)
+        event.set_extra(
+            "rolebot.context_generation", self.context_generations.get(event.unified_msg_origin, 0)
+        )
         original = event.send
 
         async def guarded(chain):
-            if event.get_extra("rolebot.send_failed"):
+            if self.context_expired(event) or event.get_extra("rolebot.send_failed"):
                 return
             chain = self.group_delivery_chain(event, chain)
             if chain is None:
@@ -320,7 +329,7 @@ class RolebotPlugin(Star):
     async def enrich(self, event: AstrMessageEvent, req):
         if not self.applies(event):
             return
-        if not await self.active(event):
+        if self.context_expired(event) or not await self.active(event):
             event.stop_event()
             return
         if event.get_extra("rolebot.enriched"):
@@ -392,6 +401,7 @@ class RolebotPlugin(Star):
     async def observe_group_reply(self, event: AstrMessageEvent):
         if (
             self.applies(event)
+            and not self.context_expired(event)
             and not event.is_private_chat()
             and event.get_extra("rolebot.group_reply")
             and not event.get_extra("rolebot.send_failed")
@@ -451,6 +461,35 @@ class RolebotPlugin(Star):
                         0, Reply(id=event.message_obj.message_id, sender_id=event.get_sender_id())
                     )
 
+    @filter.command("reset", priority=130)
+    async def reset_chat(self, event: AstrMessageEvent):
+        """/reset — 指定管理员清空当前群聊或私聊的上下文。"""
+        if not self.applies(event):
+            return
+        self.guard_send(event)
+        event.should_call_llm(False)
+        try:
+            allowed = {str(user) for user in self.config.get("reset_admin_ids", [])}
+            if str(event.get_sender_id()) not in allowed:
+                message = "只有指定管理员可以使用 /reset。"
+            elif len(event.get_message_str().strip().split()) != 1:
+                message = "用法：/reset（仅清空当前聊天，不带其他参数）。"
+            else:
+                await reset_current_chat(self, event)
+                message = (
+                    "已清空当前私聊的对话上下文。"
+                    if event.is_private_chat()
+                    else "已清空本群的对话上下文。"
+                )
+            await event.send(event.plain_result(message))
+        except Exception as exc:
+            self.logger.warning("Rolebot context reset failed (%s).", type(exc).__name__)
+            await event.send(event.plain_result("上下文清理未完成，请稍后重试。"))
+        finally:
+            # Consume both accepted and rejected commands: native /reset must
+            # never run afterwards and bypass this command's explicit allowlist.
+            event.stop_event()
+
     @filter.command("bot")
     async def control_group(self, event: AstrMessageEvent, args: GreedyStr = ""):
         """/bot on|off|mute 10m|prob 0-100|clear|status (AstrBot administrators)."""
@@ -492,13 +531,7 @@ class RolebotPlugin(Star):
             except ValueError:
                 message = "概率必须在 0 到 100 之间。"
         elif command == "clear":
-            await self.context.conversation_manager.new_conversation(event.unified_msg_origin)
-            self.pending_videos.pop(event.unified_msg_origin, None)
-            self.group_context.clear(self.group_scope(event))
-            self.policy.chains.pop(self.group_scope(event), None)
-            self.policy.followups = {
-                k: v for k, v in self.policy.followups.items() if k[0] != self.group_scope(event)
-            }
+            await reset_current_chat(self, event)
             message = "本群短期对话已重置。"
         elif command == "status":
             remaining = max(0, int(state["muted_until"] - time.time()))
