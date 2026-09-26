@@ -56,6 +56,11 @@ def stage(root=ROOT):
             stdout=subprocess.DEVNULL,
         )
         marker.write_text(tag + "\n")
+    # The deployment service uses umask 077. Public source must remain readable by
+    # the Node/MySQL users inside containers; secrets live outside this build tree.
+    build.chmod(0o755)
+    for path in build.rglob("*"):
+        path.chmod(0o755 if path.is_dir() else 0o644)
     (runtime / "compose.env").write_text("DAILYCARDDRAW_IMAGE=" + tag + "\n")
     return tag
 

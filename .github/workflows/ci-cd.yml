@@ -54,6 +54,7 @@ jobs:
         run: python -m pip install -r runtime/plugins/build/requirements.txt
       - name: Verify daily-card backend with disposable MySQL
         run: |
+          umask 077
           python scripts/manage_dailycarddraw.py up
           python scripts/dailycarddraw_smoke.py
       - name: Clean up test card backend
