@@ -92,6 +92,19 @@
         "召回蕾缪安本人对仙人掌挞的嫌弃",
         "区分看起来很难吃与尝过后的口感"
       ]
+    },
+    {
+      "id": "Q13",
+      "title": "角色EP完整歌词",
+      "question": "你的EP Sanctuary Inside里，Guardian angel后面是怎么唱的？",
+      "expected_entry_ids": [
+        "L108"
+      ],
+      "checks": [
+        "检索到完整英文歌词",
+        "重复副歌与原始分行保留",
+        "歌词意象不变成对话者的既有关系"
+      ]
     }
   ],
   "dialogue": [

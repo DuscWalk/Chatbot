@@ -658,15 +658,27 @@
       "kind": "community_extracted_game_text",
       "review_status": "full_text_reviewed",
       "review_scope": "已读全文叙述、台词与博士选项；区分博士／Mon3tr／普瑞赛斯场景及后续各地镜头。第560—562行发言者为“？？？”，不擅自确定其身份；第三方秘密不直接补为蕾缪安亲历知识。未核对音频、CG或演出。"
+    },
+    {
+      "id": "UEP1",
+      "title": "Sanctuary Inside 歌词（用户提供）",
+      "kind": "user_provided_lyrics",
+      "entry_id": "L108",
+      "provided_date": "2026-09-26",
+      "sha256": "b311af284a4928acbe2c97a590ffae1d5ef4ad0e7dafb76e5d4af00ef69ca272",
+      "line_count": 52,
+      "review_status": "user_text_preserved",
+      "review_scope": "全文按用户在本次对话中提供的文本收录；未以外部歌词页面或音频校对。"
     }
   ],
-  "prepared_date": "2026-09-24",
-  "publisher_note": "社区提取的游戏资源，不是鹰角官方发布渠道；以原作正文为依据。",
+  "prepared_date": "2026-09-26",
+  "publisher_note": "游戏资料来自社区提取资源，不是鹰角官方发布渠道；角色EP歌词另以用户提供文本标记。",
   "review_status_definitions": {
     "character_related_records_reviewed": "已读该表中选定的角色相关记录；范围见review_scope。",
     "relevant_dialogue_reviewed": "已摘读显式提及蕾缪安的相关对话及邻近上下文；不是整份文本精读。",
     "excerpt_reviewed": "只核对了列明的定位片段。",
     "fetched_not_reviewed": "已下载并保留哈希，尚未进行内容审读。",
-    "full_text_reviewed": "本文件的全文语义文本已读，包含叙述、台词与选项；不包含音频或演出。"
+    "full_text_reviewed": "本文件的全文语义文本已读，包含叙述、台词与选项；不包含音频或演出。",
+    "user_text_preserved": "保留用户提供全文；未做外部原文或音频校对。"
   }
 }

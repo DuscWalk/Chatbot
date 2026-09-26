@@ -70,7 +70,7 @@ def build(cache=None):
     )
     chunks = sum(len(d["chunks"]) for d in payload["documents"])
     print(
-        f"已生成：{BUILD.relative_to(PROJECT)}（人格、{chunks} 个原作块、插件 ZIP、私聊分段设置）。"
+        f"已生成：{BUILD.relative_to(PROJECT)}（人格、{chunks} 个资料块、插件 ZIP、私聊分段设置）。"
     )
     return payload
 

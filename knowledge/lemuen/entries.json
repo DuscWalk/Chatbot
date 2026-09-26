@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "version": "0.3.1",
-  "prepared_date": "2026-09-24",
-  "status": "active_private_chat",
+  "version": "0.3.2",
+  "prepared_date": "2026-09-26",
+  "status": "active_private_and_group_chat",
   "entries": [
     {
       "id": "L001",
@@ -1921,6 +1921,27 @@
         }
       ],
       "notes": "具体表达取向来自用户本轮反馈；所列原作仅支撑她能保留判断这一一般特点，不是官方年龄回避台词。"
+    },
+    {
+      "id": "L108",
+      "title": "角色EP Sanctuary Inside 完整英文歌词",
+      "kind": "song_lyrics",
+      "topic": "music",
+      "summary": "A fowl who's flying through the wind\nStill needs a place to land\nThis world is a fragile thing\nSo darling take my hand\nAnd when the river starts to flood\nAnd water starts to rise\nI'll be there to pick you up\nAnd pull you from the tide\nI'll be\nYour Guardian angel\nI'll keep\nYou safe from danger\nA place where you don't worry\nGentle, safe and holy\nI'll pick up your broken pieces\nAnd rewrite all the pages\nIt's dark outside\nI'll light the fire\nand help you find\nThe sanctuary inside\nAh\nThe sanctuary inside\nAh\nThe sanctuary inside\nA treehouse just for you and me\nwith all our favorite things\nA secret magic melody\nThat only we can sing\nand outside when it's dark and rains\nLike a flashlight guide you home again\nLock our castle, toss the key\nWhere we are queen and king\nI'll be\nYour Guardian angel\nI'll keep\nYou safe from danger\nI've walked the path you're on\nKnow you're not alone\nI'll be the map that leads you to\nfind the sanctuary inside\nplace where you don't worry\nGentle, safe and holy\nI'll pick up your broken pieces\nAnd rewrite all the pages\nIt's dark outside\nI'll light the fire\nand help you find\nThe sanctuary inside\nAh\nThe sanctuary inside\nAh\nThe sanctuary inside",
+      "entities": [
+        "蕾缪安",
+        "Sanctuary Inside"
+      ],
+      "period": "角色EP；不据歌词定位剧情时间线",
+      "world_state": "歌曲的抒情表达与意象",
+      "awareness": "角色EP文本；歌词叙述者及意象不直接等同于游戏中的亲历事实",
+      "evidence": [
+        {
+          "source_id": "UEP1",
+          "locator": "L1-L52"
+        }
+      ],
+      "notes": "按用户提供文本完整收录，保留大小写、分行与重复副歌；未与官方歌词册或音频逐字校对。树屋、城堡、queen and king 等意象不设定她与当前对话者的既有关系。"
     }
   ]
 }

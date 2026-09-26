@@ -17,11 +17,13 @@ TOPICS = {
     "march_on": ("08-march-on.md", "众生行记"),
     "world": ("09-world.md", "世界背景与知情范围"),
     "behavior": ("10-behavior.md", "演绎分析与项目约定"),
+    "music": ("11-music.md", "角色EP与歌曲"),
 }
 KINDS = {
     "canon_fact": "原作事实摘要",
     "character_statement": "人物自述或观点",
     "official_presentation": "官方展示文本摘要",
+    "song_lyrics": "角色EP歌词（用户提供文本）",
     "interpretation": "编写者演绎分析",
     "project_adaptation": "项目互动约定",
 }
@@ -31,6 +33,7 @@ STATUSES = {
     "relevant_dialogue_reviewed": "相关对话及邻近上下文已摘读",
     "excerpt_reviewed": "指定片段已核对",
     "fetched_not_reviewed": "已下载，内容待审读",
+    "user_text_preserved": "保留用户提供全文（未做外部校对）",
 }
 TABLE_FILES = {
     "H": "handbook-info.json",
@@ -68,6 +71,16 @@ def validate(bundle, cache):
     require(re.fullmatch(r"[0-9a-f]{40}", commit), "快照提交格式错误")
     tables = {}
     for sid, source in sources.items():
+        if source["kind"] == "user_provided_lyrics":
+            entry = entries.get(source.get("entry_id"), {})
+            require(entry.get("kind") == "song_lyrics", f"{sid} 用户歌词条目不存在")
+            raw = entry["summary"].encode("utf-8")
+            require(hashlib.sha256(raw).hexdigest() == source["sha256"], f"{sid} 用户原文不一致")
+            require(
+                len(entry["summary"].splitlines()) == source["line_count"], f"{sid} 歌词行数不一致"
+            )
+            require(source["review_status"] == "user_text_preserved", f"{sid} 用户歌词来源标记错误")
+            continue
         path = source["resource_path"]
         expected = f"https://github.com/Kengxxiao/ArknightsGameData/blob/{commit}/{path}"
         require(source["url"] == expected, f"{sid} 未使用指定快照 URL")
@@ -107,6 +120,11 @@ def validate(bundle, cache):
             require(
                 sources[sid]["review_status"] != "fetched_not_reviewed", f"{eid} 引用了未审读来源"
             )
+            if sources[sid]["kind"] == "user_provided_lyrics":
+                require(
+                    entry["kind"] == "song_lyrics" and sources[sid]["entry_id"] == eid,
+                    f"{eid} 用户歌词不能作为原作事实依据",
+                )
             if sid not in TABLE_FILES:
                 start, end = line_span(locator)
                 require(
@@ -246,6 +264,8 @@ def validate(bundle, cache):
 
 def reference(ref, sources):
     source = sources[ref["source_id"]]
+    if source["kind"] == "user_provided_lyrics":
+        return f"{ref['source_id']} · {source['title']}；用户于{source['provided_date']}提供，定位：`{ref['locator']}`"
     url = source["url"]
     if ref["source_id"] not in TABLE_FILES:
         start, end = line_span(ref["locator"])
