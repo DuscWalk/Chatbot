@@ -304,7 +304,7 @@ def install(*, backup_dir=None, skip_dependencies=False):
         {
             "backup": str(backup),
             "versions": {p["id"]: p["version"] for p in lock["upstream"]},
-            "lemuen": "0.3.0",
+            "lemuen": "0.3.1",
             "rolebot": "0.3.2",
             "profile_revision": 4,
             "scope": "private_and_groups"
