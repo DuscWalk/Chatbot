@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from scripts.deploy_release import Deployment
-from scripts.manage_plugins import upgrade_lemuen_dialogue
+from scripts.manage_plugins import sync_lemuen_persona, upgrade_lemuen_dialogue
 
 
 class FakeDeployment(Deployment):
@@ -90,6 +90,9 @@ class DeploymentTests(unittest.TestCase):
                 rows = dict(db.execute("SELECT persona_id, system_prompt FROM personas"))
             self.assertEqual(rows, {"蕾缪安": "new persona", "Other": "keep"})
             self.assertEqual(json.loads(cfg.read_text()), {"top_k": 2, "enabled": True})
+            cfg.write_text('{"top_k": 5, "enabled": true}')
+            sync_lemuen_persona(root)
+            self.assertEqual(json.loads(cfg.read_text()), {"top_k": 5, "enabled": True})
             cfg.write_text('{"top_k": 1}')
             upgrade_lemuen_dialogue(root)
             self.assertEqual(json.loads(cfg.read_text())["top_k"], 1)

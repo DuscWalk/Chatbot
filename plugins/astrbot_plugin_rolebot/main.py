@@ -14,7 +14,7 @@ from astrbot.core.star.filter.command import GreedyStr
 from .context_reset import reset_current_chat
 from .custom_faces import CustomFaceRegistrar
 from .diagnostics import DebugTraceLogger
-from .group_context import GroupContextBuffer, image_sources, message_text
+from .group_context import GROUP_REPLY_RULE, GroupContextBuffer, image_sources, message_text
 from .media import NapCatFaces, repeat_payload, sticker_component, video_references
 from .policy import GroupPolicy, bounded, clock_context, duration, intent, voice_requested
 from .search import SearchService
@@ -342,10 +342,7 @@ class RolebotPlugin(Star):
         )
         event.set_extra("rolebot.trace", trace)
         if not event.is_private_chat():
-            req.system_prompt = (req.system_prompt or "") + (
-                "\n这是群聊。按当前发言者区分身份和经历；先回应其消息。"
-                "群聊背景帮助理解指代和话题，当前消息优先；旧话题只在被接续时使用。"
-            )
+            req.system_prompt = (req.system_prompt or "") + "\n" + GROUP_REPLY_RULE
             background = event.get_extra("rolebot.group_context")
             if background and self.config.get("groups", {}).get("context_enabled", True):
                 req.extra_user_content_parts.append(TextPart(text=background).mark_as_temp())

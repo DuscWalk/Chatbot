@@ -5,6 +5,7 @@ import base64
 import json
 import shlex
 import subprocess
+import sys
 import zipfile
 from pathlib import Path
 
@@ -80,6 +81,10 @@ def smoke(args):
         raise ValueError("联调会调用嵌入与聊天 API；请显式添加 --live。")
     from dotenv import dotenv_values
 
+    # Replay the same group policy used by Rolebot, without loading QQ adapters.
+    sys.path.insert(0, str(PROJECT))
+    from plugins.astrbot_plugin_rolebot.group_context import GROUP_REPLY_RULE, HEADER
+
     payload = build()
     values = dotenv_values(PROJECT / ".env", encoding="utf-8-sig")
     if not values.get("DASHSCOPE_API_KEY"):
@@ -107,6 +112,8 @@ def smoke(args):
         "persona": (BUILD / "persona.md").read_text(encoding="utf-8"),
         "knowledge": payload,
         "chat_settings": PRIVATE_CHAT_SETTINGS,
+        "group_reply_rule": GROUP_REPLY_RULE,
+        "group_context_header": HEADER,
         "retrieval_cases": cases["retrieval"],
         "dialogue_cases": [c for c in cases["dialogue"] if c["id"] in selected],
     }

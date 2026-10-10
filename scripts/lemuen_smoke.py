@@ -27,7 +27,7 @@ async def run(request, root, production):
     from astrbot.core.agent.message import TextPart
     from astrbot.core.astr_main_agent import MainAgentBuildConfig, build_main_agent
     from astrbot.core.core_lifecycle import AstrBotCoreLifecycle
-    from astrbot.core.message.components import Plain
+    from astrbot.core.message.components import Plain, Reply
     from astrbot.core.message.message_event_result import ResultContentType
     from astrbot.core.pipeline.context import PipelineContext, call_event_hook
     from astrbot.core.pipeline.process_stage.method.agent_sub_stages.internal import (
@@ -190,6 +190,18 @@ async def run(request, root, production):
                 )
                 msg.sender = MessageMember(user_id=item["sender_id"], nickname=item["nickname"])
                 msg.message = [Plain(text=item["text"])]
+                if item.get("quote"):
+                    quote = item["quote"]
+                    msg.message.insert(
+                        0,
+                        Reply(
+                            id=f"quote-{case['id']}-{turn}",
+                            sender_id=quote["sender_id"],
+                            sender_nickname=quote["nickname"],
+                            message_str=quote["text"],
+                            chain=[Plain(text=quote["text"])],
+                        ),
+                    )
                 msg.message_str = item["text"]
                 msg.message_id = f"{case['id']}-{turn}"
                 msg.group_id = case["id"] if case["scene"] == "group" else ""
@@ -224,9 +236,15 @@ async def run(request, root, production):
                 req = built.provider_request
                 if turn == 1 and case.get("history"):
                     req.contexts.extend(case["history"])
+                if case["scene"] == "group":
+                    req.system_prompt = (
+                        (req.system_prompt or "") + "\n" + request["group_reply_rule"]
+                    )
                 if item.get("background"):
                     req.extra_user_content_parts.append(
-                        TextPart(text="[合成群聊背景数据]\n" + item["background"]).mark_as_temp()
+                        TextPart(
+                            text=request["group_context_header"] + item["background"]
+                        ).mark_as_temp()
                     )
                 try:
                     stopped = await call_event_hook(event, EventType.OnLLMRequestEvent, req)
@@ -286,7 +304,7 @@ async def run(request, root, production):
                     }
                 )
         return {
-            "scope": "临时 AstrBot 根目录：原生插件加载、知识入库与检索、人格解析、请求钩子、Agent 回复、历史保存与模拟分段发送；无 QQ 适配器。",
+            "scope": "临时 AstrBot 根目录：原生插件加载、知识入库与检索、人格解析、共享群聊回复规则、原生引用解析、请求钩子、Agent 回复、历史保存与模拟分段发送；无 QQ 适配器。",
             "model": chat["model"],
             "documents": len(request["knowledge"]["documents"]),
             "chunks": expected_chunks,
