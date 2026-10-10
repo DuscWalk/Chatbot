@@ -149,6 +149,8 @@ async def verify_group_context(plugin, group):
 
     plugin.group_context = GroupContextBuffer()
     plugin.policy = GroupPolicy()
+    saved_vision = plugin.config["vision"]["enabled"]
+    plugin.config["vision"]["enabled"] = False  # This scenario checks text capture/serialization.
     plugin.config["groups"].update(probability=0, repeat_enabled=False, context_enabled=True)
     serial = 0
     with patch("data.plugins.astrbot_plugin_rolebot.main.time") as clock:
@@ -239,6 +241,7 @@ async def verify_group_context(plugin, group):
         disabled = await route("安姐", 1080)
         assert not disabled.get_extra("rolebot.group_context")
         assert plugin.group_scope(admin) not in plugin.group_context.groups
+    plugin.config["vision"]["enabled"] = saved_vision
 
 
 async def verify_group_burst(plugin, group, make_private):

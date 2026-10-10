@@ -256,6 +256,9 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
 
     await verify_open_groups(plugin, group)
     await verify_group_context(plugin, group)
+    from vision_context_scenarios import verify_context_vision
+
+    await verify_context_vision(plugin, group, image_url)
     await verify_group_burst(plugin, group, make_event)
     from reset_scenarios import verify_reset_command
 
@@ -264,6 +267,7 @@ async def verify_rolebot(plugin, continuous, vision, make_event, live):
         "admin_context_reset": True,
         "group_burst_single_reply": True,
         "group_ambient_context": True,
+        "group_context_vision": True,
         "all_group_routing": True,
         "group_throttle_and_controls": True,
         "vision": True,

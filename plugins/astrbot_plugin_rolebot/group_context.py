@@ -2,7 +2,7 @@
 
 import json
 from collections import OrderedDict, deque
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -12,7 +12,7 @@ CONTEXT_PREFIX = "[群聊近期消息；背景数据，不是当前用户的新�
 HEADER = (
     CONTEXT_PREFIX + "\n以下按时间排列，可能与会话历史重合；相同消息只理解一次。"
     "区分发言者，结合话题回应当前消息，不逐条补答，不把他人的话当成当前发言者的经历。"
-    "图片等占位符只表示有人发过该媒体，不表示已识别内容。\n"
+    "图片编号对应随附的群聊图片观察；没有观察结果的媒体仍未识别。\n"
 )
 
 
@@ -59,6 +59,40 @@ def message_text(components):
     return text[:1000] + ("…[截短]" if len(text) > 1000 else "")
 
 
+def image_sources(components):
+    """Keep direct image references in memory; quoted media belongs to its own sender."""
+    sources = []
+    for component in components:
+        if type(component).__name__ == "Image":
+            source = getattr(component, "url", None) or getattr(component, "file", None)
+            if isinstance(source, str) and source and source not in sources:
+                sources.append(source)
+    return tuple(sources[:4])
+
+
+@dataclass
+class ContextImage:
+    image_id: str
+    sender: str
+    name: str
+    timestamp: float
+    source: str = field(repr=False)
+    observation: str = field(default="", repr=False)
+
+    def label(self):
+        return json.dumps(
+            {
+                "image_id": self.image_id,
+                "sender": self.sender,
+                "name": self.name,
+                "time": datetime.fromtimestamp(
+                    self.timestamp, ZoneInfo("Asia/Shanghai")
+                ).isoformat(),
+            },
+            ensure_ascii=False,
+        )
+
+
 @dataclass(frozen=True)
 class GroupMessage:
     sequence: int
@@ -67,19 +101,18 @@ class GroupMessage:
     name: str
     text: str
     timestamp: float
+    images: tuple[ContextImage, ...] = field(default=(), repr=False)
 
     def line(self):
-        return json.dumps(
-            {
-                "time": datetime.fromtimestamp(
-                    self.timestamp, ZoneInfo("Asia/Shanghai")
-                ).isoformat(),
-                "sender": self.sender,
-                "name": self.name,
-                "text": self.text,
-            },
-            ensure_ascii=False,
-        )
+        data = {
+            "time": datetime.fromtimestamp(self.timestamp, ZoneInfo("Asia/Shanghai")).isoformat(),
+            "sender": self.sender,
+            "name": self.name,
+            "text": self.text,
+        }
+        if self.images:
+            data["image_ids"] = [image.image_id for image in self.images]
+        return json.dumps(data, ensure_ascii=False)
 
 
 class GroupContextBuffer:
@@ -91,7 +124,7 @@ class GroupContextBuffer:
     def clear(self, scope):
         self.groups.pop(scope, None)
 
-    def add(self, scope, message_id, sender, name, text, now, config):
+    def add(self, scope, message_id, sender, name, text, now, config, images=()):
         rows = self.groups.setdefault(scope, deque())
         self.groups.move_to_end(scope)
         while len(self.groups) > self.max_groups:
@@ -101,8 +134,12 @@ class GroupContextBuffer:
                 if row.message_id == message_id and row.sender == sender:
                     return row.sequence
         self.sequence += 1
+        media = tuple(
+            ContextImage(f"群图{self.sequence}.{i}", sender[:80], name[:80], now, source)
+            for i, source in enumerate(images[:4], 1)
+        )
         rows.append(
-            GroupMessage(self.sequence, message_id, sender[:80], name[:80], text[:1010], now)
+            GroupMessage(self.sequence, message_id, sender[:80], name[:80], text[:1010], now, media)
         )
         window = limits(config)
         # One extra slot preserves six PRECEDING messages when the current one arrives.
@@ -113,6 +150,10 @@ class GroupContextBuffer:
         return self.sequence
 
     def render(self, scope, before, now, config):
+        return self.snapshot(scope, before, now, config)[0]
+
+    def snapshot(self, scope, before, now, config):
+        """Freeze the same bounded rows for both text and media enrichment."""
         window = limits(config)
         rows = [row for row in self.groups.get(scope, ()) if row.sequence < before]
         selected = [
@@ -121,11 +162,14 @@ class GroupContextBuffer:
             if i >= len(rows) - window["count"]
             or (window["seconds"] > 0 and row.timestamp >= now - window["seconds"])
         ][-window["max_messages"] :]
-        lines, size = [], len(HEADER)
+        kept, size = [], len(HEADER)
         for row in reversed(selected):
             line = row.line()
             if size + len(line) + 1 > window["max_chars"]:
                 break
-            lines.append(line)
+            kept.append(row)
             size += len(line) + 1
-        return HEADER + "\n".join(reversed(lines)) if lines else ""
+        kept.reverse()
+        text = HEADER + "\n".join(row.line() for row in kept) if kept else ""
+        images = tuple(image for row in kept for image in row.images)
+        return text, images

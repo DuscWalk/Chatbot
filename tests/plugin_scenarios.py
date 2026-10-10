@@ -29,8 +29,7 @@ from plugins.astrbot_plugin_lemuen.render import (
     CONTEXT_MARKER,
     SPEAKER_PREFIX,
     VOICE_MARKER,
-    compile_style,
-    retrieval_query,
+    needs_reference,
     session_allowed,
 )
 
@@ -72,7 +71,7 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
             (Path(__file__).resolve().parents[1] / "knowledge/lemuen/voice-lines.json").read_text()
         )["lines"]
         self.req = ProviderRequest(
-            prompt="test",
+            prompt="我是不是一定要原谅她？",
             system_prompt="原生人格和其他系统设置",
             conversation=SimpleNamespace(persona_id="蕾缪安"),
         )
@@ -136,11 +135,10 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_native_request_preserved_and_reference_conditional(self):
         await self.plugin.on_request(self.event, self.req)
-        self.assertTrue(self.req.system_prompt.startswith("原生人格和其他系统设置"))
+        self.assertIn("原生人格和其他系统设置", self.req.system_prompt)
         details = self.event.get_extra("lemuen")
-        self.assertIn("B05", details["pattern_ids"])
         self.assertIn("L061", details["entry_ids"])
-        self.assertEqual(self.req.prompt, "test")
+        self.assertEqual(self.req.prompt, "我是不是一定要原谅她？")
         marker = self.req.extra_user_content_parts[-1].text
         self.assertEqual(json.loads(marker.removeprefix(SPEAKER_PREFIX))["id"], "alice")
         await self.plugin.on_request(self.event, self.req)
@@ -153,9 +151,8 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
             req = ProviderRequest(system_prompt="原生人格")
             self.context.kb_manager.retrieve.side_effect = error
             await self.plugin.on_request(self.event, req)
-            self.assertTrue(req.system_prompt.startswith("原生人格"))
+            self.assertIn("原生人格", req.system_prompt)
             self.assertEqual(self.event.get_extra("lemuen")["retrieval"], status)
-            self.assertNotIn("B05", self.event.get_extra("lemuen")["pattern_ids"])
             self.assertNotIn("private-data", req.system_prompt)
             self.assert_complete_voices(req.system_prompt)
 
@@ -227,33 +224,62 @@ class PluginTests(unittest.IsolatedAsyncioTestCase):
                 actual = [call.args[0].get_plain_text() for call in event.send.await_args_list]
                 self.assertEqual(actual, expected)
 
-    def test_previous_topic_belongs_to_current_group_speaker(self):
-        def turn(who, text):
-            return {
+    async def test_old_topic_is_not_retrieved_and_evidence_is_ephemeral(self):
+        from astrbot.core.agent.message import Message, TextPart, dump_messages_with_checkpoints
+
+        self.req.prompt = "奶酪小蛋糕"
+        self.req.contexts = [
+            {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": text},
-                    {"type": "text", "text": SPEAKER_PREFIX + json.dumps({"id": who})},
+                    {"type": "text", "text": "我是不是一定要原谅她？"},
+                    {"type": "text", "text": SPEAKER_PREFIX + json.dumps({"id": "alice"})},
                 ],
             }
-
-        history = [
-            turn("alice", "明天答辩"),
-            turn("bob", "今天加班"),
-            {"role": "user", "content": "没有说话者的历史"},
         ]
-        query = retrieval_query("记得吗？", history, "alice", True)
-        self.assertIn("明天答辩", query)
-        self.assertNotIn("加班", query)
-        self.assertNotIn("没有说话者", query)
-        self.assertEqual(retrieval_query("新群", [], "alice", True), "新群")
-        self.assertEqual(retrieval_query("你好", history, "carol", True), "你好")
+        await self.plugin.on_request(self.event, self.req)
+        self.context.kb_manager.retrieve.assert_not_awaited()
+        self.assertEqual(self.event.get_extra("lemuen")["retrieval"], "not_needed")
+        self.req = ProviderRequest(prompt="仙人掌挞你喜欢吗", contexts=self.req.contexts)
+        await self.plugin.on_request(self.event, self.req)
+        call = self.context.kb_manager.retrieve.await_args.kwargs
+        self.assertEqual(call["query"], "仙人掌挞你喜欢吗")
+        self.assertEqual(call["top_m_final"], 2)
+        references = [
+            p for p in self.req.extra_user_content_parts if p.text.startswith("[本轮原作")
+        ]
+        self.assertEqual(len(references), 1)
+        self.assertIn("L061", references[0].text)
+        self.assertNotIn("L061", self.req.system_prompt)
+        saved = dump_messages_with_checkpoints(
+            [
+                Message(
+                    role="user",
+                    content=[TextPart(text=self.req.prompt), *self.req.extra_user_content_parts],
+                )
+            ]
+        )
+        self.assertNotIn("L061", str(saved))
+        self.assertIn(SPEAKER_PREFIX, str(saved))
 
-    def test_friendship_guidance_needs_topic_and_retrieved_evidence(self):
-        for ids, query in [(["L061"], "晚饭吃什么"), ([], "该原谅朋友吗")]:
-            _, patterns, examples = compile_style(self.plugin.guide, ids, query)
-            self.assertNotIn("B05", patterns)
-            self.assertFalse({"E08", "E09"} & set(examples))
+    def test_lore_gate_keeps_names_interests_and_does_not_trigger_on_address_alone(self):
+        for query in [
+            "安姐来一口",
+            "我吃安姐吃剩的",
+            "枢机，今天吃什么",
+            "蕾缪安，你这句话没逻辑",
+            "奶酪小蛋糕",
+        ]:
+            self.assertFalse(needs_reference(query, self.plugin.aliases), query)
+        for query in [
+            "你腿伤恢复得怎么样",
+            "Sanctuary Inside 的歌词",
+            "你会原谅安多恩吗",
+            "仙人掌挞怎么样",
+            "小乐最近怎么样",
+            "你喜欢什么电影",
+        ]:
+            self.assertTrue(needs_reference(query, self.plugin.aliases), query)
 
 
 if __name__ == "__main__":

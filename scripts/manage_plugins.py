@@ -114,6 +114,28 @@ def upgrade_managed_vision(root):
             write(path, cfg)
 
 
+def upgrade_lemuen_dialogue(root):
+    """Apply the reviewed dialogue revision once, while the service is stopped."""
+    database = root / "data/data_v4.db"
+    if not database.is_file():
+        return  # A fresh installation has no existing persona to migrate.
+    with sqlite3.connect(database) as db:
+        db.execute(
+            "UPDATE personas SET system_prompt = ?, updated_at = ? WHERE persona_id = ?",
+            (
+                (root / "knowledge/lemuen/persona.md").read_text(),
+                datetime.now(UTC).replace(tzinfo=None).isoformat(sep=" "),
+                "蕾缪安",
+            ),
+        )
+    path = root / "data/config/astrbot_plugin_lemuen_config.json"
+    if path.exists():
+        config = read(path)
+        if config.get("top_k", 5) == 5:
+            config["top_k"] = 2
+            write(path, config)
+
+
 def install(*, backup_dir=None, skip_dependencies=False):
     if (
         subprocess.run(
@@ -289,6 +311,8 @@ def install(*, backup_dir=None, skip_dependencies=False):
         write(old_config, own)
     if previous_revision < 3:
         upgrade_managed_vision(ROOT)
+    if previous_revision < 5:
+        upgrade_lemuen_dialogue(ROOT)
     prompts = ROOT / "data/plugin_data/astrbot_plugin_livingmemory/prompts"
     prompts.mkdir(parents=True, exist_ok=True)
     for name, content in lock["memory_prompts"].items():
@@ -304,9 +328,9 @@ def install(*, backup_dir=None, skip_dependencies=False):
         {
             "backup": str(backup),
             "versions": {p["id"]: p["version"] for p in lock["upstream"]},
-            "lemuen": "0.3.2",
-            "rolebot": "0.3.2",
-            "profile_revision": 4,
+            "lemuen": "0.4.0",
+            "rolebot": "0.4.0",
+            "profile_revision": 5,
             "scope": "private_and_groups"
             if rolebot_config.get("groups", {}).get("all_groups")
             else "private",

@@ -24,14 +24,14 @@
   "top_k": {
     "description": "每次检索条数",
     "type": "int",
-    "default": 5,
+    "default": 2,
     "hint": "范围 1–10。"
   },
   "retrieval_timeout_seconds": {
     "description": "检索等待上限（秒）",
     "type": "int",
     "default": 8,
-    "hint": "超时后继续使用人格和常驻表达参考。范围 1–30。"
+    "hint": "超时后继续使用人格和完整角色语音。范围 1–30。"
   },
   "proactive": {
     "type": "object",

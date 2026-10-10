@@ -63,7 +63,7 @@ def build(cache=None):
             "README.md",
         ]:
             archive.write(PLUGIN / name, f"astrbot_plugin_lemuen/{name}")
-        for name in ("voice-guide.json", "voice-lines.json"):
+        for name in ("voice-lines.json", "aliases.json"):
             archive.write(ROOT / name, f"astrbot_plugin_lemuen/{name}")
     (BUILD / "private-chat-settings.json").write_text(
         json.dumps(PRIVATE_CHAT_SETTINGS, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -90,6 +90,7 @@ def smoke(args):
         raise ValueError("未知对话场景 ID。")
     request = {
         "project": args.remote_project,
+        "profile": args.profile,
         "embedding": {
             "id": "lemuen-embedding",
             "type": "openai_embedding",
@@ -156,6 +157,9 @@ def main():
         "--remote-python", default="/home/ubuntu/miniforge3/envs/astrbot-wsl/bin/python"
     )
     preview.add_argument("--cases", default="D01,D07,R03,X06,G01")
+    preview.add_argument(
+        "--profile", default="data/cmd_config.json", help="服务器项目内实际聊天配置的相对路径"
+    )
     args = parser.parse_args()
     try:
         if args.action == "check":

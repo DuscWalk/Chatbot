@@ -16,11 +16,10 @@ from .render import (
     CONTEXT_MARKER,
     CONTEXT_RULE,
     SPEAKER_PREFIX,
-    compile_style,
     compile_voices,
     entry_ids,
     native_chunks,
-    retrieval_query,
+    needs_reference,
     session_allowed,
 )
 
@@ -31,9 +30,9 @@ class LemuenPlugin(Star):
         self.config = config
         self.proactive = None
         assets = Path(__file__).parent
-        if not (assets / "voice-guide.json").exists():  # Source checkout.
+        if not (assets / "voice-lines.json").exists():  # Source checkout.
             assets = Path(__file__).resolve().parents[2] / "knowledge/lemuen"
-        self.guide = json.loads((assets / "voice-guide.json").read_text(encoding="utf-8"))
+        self.aliases = json.loads((assets / "aliases.json").read_text(encoding="utf-8"))
         self.voice_prompt = compile_voices(
             json.loads((assets / "voice-lines.json").read_text(encoding="utf-8"))
         )
@@ -82,19 +81,20 @@ class LemuenPlugin(Star):
         if persona and persona.get("tools") == []:
             # Honor an explicitly tool-free persona, including platform-added tools.
             req.func_tool = None
-        prompt = event.get_message_str() or req.prompt or ""
-        query = retrieval_query(
-            prompt, req.contexts, event.get_sender_id(), bool(event.get_group_id())
-        )
+        # Current question (including an explicit quote) only. Historical user
+        # turns may be unrelated, even when they belong to the same speaker.
+        query = (req.prompt or event.get_message_str() or "")[:4000]
         kb_name = self.config.get("knowledge_base", "蕾缪安")
         chunks = native_chunks(req.extra_user_content_parts, kb_name)
         reused_native = bool(chunks)
         status = "native_context" if reused_native else "ok"
         started = time.monotonic()
-        if not reused_native:
+        if not reused_native and not needs_reference(query, self.aliases):
+            status = "not_needed"
+        elif not reused_native:
             try:
                 timeout = max(1, min(30, int(self.config.get("retrieval_timeout_seconds", 8))))
-                limit = max(1, min(10, int(self.config.get("top_k", 5))))
+                limit = max(1, min(10, int(self.config.get("top_k", 2))))
                 async with asyncio.timeout(timeout):
                     result = await self.context.kb_manager.retrieve(
                         query=query, kb_names=[kb_name], top_k_fusion=20, top_m_final=limit
@@ -114,13 +114,21 @@ class LemuenPlugin(Star):
                 bounded.append(chunk)
                 size += len(chunk)
         ids = entry_ids(bounded)
-        style, patterns, examples = compile_style(self.guide, ids, query)
-        knowledge = "" if reused_native else "\n".join(bounded)
-        req.system_prompt = (req.system_prompt or "") + (
-            f"\n{CONTEXT_MARKER}\n{self.voice_prompt}\n{CONTEXT_RULE}"
-            f"\n<参考资料>\n{knowledge}\n</参考资料>"
-            f"\n<谈话方式>\n{style}\n</谈话方式>\n</lemuen_context>"
+        # Keep the current dialogue/persona instructions after the source voice
+        # samples, so a long quotation does not become the last behavioral cue.
+        req.system_prompt = (
+            f"{CONTEXT_MARKER}\n{self.voice_prompt}\n</lemuen_context>\n"
+            + (req.system_prompt or "")
+            + "\n"
+            + CONTEXT_RULE
         )
+        if bounded and not reused_native:
+            knowledge = "\n".join(bounded)
+            req.extra_user_content_parts.append(
+                TextPart(
+                    text=f"[本轮原作参考；仅使用与当前话题相关的事实]\n{knowledge}"
+                ).mark_as_temp()
+            )
         # This small, data-only annotation survives history saving; retrieved facts do not.
         speaker = {
             "id": event.get_sender_id(),
@@ -135,8 +143,6 @@ class LemuenPlugin(Star):
             {
                 "retrieval": status,
                 "entry_ids": ids,
-                "pattern_ids": patterns,
-                "example_ids": examples,
                 "retrieval_seconds": round(time.monotonic() - started, 3),
             },
         )

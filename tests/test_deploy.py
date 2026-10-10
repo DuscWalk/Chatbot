@@ -1,6 +1,7 @@
 """Exercise deployment commit/rollback without touching a service or real data."""
 
 import json
+import sqlite3
 import sys
 import tempfile
 import unittest
@@ -8,6 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from scripts.deploy_release import Deployment
+from scripts.manage_plugins import upgrade_lemuen_dialogue
 
 
 class FakeDeployment(Deployment):
@@ -66,6 +68,31 @@ class DeploymentTests(unittest.TestCase):
             (target / folder_name).mkdir(parents=True, exist_ok=True)
             (target / folder_name / "plugin.zip").write_bytes(b"old zip")
         return source, target
+
+    def test_dialogue_migration_updates_only_managed_persona_and_old_retrieval_default(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "data/config").mkdir(parents=True)
+            (root / "knowledge/lemuen").mkdir(parents=True)
+            (root / "knowledge/lemuen/persona.md").write_text("new persona")
+            cfg = root / "data/config/astrbot_plugin_lemuen_config.json"
+            cfg.write_text('{"top_k": 5, "enabled": true}')
+            with sqlite3.connect(root / "data/data_v4.db") as db:
+                db.execute(
+                    "CREATE TABLE personas (persona_id TEXT, system_prompt TEXT, updated_at TEXT)"
+                )
+                db.executemany(
+                    "INSERT INTO personas VALUES (?, ?, ?)",
+                    [("蕾缪安", "old", "old"), ("Other", "keep", "old")],
+                )
+            upgrade_lemuen_dialogue(root)
+            with sqlite3.connect(root / "data/data_v4.db") as db:
+                rows = dict(db.execute("SELECT persona_id, system_prompt FROM personas"))
+            self.assertEqual(rows, {"蕾缪安": "new persona", "Other": "keep"})
+            self.assertEqual(json.loads(cfg.read_text()), {"top_k": 2, "enabled": True})
+            cfg.write_text('{"top_k": 1}')
+            upgrade_lemuen_dialogue(root)
+            self.assertEqual(json.loads(cfg.read_text())["top_k"], 1)
 
     def test_success_installs_source_and_keeps_unknown_user_files(self):
         with tempfile.TemporaryDirectory() as tmp:

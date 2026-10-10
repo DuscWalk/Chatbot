@@ -78,6 +78,32 @@ class GroupContextTests(unittest.TestCase):
         self.assertEqual(rows[-1]["sender"], "member")
         self.assertIn('"sender":"admin"', rows[-1]["text"])
 
+    def test_images_follow_exact_text_window_and_keep_sources_out_of_render(self):
+        self.buffer.add(
+            "napcat:g",
+            "image",
+            "alice",
+            "群友甲",
+            "[图片]",
+            10,
+            {},
+            images=("https://example.com/secret",),
+        )
+        current = self.add("current", 11)
+        text, images = self.buffer.snapshot("napcat:g", current, 11, {})
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0].sender, "alice")
+        self.assertIn(images[0].image_id, text)
+        self.assertNotIn("secret", text + repr(images))
+        self.buffer.add("napcat:g", "later", "bob", "乙", "[图片]", 12, {}, images=("later",))
+        self.assertEqual(len(images), 1)
+        self.assertFalse(self.buffer.snapshot("napcat:other", 999, 12, {})[1])
+        for i in range(8):
+            self.add(str(i), 1000 + i)
+        self.assertFalse(self.buffer.snapshot("napcat:g", 999, 1010, {})[1])
+        self.buffer.clear("napcat:g")
+        self.assertFalse(self.buffer.snapshot("napcat:g", 999, 12, {})[1])
+
     def test_media_outline_never_serializes_source_or_card_payload(self):
         plain = type("Plain", (), {"text": "这张"})()
         image = type("Image", (), {"url": "https://example.com/signed-secret", "file": "secret"})()

@@ -339,6 +339,49 @@
         "问句自然指向具体对象，不用固定二选一或邀请倾诉收尾",
         "群聊观察基于当前消息，不伪造看到成员表情动作"
       ]
+    },
+    {
+      "id": "G04",
+      "scene": "group",
+      "turns": [
+        {
+          "sender_id": "member-a",
+          "nickname": "合成群友甲",
+          "text": "安姐来一口",
+          "background": "群友甲发来一张甜点照片，补充说明是奶酪小蛋糕。大家正在 QQ 群里聊这张图。"
+        },
+        {
+          "sender_id": "member-b",
+          "nickname": "合成群友乙",
+          "text": "我吃安姐吃剩的"
+        },
+        {
+          "sender_id": "member-c",
+          "nickname": "合成群友丙",
+          "text": "没事我吃姐姐嘴里的"
+        }
+      ]
+    },
+    {
+      "id": "G05",
+      "scene": "group",
+      "history": [
+        {
+          "role": "user",
+          "content": "我吃安姐吃剩的"
+        },
+        {
+          "role": "assistant",
+          "content": "那我可得留一块卖相最好的给你，省得你吃到的全是我的“残局”。\n\n不过先说好，我吃剩的可不一定有整块那么完整，你确定不先抢块新的？"
+        }
+      ],
+      "turns": [
+        {
+          "sender_id": "member-a",
+          "nickname": "合成群友甲",
+          "text": "为什么这个安姐说话看似是人话，实则毫无逻辑"
+        }
+      ]
     }
   ]
 }

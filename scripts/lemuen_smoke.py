@@ -24,6 +24,7 @@ async def run(request, root, production):
     os.environ["ASTRBOT_ROOT"] = str(root)
     os.chdir(root)
     from astrbot.core import LogBroker, astrbot_config, db_helper
+    from astrbot.core.agent.message import TextPart
     from astrbot.core.astr_main_agent import MainAgentBuildConfig, build_main_agent
     from astrbot.core.core_lifecycle import AstrBotCoreLifecycle
     from astrbot.core.message.components import Plain
@@ -61,7 +62,6 @@ async def run(request, root, production):
     chat["custom_extra_body"] = {
         **(chat.get("custom_extra_body") or {}),
         "max_tokens": 4096,
-        "temperature": 0.6,
     }
     astrbot_config.update(
         {
@@ -222,6 +222,12 @@ async def run(request, root, production):
                 if not built:
                     raise AssertionError("agent_build_failed")
                 req = built.provider_request
+                if turn == 1 and case.get("history"):
+                    req.contexts.extend(case["history"])
+                if item.get("background"):
+                    req.extra_user_content_parts.append(
+                        TextPart(text="[合成群聊背景数据]\n" + item["background"]).mark_as_temp()
+                    )
                 try:
                     stopped = await call_event_hook(event, EventType.OnLLMRequestEvent, req)
                     if stopped or not event.get_extra("lemuen"):
@@ -301,7 +307,9 @@ def main():
     global PHASE
     request = json.load(sys.stdin)
     project = Path(request["project"])
-    config_path = project / "data/cmd_config.json"
+    config_path = (project / request.get("profile", "data/cmd_config.json")).resolve()
+    if not config_path.is_relative_to((project / "data").resolve()):
+        raise ValueError("profile_outside_data")
     raw = config_path.read_bytes()
     before = hashlib.sha256(raw).hexdigest()
     production = json.loads(raw.decode("utf-8-sig"))
